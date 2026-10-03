@@ -197,7 +197,7 @@ const VendorOrderDetailsModal = ({ isOpen, onClose, order, onUpdate }) => {
               <span className={`text-base font-bold ${isDarkMode ? 'text-purple-400' : 'text-purple-600'}`}>
                 {currentOrder.commissionRate || 0}%
               </span>
-              <p className="text-[8px] font-bold text-gray-400 uppercase mt-0.5">
+              <p className="text-xs font-bold text-zinc-400 uppercase mt-1">
                 Fee: {formatCurrency(currentOrder.commissionAmount || 0)}
               </p>
             </div>
@@ -247,19 +247,19 @@ const VendorOrderDetailsModal = ({ isOpen, onClose, order, onUpdate }) => {
                       {typeof currentOrder.userId === 'object' ? currentOrder.userId.email : currentOrder.userId}
                     </p>
                     {typeof currentOrder.userId === 'object' && currentOrder.userId.role && (
-                      <p className={`text-[9px] uppercase font-bold px-2 py-0.5 rounded inline-block mt-2 ${isDarkMode ? 'bg-blue-500/10 text-blue-400' : 'bg-blue-50 text-blue-500'
+                      <p className={`text-xs uppercase font-bold px-2 py-0.5 rounded inline-block mt-2 ${isDarkMode ? 'bg-blue-500/10 text-blue-400' : 'bg-blue-50 text-blue-600'
                         }`}>
                         Role: {currentOrder.userId.role}
                       </p>
                     )}
                   </div>
                 ) : (
-                  <p className="text-xs text-gray-400">Anonymous Customer</p>
+                  <p className="text-xs text-zinc-400">Anonymous Customer</p>
                 )}
               </div>
-              <div className={`mt-4 pt-4 border-t flex justify-between items-center text-xs ${isDarkMode ? 'border-white/5' : 'border-gray-100'}`}>
-                <span className="font-bold text-gray-400 uppercase text-[9px]">Payment Status</span>
-                <span className={`px-2 py-0.5 rounded text-sm font-bold uppercase ${currentOrder.paymentStatus === 'paid'
+              <div className={`mt-4 pt-4 border-t flex justify-between items-center text-xs ${isDarkMode ? 'border-zinc-800' : 'border-zinc-100'}`}>
+                <span className="font-bold text-zinc-400 uppercase text-xs">Payment Status</span>
+                <span className={`px-2 py-0.5 rounded text-xs font-bold uppercase ${currentOrder.paymentStatus === 'paid'
                     ? (isDarkMode ? 'bg-green-500/10 text-green-400' : 'bg-green-50 text-green-500')
                     : (isDarkMode ? 'bg-amber-500/10 text-amber-400' : 'bg-amber-50 text-amber-500')
                   }`}>
@@ -276,7 +276,7 @@ const VendorOrderDetailsModal = ({ isOpen, onClose, order, onUpdate }) => {
               }`}>
               <table className="w-full text-xs text-left border-collapse">
                 <thead>
-                  <tr className={`border-b text-[9px] font-bold uppercase text-gray-400 ${isDarkMode ? 'bg-gray-950/50 border-white/5' : 'bg-gray-50'
+                  <tr className={`border-b text-xs font-bold uppercase text-zinc-400 ${isDarkMode ? 'bg-zinc-950 border-zinc-800' : 'bg-zinc-50 border-zinc-200'
                     }`}>
                     <th className="p-3">Product Name</th>
                     <th className="p-3 text-center">Qty</th>
@@ -284,16 +284,16 @@ const VendorOrderDetailsModal = ({ isOpen, onClose, order, onUpdate }) => {
                     <th className="p-3 text-right">Total</th>
                   </tr>
                 </thead>
-                <tbody className={`divide-y ${isDarkMode ? 'divide-white/5' : 'divide-gray-100'}`}>
+                <tbody className={`divide-y ${isDarkMode ? 'divide-zinc-800' : 'divide-zinc-100'}`}>
                   {currentOrder.items?.map((item, index) => (
-                    <tr key={index} className={`${isDarkMode ? 'hover:bg-white/5' : 'hover:bg-gray-50/50'}`}>
+                    <tr key={index} className={`${isDarkMode ? 'hover:bg-zinc-800/50' : 'hover:bg-zinc-50/50'}`}>
                       <td className="p-3 font-outfit">
-                        <span className={`font-bold ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>{item.productName}</span>
-                        {item.sku && <p className={`text-[9px] font-mono mt-0.5 ${isDarkMode ? 'text-gray-500' : 'text-gray-400'}`}>SKU: {item.sku}</p>}
+                        <span className={`font-bold ${isDarkMode ? 'text-zinc-200' : 'text-zinc-800'}`}>{item.productName}</span>
+                        {item.sku && <p className={`text-xs font-mono mt-0.5 ${isDarkMode ? 'text-zinc-400' : 'text-zinc-500'}`}>SKU: {item.sku}</p>}
                         {item.attributes && (
                           <div className="flex gap-2 mt-1">
                             {Object.entries(item.attributes).map(([key, val]) => (
-                              <span key={key} className={`px-1.5 py-0.5 rounded text-[9px] uppercase font-semibold ${isDarkMode ? 'bg-white/5 text-gray-400' : 'bg-gray-100 text-gray-500'
+                              <span key={key} className={`px-2 py-0.5 rounded text-xs uppercase font-semibold ${isDarkMode ? 'bg-zinc-800 text-zinc-300' : 'bg-zinc-100 text-zinc-600'
                                 }`}>
                                 {key}: {val}
                               </span>
@@ -321,12 +321,12 @@ const VendorOrderDetailsModal = ({ isOpen, onClose, order, onUpdate }) => {
                 </div>
                 <div>
                   <span className="text-xs font-bold text-purple-500 uppercase tracking-wider">Coupon {currentOrder.orderId.appliedCoupon.code}</span>
-                  <p className="text-[9px] text-gray-400 uppercase mt-0.5">Discount Scheme: {currentOrder.orderId.appliedCoupon.couponType || 'Fixed'}</p>
+                  <p className="text-xs text-zinc-400 uppercase mt-0.5">Discount Scheme: {currentOrder.orderId.appliedCoupon.couponType || 'Fixed'}</p>
                 </div>
               </div>
               <div className="text-right text-xs">
                 <span className="font-bold text-purple-500">- {formatCurrency(currentOrder.orderId.appliedCoupon.discountAmount)}</span>
-                <p className="text-[9px] text-gray-400 uppercase mt-0.5">Discount Applied</p>
+                <p className="text-xs text-zinc-400 uppercase mt-0.5">Discount Applied</p>
               </div>
             </div>
           )}
@@ -372,8 +372,8 @@ const VendorOrderDetailsModal = ({ isOpen, onClose, order, onUpdate }) => {
                 <Truck size={14} /> Assign Delivery Rider
               </h3>
               {currentOrder.deliveryPersonId && (
-                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-green-500/15 text-green-600 border border-green-500/30">
-                  <UserCheck size={10} /> Rider Assigned
+                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-black uppercase bg-green-500/15 text-green-600 border border-green-500/30">
+                  <UserCheck size={12} /> Rider Assigned
                 </span>
               )}
             </div>
@@ -381,26 +381,26 @@ const VendorOrderDetailsModal = ({ isOpen, onClose, order, onUpdate }) => {
             {/* Currently Assigned Rider Info */}
             {currentOrder.deliveryPersonId && (
               <div className={`flex items-center justify-between p-3 rounded-2xl border text-xs ${
-                isDarkMode ? 'bg-gray-950/60 border-white/5' : 'bg-white border-amber-100'
+                isDarkMode ? 'bg-zinc-950 border-zinc-800' : 'bg-white border-amber-100'
               }`}>
                 <div className="flex items-center gap-2">
                   <div className={`w-7 h-7 rounded-full flex items-center justify-center ${isDarkMode ? 'bg-amber-500/15' : 'bg-amber-100'}`}>
                     <Bike size={14} className="text-amber-600" />
                   </div>
                   <div>
-                    <p className={`font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                    <p className={`font-bold ${isDarkMode ? 'text-white' : 'text-zinc-900'}`}>
                       {typeof currentOrder.deliveryPersonId === 'object'
                         ? (currentOrder.deliveryPersonId.name || 'Assigned Rider')
                         : 'Assigned Rider'}
                     </p>
                     {typeof currentOrder.deliveryPersonId === 'object' && currentOrder.deliveryPersonId.phone && (
-                      <p className="text-[10px] font-mono text-gray-500 mt-0.5 flex items-center gap-1">
-                        <Phone size={9} /> {currentOrder.deliveryPersonId.phone}
+                      <p className="text-xs font-mono text-zinc-400 mt-0.5 flex items-center gap-1">
+                        <Phone size={10} /> {currentOrder.deliveryPersonId.phone}
                       </p>
                     )}
                   </div>
                 </div>
-                <span className="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-amber-500/15 text-amber-600">
+                <span className="text-xs font-bold uppercase px-2.5 py-1 rounded bg-amber-500/15 text-amber-600">
                   {currentOrder.deliveryStatus || 'ASSIGNED'}
                 </span>
               </div>

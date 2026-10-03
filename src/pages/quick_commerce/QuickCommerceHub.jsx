@@ -40,7 +40,7 @@ const QuickCommerceHub = () => {
                 Quick E-Commerce
               </h1>
 
-              <p className="text-gray-700 font-normal text-[11px] sm:text-xs md:text-sm leading-snug max-w-md hidden sm:block">
+              <p className="text-gray-700 font-normal text-xs sm:text-sm md:text-base leading-snug max-w-md hidden sm:block">
                 10-Minute Lightning-Fast Delivery Services for Cosmetics & Skin Essentials.
               </p>
 
@@ -49,26 +49,26 @@ const QuickCommerceHub = () => {
                   onClick={() => {
                     window.scrollTo({ top: 300, behavior: 'smooth' });
                   }}
-                  className="bg-[#ff4d6d] hover:bg-[#e63956] text-white px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl font-bold text-[11px] sm:text-xs flex items-center gap-1.5 shadow-md shadow-pink-500/20 transition-all cursor-pointer"
+                  className="bg-[#ff4d6d] hover:bg-[#e63956] text-white px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl font-bold text-xs sm:text-sm flex items-center gap-1.5 shadow-md shadow-pink-500/20 transition-all cursor-pointer"
                 >
-                  <Zap size={14} className="fill-white" /> Shop Lightning Deals
+                  <Zap size={15} className="fill-white" /> Shop Lightning Deals
                 </button>
 
                 {isVendor && (
                   <button
                     onClick={handleOpenVendorDashboard}
-                    className="flex items-center gap-1.5 px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl bg-white text-gray-800 hover:bg-gray-50 font-bold text-[11px] sm:text-xs shadow-md border border-gray-200 transition-all cursor-pointer"
+                    className="flex items-center gap-1.5 px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl bg-white text-gray-800 hover:bg-gray-50 font-bold text-xs sm:text-sm shadow-md border border-gray-200 transition-all cursor-pointer"
                   >
-                    <Sliders size={14} /> Manage in Vendor Dashboard
+                    <Sliders size={15} /> Manage in Vendor Dashboard
                   </button>
                 )}
 
                 {isRider && (
                   <button
                     onClick={handleOpenRiderDashboard}
-                    className="flex items-center gap-1.5 px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl bg-white text-gray-800 hover:bg-gray-50 font-bold text-[11px] sm:text-xs shadow-md border border-gray-200 transition-all cursor-pointer"
+                    className="flex items-center gap-1.5 px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl bg-white text-gray-800 hover:bg-gray-50 font-bold text-xs sm:text-sm shadow-md border border-gray-200 transition-all cursor-pointer"
                   >
-                    <Sliders size={14} /> Open Rider Dashboard
+                    <Sliders size={15} /> Open Rider Dashboard
                   </button>
                 )}
               </div>

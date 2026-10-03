@@ -107,7 +107,7 @@ const ServiceProviderLeads = ({ isDarkMode }) => {
             <span className={`text-xs font-black uppercase truncate ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>
               {renderVal(lead.name || lead.userId?.name || 'Customer')}
             </span>
-            <span className="text-[9px] font-bold text-gray-400 uppercase truncate">
+            <span className="text-xs font-medium text-gray-400 lowercase truncate">
               {renderVal(lead.email || lead.userId?.email || '—')}
             </span>
           </div>
@@ -121,7 +121,7 @@ const ServiceProviderLeads = ({ isDarkMode }) => {
           <span className={`text-xs font-semibold line-clamp-2 ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
             {renderVal(lead.requirement)}
           </span>
-          <span className="text-[9px] font-bold text-gray-400 uppercase mt-1">
+          <span className="text-xs font-medium text-gray-400 uppercase mt-1">
             Category: {lead.categoryIds?.map(c => renderVal(c)).filter(Boolean).join(', ') || 'Beauty Service'}
           </span>
         </div>
@@ -136,9 +136,9 @@ const ServiceProviderLeads = ({ isDarkMode }) => {
         return (
           <div className="flex flex-col text-left">
             <span className={`text-xs font-black flex items-center gap-0.5 ${isDarkMode ? 'text-gray-200' : 'text-gray-805'}`}>
-              <IndianRupee size={10} className="text-emerald-500" /> {budgetAmount}
+              <IndianRupee size={12} className="text-emerald-500" /> {budgetAmount}
             </span>
-            <span className="text-[9px] font-bold text-gray-450 uppercase mt-0.5">
+            <span className="text-xs font-semibold text-gray-500 uppercase mt-0.5">
               Qty: {lead.totalPersons || lead.quantity || 1} • {renderVal(lead.gender || 'Any')}
             </span>
           </div>
@@ -162,7 +162,7 @@ const ServiceProviderLeads = ({ isDarkMode }) => {
           <span className={`text-xs font-bold truncate ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`} title={`${renderVal(lead.address)}, ${renderVal(lead.city)}, ${renderVal(lead.state)}`}>
             {renderVal(lead.city)}, {renderVal(lead.state)}
           </span>
-          <span className="text-[9px] font-bold text-gray-400 uppercase mt-0.5">
+          <span className="text-xs font-medium text-gray-400 uppercase mt-0.5">
             {renderVal(lead.phoneNumber || '—')}
           </span>
         </div>
@@ -171,7 +171,7 @@ const ServiceProviderLeads = ({ isDarkMode }) => {
     {
       header: 'Status',
       render: (lead) => (
-        <span className={`px-2.5 py-1 rounded-xl text-[9px] font-black uppercase tracking-wider ${getStatusBadgeClass(renderVal(lead.status))}`}>
+        <span className={`px-2.5 py-1 rounded-xl text-xs font-bold uppercase tracking-wider ${getStatusBadgeClass(renderVal(lead.status))}`}>
           {renderVal(lead.status || 'OPEN')}
         </span>
       )
@@ -231,7 +231,7 @@ const ServiceProviderLeads = ({ isDarkMode }) => {
             <button
               key={status}
               onClick={() => setFilterStatus(status)}
-              className={`px-4.5 py-2.5 rounded-xl text-[9px] font-black uppercase tracking-wider transition-all duration-300 cursor-pointer whitespace-nowrap ${
+              className={`px-4.5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all duration-300 cursor-pointer whitespace-nowrap ${
                 filterStatus === status
                   ? 'bg-white text-primary shadow-xs font-extrabold'
                   : 'text-gray-400 hover:text-gray-800'
@@ -295,7 +295,7 @@ const ServiceProviderLeads = ({ isDarkMode }) => {
                 <ClipboardList className="text-primary stroke-[2.5]" size={20} />
                 <div>
                   <h3 className="text-sm font-black uppercase tracking-wider">Service Lead Inspection</h3>
-                  <p className="text-[9px] text-gray-400 font-bold uppercase mt-0.5">ID: {selectedLead._id}</p>
+                  <p className="text-xs text-gray-400 font-bold uppercase mt-0.5">ID: {selectedLead._id}</p>
                 </div>
               </div>
               <button
@@ -313,7 +313,7 @@ const ServiceProviderLeads = ({ isDarkMode }) => {
               {/* User Profiling grid */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 <div className={`p-4 rounded-2xl border ${isDarkMode ? 'bg-gray-800/40 border-white/5' : 'bg-gray-50 border-gray-100'}`}>
-                  <span className="text-[9px] font-black text-gray-450 uppercase block mb-2 tracking-wider">Customer Contact</span>
+                  <span className="text-xs font-bold text-gray-400 uppercase block mb-2 tracking-wider">Customer Contact</span>
                   <div className="space-y-1.5 font-semibold text-gray-600">
                     <p><strong className={isDarkMode ? 'text-gray-300' : 'text-gray-800'}>Name:</strong> {renderVal(selectedLead.name || selectedLead.userId?.name || '—')}</p>
                     <p><strong className={isDarkMode ? 'text-gray-300' : 'text-gray-800'}>Email:</strong> {renderVal(selectedLead.email || selectedLead.userId?.email || '—')}</p>
@@ -322,7 +322,7 @@ const ServiceProviderLeads = ({ isDarkMode }) => {
                 </div>
 
                 <div className={`p-4 rounded-2xl border ${isDarkMode ? 'bg-gray-800/40 border-white/5' : 'bg-gray-50 border-gray-100'}`}>
-                  <span className="text-[9px] font-black text-gray-455 uppercase block mb-2 tracking-wider">Lead Coordinates & Location</span>
+                  <span className="text-xs font-bold text-gray-400 uppercase block mb-2 tracking-wider">Lead Coordinates & Location</span>
                   <div className="space-y-1.5 font-semibold text-gray-600">
                     <p><strong className={isDarkMode ? 'text-gray-300' : 'text-gray-800'}>Pincode:</strong> {renderVal(selectedLead.pincode)}</p>
                     <p><strong className={isDarkMode ? 'text-gray-300' : 'text-gray-800'}>City / State:</strong> {renderVal(selectedLead.city)}, {renderVal(selectedLead.state)}</p>
@@ -333,7 +333,7 @@ const ServiceProviderLeads = ({ isDarkMode }) => {
 
               {/* Requirement detailed text block */}
               <div className={`p-4 rounded-2xl border text-left ${isDarkMode ? 'bg-gray-800/40 border-white/5' : 'bg-gray-55 border-gray-100'}`}>
-                <span className="text-[9px] font-black text-gray-450 uppercase block mb-2 tracking-wider">Requirement Details</span>
+                <span className="text-xs font-bold text-gray-400 uppercase block mb-2 tracking-wider">Requirement Details</span>
                 <p className={`text-xs font-semibold leading-relaxed ${isDarkMode ? 'text-gray-350' : 'text-gray-700'}`}>
                   {renderVal(selectedLead.requirement)}
                 </p>
@@ -343,32 +343,32 @@ const ServiceProviderLeads = ({ isDarkMode }) => {
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
                 <div className={`p-3.5 rounded-2xl border ${isDarkMode ? 'bg-gray-800/40 border-white/5' : 'bg-gray-50 border-gray-100'}`}>
                   <Calendar size={15} className="mx-auto text-primary mb-1" />
-                  <span className="text-[8px] font-bold text-gray-400 uppercase block">Schedule</span>
-                  <span className={`text-[10px] font-bold block mt-0.5 ${isDarkMode ? 'text-gray-200' : 'text-gray-750'}`}>{formatDate(selectedLead.preferredDate)}</span>
+                  <span className="text-xs font-semibold text-gray-400 uppercase block">Schedule</span>
+                  <span className={`text-xs font-bold block mt-0.5 ${isDarkMode ? 'text-gray-200' : 'text-gray-750'}`}>{formatDate(selectedLead.preferredDate)}</span>
                 </div>
 
                 <div className={`p-3.5 rounded-2xl border ${isDarkMode ? 'bg-gray-800/40 border-white/5' : 'bg-gray-50 border-gray-100'}`}>
                   <Users size={15} className="mx-auto text-primary mb-1" />
-                  <span className="text-[8px] font-bold text-gray-400 uppercase block">Quantity</span>
-                  <span className={`text-[10px] font-bold block mt-0.5 ${isDarkMode ? 'text-gray-200' : 'text-gray-750'}`}>{selectedLead.totalPersons || selectedLead.quantity || 1} Person(s)</span>
+                  <span className="text-xs font-semibold text-gray-400 uppercase block">Quantity</span>
+                  <span className={`text-xs font-bold block mt-0.5 ${isDarkMode ? 'text-gray-200' : 'text-gray-750'}`}>{selectedLead.totalPersons || selectedLead.quantity || 1} Person(s)</span>
                 </div>
 
                 <div className={`p-3.5 rounded-2xl border ${isDarkMode ? 'bg-gray-800/40 border-white/5' : 'bg-gray-50 border-gray-100'}`}>
                   <Shield size={15} className="mx-auto text-primary mb-1" />
-                  <span className="text-[8px] font-bold text-gray-400 uppercase block">Gender</span>
-                  <span className={`text-[10px] font-bold block mt-0.5 ${isDarkMode ? 'text-gray-200' : 'text-gray-755'}`}>{renderVal(selectedLead.gender)}</span>
+                  <span className="text-xs font-semibold text-gray-400 uppercase block">Gender</span>
+                  <span className={`text-xs font-bold block mt-0.5 ${isDarkMode ? 'text-gray-200' : 'text-gray-755'}`}>{renderVal(selectedLead.gender)}</span>
                 </div>
 
                 <div className={`p-3.5 rounded-2xl border ${isDarkMode ? 'bg-gray-800/40 border-white/5' : 'bg-gray-50 border-gray-100'}`}>
                   <IndianRupee size={15} className="mx-auto text-primary mb-1" />
-                  <span className="text-[8px] font-bold text-gray-400 uppercase block">Budget</span>
-                  <span className={`text-[10px] font-bold block mt-0.5 ${isDarkMode ? 'text-gray-200' : 'text-gray-755'}`}>₹{selectedLead.budget?.toLocaleString('en-IN')}</span>
+                  <span className="text-xs font-semibold text-gray-400 uppercase block">Budget</span>
+                  <span className={`text-xs font-bold block mt-0.5 ${isDarkMode ? 'text-gray-200' : 'text-gray-755'}`}>₹{selectedLead.budget?.toLocaleString('en-IN')}</span>
                 </div>
               </div>
 
               {/* Exact full address details block */}
               <div className={`p-4 rounded-2xl border text-left ${isDarkMode ? 'bg-gray-800/40 border-white/5' : 'bg-gray-50 border-gray-100'}`}>
-                <span className="text-[9px] font-black text-gray-450 uppercase block mb-1.5 tracking-wider">Detailed Address</span>
+                <span className="text-xs font-bold text-gray-400 uppercase block mb-1.5 tracking-wider">Detailed Address</span>
                 <p className={`text-xs font-semibold leading-relaxed ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
                   {renderVal(selectedLead.address)}, {renderVal(selectedLead.city)}, {renderVal(selectedLead.state)} - {renderVal(selectedLead.pincode)}
                 </p>
@@ -379,7 +379,7 @@ const ServiceProviderLeads = ({ isDarkMode }) => {
             <div className={`p-6 border-t flex justify-end ${isDarkMode ? 'border-white/5' : 'border-gray-100'}`}>
               <button
                 onClick={() => setSelectedLead(null)}
-                className="px-6 py-2.5 bg-primary hover:bg-primary/95 text-white font-bold uppercase text-[10px] tracking-wider rounded-xl transition-all cursor-pointer active:scale-95 shadow-md shadow-primary/20"
+                className="px-6 py-2.5 bg-primary hover:bg-primary/95 text-white font-bold uppercase text-xs tracking-wider rounded-xl transition-all cursor-pointer active:scale-95 shadow-md shadow-primary/20"
               >
                 Close Inspection
               </button>

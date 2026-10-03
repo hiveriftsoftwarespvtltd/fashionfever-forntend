@@ -324,13 +324,13 @@ const SubscriptionPlans = ({ isDarkMode }) => {
       {/* ── Page Header ── */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <span className="text-[9px] font-black text-primary uppercase tracking-widest block mb-1">
+          <span className="text-xs font-bold text-primary uppercase tracking-widest block mb-1">
             Platform Configuration
           </span>
-          <h2 className={`text-2xl lg:text-3xl font-black uppercase ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>
+          <h2 className={`text-2xl lg:text-3xl font-black uppercase ${isDarkMode ? 'text-white' : 'text-zinc-900'}`}>
             Subscription Plans
           </h2>
-          <p className={`text-xs font-semibold mt-1 ${isDarkMode ? 'text-gray-500' : 'text-gray-400'}`}>
+          <p className={`text-xs font-semibold mt-1 ${isDarkMode ? 'text-zinc-400' : 'text-zinc-500'}`}>
             All service subscription tiers configured in the system
           </p>
         </div>
@@ -341,14 +341,14 @@ const SubscriptionPlans = ({ isDarkMode }) => {
           >
             <Plus size={15} /> Add Plan
           </button>
-          <div className={`px-5 py-3 rounded-2xl border ${isDarkMode ? 'bg-gray-900 border-white/5' : 'bg-white border-gray-100'} shadow-sm`}>
-            <p className="text-[9px] font-black uppercase text-gray-400 mb-0.5">Total Plans</p>
-            <p className={`text-2xl font-black ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>{plans.length}</p>
+          <div className={`px-5 py-3 rounded-2xl border ${isDarkMode ? 'bg-zinc-900 border-zinc-800' : 'bg-white border-zinc-200'} shadow-sm`}>
+            <p className="text-xs font-bold uppercase text-zinc-400 mb-0.5">Total Plans</p>
+            <p className={`text-2xl font-black ${isDarkMode ? 'text-white' : 'text-zinc-900'}`}>{plans.length}</p>
           </div>
           <button
             onClick={fetchPlans}
             disabled={loading}
-            className={`p-3 rounded-2xl border transition-all ${isDarkMode ? 'bg-gray-900 border-white/5 text-gray-400 hover:text-white hover:bg-white/5' : 'bg-white border-gray-100 text-gray-500 hover:bg-gray-50'}`}
+            className={`p-3 rounded-2xl border transition-all ${isDarkMode ? 'bg-zinc-900 border-zinc-800 text-zinc-400 hover:text-white hover:bg-zinc-800' : 'bg-white border-zinc-200 text-zinc-600 hover:bg-zinc-50'}`}
             title="Refresh"
           >
             <RefreshCw size={16} className={loading ? 'animate-spin' : ''} />
@@ -359,18 +359,18 @@ const SubscriptionPlans = ({ isDarkMode }) => {
       {/* ── Active / Inactive Summary ── */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {[
-          { label: 'Active Plans', value: plans.filter(p => p.isActive).length, color: 'text-emerald-500', bg: isDarkMode ? 'bg-emerald-500/5' : 'bg-emerald-50', icon: <CheckCircle2 size={15} /> },
-          { label: 'Inactive Plans', value: plans.filter(p => !p.isActive).length, color: 'text-rose-500', bg: isDarkMode ? 'bg-rose-500/5' : 'bg-rose-50', icon: <XCircle size={15} /> },
-          { label: 'Free Tier', value: plans.filter(p => p.price === 0).length, color: 'text-gray-400', bg: isDarkMode ? 'bg-white/5' : 'bg-gray-50', icon: <Star size={15} /> },
-          { label: 'Paid Tiers', value: plans.filter(p => p.price > 0).length, color: 'text-primary', bg: isDarkMode ? 'bg-primary/5' : 'bg-primary/5', icon: <Crown size={15} /> },
+          { label: 'Active Plans', value: plans.filter(p => p.isActive).length, color: 'text-emerald-500', bg: isDarkMode ? 'bg-emerald-500/10' : 'bg-emerald-50', icon: <CheckCircle2 size={16} /> },
+          { label: 'Inactive Plans', value: plans.filter(p => !p.isActive).length, color: 'text-rose-500', bg: isDarkMode ? 'bg-rose-500/10' : 'bg-rose-50', icon: <XCircle size={16} /> },
+          { label: 'Free Tier', value: plans.filter(p => p.price === 0).length, color: 'text-zinc-400', bg: isDarkMode ? 'bg-zinc-800' : 'bg-zinc-100', icon: <Star size={16} /> },
+          { label: 'Paid Tiers', value: plans.filter(p => p.price > 0).length, color: 'text-primary', bg: isDarkMode ? 'bg-primary/10' : 'bg-primary/5', icon: <Crown size={16} /> },
         ].map((s, i) => (
-          <div key={i} className={`px-4 py-4 rounded-2xl border flex items-center gap-3 ${isDarkMode ? 'bg-gray-900 border-white/5' : 'bg-white border-gray-100'} shadow-sm`}>
-            <div className={`w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 ${s.bg} ${s.color}`}>
+          <div key={i} className={`px-4 py-4 rounded-2xl border flex items-center gap-3 ${isDarkMode ? 'bg-zinc-900 border-zinc-800' : 'bg-white border-zinc-200'} shadow-sm`}>
+            <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${s.bg} ${s.color}`}>
               {s.icon}
             </div>
             <div>
-              <p className={`text-lg font-black ${s.color}`}>{s.value}</p>
-              <p className={`text-[9px] font-black uppercase tracking-wider ${isDarkMode ? 'text-gray-600' : 'text-gray-400'}`}>{s.label}</p>
+              <p className={`text-xl font-black ${s.color}`}>{s.value}</p>
+              <p className={`text-xs font-bold uppercase tracking-wider ${isDarkMode ? 'text-zinc-400' : 'text-zinc-500'}`}>{s.label}</p>
             </div>
           </div>
         ))}

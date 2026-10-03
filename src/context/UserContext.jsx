@@ -5,7 +5,21 @@ const UserContext = createContext(null);
 
 const resolveRole = (user) => {
   if (!user) return 'user';
-  const role = user.role || (Array.isArray(user.roles) ? (user.roles.find(r => r !== 'user') || 'user') : 'user');
+  if (user.roles && Array.isArray(user.roles)) {
+    if (user.roles.includes('super_admin') || user.roles.includes('admin')) return 'admin';
+    const nonUserRole = user.roles.find(r => r !== 'user');
+    if (nonUserRole) return nonUserRole.toLowerCase();
+  }
+  if (user.roleStatus) {
+    const statuses = typeof user.roleStatus === 'object' ? user.roleStatus : {};
+    if (statuses.vendor || statuses['vendor']) return 'vendor';
+    if (statuses.service_provider || statuses['service_provider']) return 'service_provider';
+    if (statuses.educator || statuses['educator']) return 'educator';
+    if (statuses.influencer || statuses['influencer']) return 'influencer';
+    if (statuses.distributor || statuses['distributor']) return 'distributor';
+    if (statuses.delivery_person || statuses['delivery_person']) return 'delivery_person';
+  }
+  const role = user.role || 'user';
   const normalized = typeof role === 'string' ? role.toLowerCase() : 'user';
   return normalized === 'super_admin' ? 'admin' : normalized;
 };

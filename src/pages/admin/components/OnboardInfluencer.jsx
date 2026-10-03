@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { X, Loader2, Camera, Video } from 'lucide-react';
 import { toast } from '../../../utils/toast';
-import { onboardInfluencer, updateInfluencer } from '../../../api/adminService';
+import { onboardInfluencer, updateInfluencer, updateInfluencerCommissionRate } from '../../../api/adminService';
 import { useTheme } from '../../../context/ThemeContext';
 
 /**
@@ -18,7 +18,7 @@ const OnboardInfluencerModal = ({ isOpen, onClose, onSuccess, initialData = null
     tiktok: '',
     instagram: '',
     youtube: '',
-    commissionRate: 10,
+    commissionRate: '',
     followers: 0
   });
 
@@ -32,7 +32,7 @@ const OnboardInfluencerModal = ({ isOpen, onClose, onSuccess, initialData = null
         tiktok: initialData.tiktok || '',
         instagram: initialData.instagram || '',
         youtube: initialData.youtube || '',
-        commissionRate: initialData.commissionRate || 10,
+        commissionRate: typeof initialData.commissionRate === 'number' ? initialData.commissionRate : '',
         followers: initialData.followers || 0,
         userId: initialData.userId?._id || initialData.userId
       });
@@ -40,7 +40,7 @@ const OnboardInfluencerModal = ({ isOpen, onClose, onSuccess, initialData = null
       setFormData({
         name: '', email: '', password: '', bio: '',
         tiktok: '', instagram: '', youtube: '',
-        commissionRate: 10, followers: 0
+        commissionRate: '', followers: 0
       });
     }
   }, [initialData, isOpen]);
@@ -51,14 +51,20 @@ const OnboardInfluencerModal = ({ isOpen, onClose, onSuccess, initialData = null
     e.preventDefault();
     setLoading(true);
     try {
+      const parsedRate = formData.commissionRate !== '' && formData.commissionRate !== null && formData.commissionRate !== undefined
+        ? Number(formData.commissionRate)
+        : null;
+
       let res;
       if (initialData) {
         // Exclude password if empty during update
-        const updateData = { ...formData };
+        const updateData = { ...formData, commissionRate: parsedRate };
         if (!updateData.password) delete updateData.password;
         res = await updateInfluencer(initialData._id, updateData);
+        // Also ensure dedicated commission rate endpoint is synced
+        await updateInfluencerCommissionRate(initialData._id, parsedRate);
       } else {
-        res = await onboardInfluencer(formData);
+        res = await onboardInfluencer({ ...formData, commissionRate: parsedRate });
       }
 
       if (res.success) {
@@ -131,8 +137,23 @@ const OnboardInfluencerModal = ({ isOpen, onClose, onSuccess, initialData = null
                 </div>
               )}
               <div className="space-y-2">
-                <label className={`text-sm font-bold uppercase ${isDarkMode ? 'text-gray-500' : 'text-gray-400'}`}>Commission Rate (%)</label>
-                <input required type="number" name="commissionRate" value={formData.commissionRate} onChange={handleChange} min="0" max="100" className={`w-full px-5 py-4 rounded-2xl text-sm font-medium outline-none border transition-all placeholder:text-gray-400 placeholder:font-normal placeholder:text-xs ${isDarkMode ? 'bg-gray-900 border-gray-700 text-white' : 'bg-gray-50 border-gray-100'}`} />
+                <label className={`text-sm font-bold uppercase ${isDarkMode ? 'text-gray-500' : 'text-gray-400'}`}>
+                  Custom Commission Rate (%)
+                </label>
+                <input
+                  type="number"
+                  name="commissionRate"
+                  value={formData.commissionRate}
+                  onChange={handleChange}
+                  min="0"
+                  max="100"
+                  step="0.1"
+                  placeholder="Leave empty for Rate Unset (0-100%)"
+                  className={`w-full px-5 py-4 rounded-2xl text-sm font-medium outline-none border transition-all placeholder:text-gray-400 placeholder:font-normal placeholder:text-xs ${isDarkMode ? 'bg-gray-900 border-gray-700 text-white' : 'bg-gray-50 border-gray-100'}`}
+                />
+                <p className="text-[11px] font-medium text-gray-400">
+                  Optional: Configure 0–100% or leave blank for <strong>Rate Unset</strong>. Unconfigured creators generate no commission records.
+                </p>
               </div>
             </div>
 

@@ -94,3 +94,30 @@ button {
   animation: marquee var(--marquee-speed, 25s) linear infinite;
   will-change: transform;
 }
+
+/* Global Calendar Date Picker Styling */
+input[type="date"],
+input[type="datetime-local"] {
+  cursor: pointer;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator,
+input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  filter: invert(16%) sepia(98%) saturate(5432%) hue-rotate(320deg) brightness(88%) contrast(106%);
+  opacity: 0.85;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+  padding: 4px;
+  border-radius: 6px;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator:hover,
+input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
+  transform: scale(1.15);
+  opacity: 1;
+}
+
+.dark input[type="date"]::-webkit-calendar-picker-indicator,
+.dark input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+  filter: invert(85%) sepia(20%) saturate(500%) hue-rotate(290deg) brightness(110%);
+}

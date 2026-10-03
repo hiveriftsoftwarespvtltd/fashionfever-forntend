@@ -287,7 +287,7 @@ const SupportTickets = ({ isDarkMode }) => {
     {
       header: 'Type',
       render: (ticket) => (
-        <span className={`px-2 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-wider ${getTypeBadgeStyles(ticket.ticketType)}`}>
+        <span className={`px-2.5 py-0.5 rounded-lg text-xs font-bold uppercase tracking-wider ${getTypeBadgeStyles(ticket.ticketType)}`}>
           {ticket.ticketType || 'OTHER'}
         </span>
       )
@@ -359,7 +359,7 @@ const SupportTickets = ({ isDarkMode }) => {
     {
       header: 'Date Created',
       render: (ticket) => (
-        <span className={`text-[11px] font-bold ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+        <span className={`text-xs font-bold ${isDarkMode ? 'text-zinc-300' : 'text-zinc-600'}`}>
           {new Date(ticket.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}
         </span>
       )
@@ -367,7 +367,7 @@ const SupportTickets = ({ isDarkMode }) => {
     {
       header: 'Status',
       render: (ticket) => (
-        <span className={`px-2.5 py-0.5 rounded-full text-[9px] font-black tracking-wider uppercase ${getStatusBadgeStyles(ticket.ticketStatus)}`}>
+        <span className={`px-2.5 py-0.5 rounded-full text-xs font-bold tracking-wider uppercase ${getStatusBadgeStyles(ticket.ticketStatus)}`}>
           {ticket.ticketStatus || 'PENDING'}
         </span>
       )
@@ -414,7 +414,7 @@ const SupportTickets = ({ isDarkMode }) => {
               </button>
             </div>
           ) : (
-            <span className="text-[9px] font-bold uppercase text-green-500 bg-green-500/5 px-2.5 py-1.5 rounded-xl border border-green-500/10">
+            <span className="text-xs font-bold uppercase text-emerald-500 bg-emerald-500/10 px-2.5 py-1.5 rounded-xl border border-emerald-500/20">
               Closed
             </span>
           )}

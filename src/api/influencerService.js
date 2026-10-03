@@ -272,3 +272,86 @@ export const getInfluencerWalletTransactions = async () => {
   }
 };
 
+/**
+ * Validate customer referral code
+ * Method: GET
+ * Route: /influencers/check-referral/:code
+ * @param {string} code
+ */
+export const checkReferralCode = async (code) => {
+  try {
+    const response = await apiClient.get(`/influencers/check-referral/${encodeURIComponent(code)}`);
+    return response.data;
+  } catch (error) {
+    console.error('Check referral code error:', error);
+    return error.response?.data || {
+      success: false,
+      message: 'Failed to validate referral code.',
+      statusCode: 500
+    };
+  }
+};
+
+/**
+ * Admin update custom commission rate for an influencer
+ * Method: PUT
+ * Route: /influencers/:id/commission-rate
+ * @param {string} influencerId
+ * @param {number|null} commissionRate
+ */
+export const updateInfluencerCommissionRate = async (influencerId, commissionRate) => {
+  try {
+    const response = await apiClient.put(`/influencers/${influencerId}/commission-rate`, {
+      commissionRate
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Update influencer commission rate error:', error);
+    return error.response?.data || {
+      success: false,
+      message: 'Failed to update commission rate.',
+      statusCode: 500
+    };
+  }
+};
+
+/**
+ * Creator request payout for approved commissions
+ * Method: POST
+ * Route: /wallet/influencer/request-payout
+ */
+export const requestInfluencerPayout = async (payload = {}) => {
+  try {
+    const response = await apiClient.post('/wallet/influencer/request-payout', payload);
+    return response.data;
+  } catch (error) {
+    console.error('Request influencer payout error:', error);
+    return error.response?.data || {
+      success: false,
+      message: 'Failed to request payout.',
+      statusCode: 500
+    };
+  }
+};
+
+/**
+ * Creator get payout requests history
+ * Method: GET
+ * Route: /wallet/influencer/payout-requests
+ */
+export const getInfluencerPayoutRequests = async () => {
+  try {
+    const response = await apiClient.get('/wallet/influencer/payout-requests');
+    return response.data;
+  } catch (error) {
+    console.error('Get influencer payout requests error:', error);
+    return error.response?.data || {
+      success: false,
+      message: 'Failed to fetch payout requests.',
+      statusCode: 500
+    };
+  }
+};
+
+
+

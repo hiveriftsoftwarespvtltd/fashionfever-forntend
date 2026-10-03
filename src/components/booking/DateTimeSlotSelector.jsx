@@ -1,54 +1,57 @@
-import React from 'react';
-import { Info, Loader2, ShieldCheck } from 'lucide-react';
+import React, { useMemo } from 'react';
+import { Calendar as CalendarIcon, Clock, Loader2, Sparkles, User } from 'lucide-react';
 import StylistSelector from './StylistSelector';
 
 const DateTimeSlotSelector = ({
   selectedResult,
-  selectedServices,
+  selectedServices = [],
   selectedDate,
   setSelectedDate,
   selectedSlot,
   setSelectedSlot,
   selectedStaff,
   setSelectedStaff,
-  slots,
+  slots = [],
   slotsLoading,
   scheduleRef
 }) => {
-  // Get next 7 dates for schedule picker
-  const getNext7Days = () => {
-    const dates = [];
+  // Generate 7 days starting from today
+  const dateList = useMemo(() => {
+    const list = [];
     const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     
     for (let i = 0; i < 7; i++) {
       const d = new Date();
       d.setDate(d.getDate() + i);
-      const dateString = d.toISOString().split('T')[0];
-      dates.push({
+      const year = d.getFullYear();
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      const dateString = `${year}-${month}-${day}`;
+
+      list.push({
         dateString,
         dayNum: d.getDate(),
         dayName: days[d.getDay()],
-        monthName: months[d.getMonth()]
+        monthName: months[d.getMonth()],
+        isToday: i === 0
       });
     }
-    return dates;
-  };
+    return list;
+  }, []);
 
-  // Helper to format slot time safely without Invalid Date errors
+  // Format time safely (e.g. "9:00 AM" or "09:00 AM")
   const formatSlotTime = (timeVal) => {
     if (!timeVal) return '';
     const str = String(timeVal).trim();
-    if (str.toUpperCase().includes('AM') || str.toUpperCase().includes('PM') || str.includes(':')) {
+    if (str.toUpperCase().includes('AM') || str.toUpperCase().includes('PM')) {
       return str;
     }
     try {
       const date = new Date(str);
-      if (isNaN(date.getTime())) {
-        return str;
-      }
+      if (isNaN(date.getTime())) return str;
       return date.toLocaleTimeString('en-US', {
-        hour: '2-digit',
+        hour: 'numeric',
         minute: '2-digit',
         hour12: true
       });
@@ -57,38 +60,67 @@ const DateTimeSlotSelector = ({
     }
   };
 
-  return (
-    <div ref={scheduleRef} className="space-y-6 scroll-mt-24">
-      <div className="flex justify-between items-center border-b border-gray-200/60 pb-3">
-        <h2 className="text-base md:text-lg font-black uppercase tracking-wider text-gray-800 flex items-center gap-2">
-          <span className="bg-primary text-white w-6 h-6 rounded-lg text-xs flex items-center justify-center font-bold">3</span>
-          Choose Date & Time Slot
-        </h2>
-      </div>
+  // Filter slots if a specific stylist is selected
+  const availableSlots = useMemo(() => {
+    if (!slots || slots.length === 0) return [];
+    if (!selectedStaff) return slots;
+    return slots.filter((slot) => {
+      return slot.availableStaff && slot.availableStaff.some(st => st?._id === selectedStaff._id);
+    });
+  }, [slots, selectedStaff]);
 
+  return (
+    <div ref={scheduleRef} className="space-y-6 text-left py-2">
       {!selectedResult || selectedServices.length === 0 ? (
-        <div className="py-20 flex flex-col items-center justify-center text-center p-4">
-          <div className="w-14 h-14 rounded-full bg-pink-100/60 border border-pink-200/50 flex items-center justify-center mb-3">
-            <svg className="w-7 h-7 text-[#ff4d6d]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-            </svg>
-          </div>
-          <h3 className="text-sm font-extrabold text-gray-900 mb-1">Services Selection Pending</h3>
-          <p className="text-xs text-gray-500 font-medium max-w-xs leading-relaxed">
-            Please select a lounge and at least one service above to view slots.
-          </p>
+        <div className="py-12 text-center bg-gray-50 rounded-2xl border border-gray-200 p-6">
+          <CalendarIcon size={24} className="mx-auto text-gray-400 mb-2" />
+          <p className="text-sm font-semibold text-gray-800">Select Salon & Treatments First</p>
+          <p className="text-xs text-gray-500 mt-0.5">Please choose your salon and services to view schedule.</p>
         </div>
       ) : (
-        <div className="space-y-6 bg-white p-6 rounded-3xl border border-gray-150 shadow-sm">
+        <div className="space-y-6">
           
-          {/* Date scroller header */}
-          <div className="space-y-2">
-            <span className="text-sm font-black uppercase text-gray-400">Select Date</span>
-            <div className="flex gap-2.5 overflow-x-auto pb-2 scrollbar-thin">
-              {getNext7Days().map((d) => {
+          {/* 1. DATE SELECTION */}
+          <div>
+            <div className="flex items-center justify-between mb-2.5">
+              <label className="text-sm font-bold text-gray-900">
+                1. Select Date
+              </label>
+
+              {/* Direct Calendar Picker Button */}
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() => document.getElementById('simple-date-picker')?.showPicker?.()}
+                  className="flex items-center gap-1.5 text-xs font-semibold text-primary hover:text-primary/80 transition-colors cursor-pointer"
+                >
+                  <CalendarIcon size={13} />
+                  <span>Choose other date</span>
+                </button>
+                <input
+                  id="simple-date-picker"
+                  type="date"
+                  min={new Date().toISOString().split('T')[0]}
+                  value={selectedDate || ''}
+                  onChange={(e) => {
+                    if (e.target.value) {
+                      setSelectedDate(e.target.value);
+                      setSelectedSlot(null);
+                      setSelectedStaff(null);
+                    }
+                  }}
+                  className="absolute opacity-0 pointer-events-none w-0 h-0"
+                />
+              </div>
+            </div>
+
+            {/* Clean Date Pills */}
+            <div className="grid grid-cols-4 sm:grid-cols-7 gap-2">
+              {dateList.map((d) => {
                 const isSel = selectedDate === d.dateString;
+
                 return (
-                  <button 
+                  <button
                     key={d.dateString}
                     type="button"
                     onClick={() => {
@@ -96,22 +128,34 @@ const DateTimeSlotSelector = ({
                       setSelectedSlot(null);
                       setSelectedStaff(null);
                     }}
-                    className={`flex-shrink-0 w-16 h-20 rounded-2xl flex flex-col items-center justify-center gap-0.5 transition-all cursor-pointer ${
-                      isSel 
-                        ? 'bg-primary text-white shadow-lg shadow-primary/25 scale-105' 
-                        : 'bg-gray-50 text-gray-455 border border-transparent hover:border-gray-250 hover:bg-gray-100'
+                    className={`py-3 px-2 rounded-xl flex flex-col items-center justify-center transition-all cursor-pointer border text-center ${
+                      isSel
+                        ? 'bg-primary border-primary text-white shadow-sm ring-1 ring-primary'
+                        : 'bg-white border-gray-200 text-gray-700 hover:border-gray-300 hover:bg-gray-50'
                     }`}
                   >
-                    <span className="text-[8px] font-black uppercase opacity-85">{d.monthName}</span>
-                    <span className="text-lg font-black">{d.dayNum}</span>
-                    <span className="text-[8px] font-bold uppercase opacity-75">{d.dayName}</span>
+                    <span className={`text-[10px] font-bold uppercase tracking-wider ${
+                      isSel ? 'text-white/80' : 'text-gray-400'
+                    }`}>
+                      {d.isToday ? 'Today' : d.dayName}
+                    </span>
+
+                    <span className="text-lg font-bold leading-none my-1">
+                      {d.dayNum}
+                    </span>
+
+                    <span className={`text-[10px] font-medium ${
+                      isSel ? 'text-white/90' : 'text-gray-500'
+                    }`}>
+                      {d.monthName}
+                    </span>
                   </button>
                 );
               })}
             </div>
           </div>
 
-          {/* Stylist / Therapist Preference Selector */}
+          {/* 2. SPECIALIST SELECTION (CLEAN & OPTIONAL) */}
           <StylistSelector
             slotsLoading={slotsLoading}
             slots={slots}
@@ -119,72 +163,54 @@ const DateTimeSlotSelector = ({
             setSelectedStaff={setSelectedStaff}
           />
 
-          {/* Available Time Slots Grid */}
-          <div className="space-y-3 pt-4 border-t border-gray-100">
-            <span className="text-sm font-black uppercase text-gray-400 block">Available Slots</span>
-            
+          {/* 3. TIME SLOT SELECTION */}
+          <div>
+            <div className="flex items-center justify-between mb-2.5">
+              <label className="text-sm font-bold text-gray-900">
+                3. Select Time Slot
+              </label>
+              {availableSlots.length > 0 && !slotsLoading && (
+                <span className="text-xs text-gray-500 font-medium">
+                  {availableSlots.length} slots available
+                </span>
+              )}
+            </div>
+
             {slotsLoading ? (
-              <div className="py-12 bg-white rounded-3xl flex flex-col items-center justify-center text-center p-6">
-                <Loader2 size={28} className="animate-spin text-primary mb-2" />
-                <span className="text-[9px] font-bold text-gray-400 uppercase tracking-widest animate-pulse">Scanning available calendar slots...</span>
+              <div className="py-8 bg-gray-50 rounded-xl flex items-center justify-center gap-2 text-primary">
+                <Loader2 size={16} className="animate-spin" />
+                <span className="text-xs font-semibold text-gray-600">Loading open slots...</span>
               </div>
-            ) : slots && slots.length > 0 ? (
-              <div className="grid grid-cols-2 gap-2.5">
-                {slots.map((slot, idx) => {
-                  const stylistRestricted = selectedStaff && 
-                    (!slot.availableStaff || !slot.availableStaff.some(st => st?._id === selectedStaff._id));
-                  
-                  const isAvail = slot.isAvailable !== false && !stylistRestricted;
+            ) : availableSlots.length > 0 ? (
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                {availableSlots.map((slot, idx) => {
                   const isSel = selectedSlot?.startTime === slot.startTime;
+                  const isAvail = slot.isAvailable !== false;
 
                   return (
-                    <button 
+                    <button
                       key={idx}
                       type="button"
                       disabled={!isAvail}
                       onClick={() => setSelectedSlot(slot)}
-                      className={`py-3 px-2 rounded-xl text-xs font-bold border text-center transition-all cursor-pointer flex flex-col justify-center items-center gap-1 ${
-                        isSel 
-                          ? 'bg-[#ff4d6d] border-[#ff4d6d] text-white shadow-md shadow-pink-500/20 scale-[1.02]' 
+                      className={`py-3 px-4 rounded-xl border text-center transition-all cursor-pointer font-bold text-sm ${
+                        isSel
+                          ? 'bg-primary border-primary text-white shadow-sm ring-1 ring-primary'
                           : isAvail
-                          ? 'bg-white border-gray-200 text-gray-800 hover:border-[#ff4d6d] hover:text-[#ff4d6d]'
-                          : 'bg-gray-100 border-transparent text-gray-400 cursor-not-allowed opacity-50'
+                          ? 'bg-white border-gray-200 text-gray-800 hover:border-primary hover:text-primary hover:bg-pink-50/20'
+                          : 'bg-gray-100 border-gray-200 text-gray-400 cursor-not-allowed'
                       }`}
                     >
-                      <span className="whitespace-nowrap font-bold text-xs">{formatSlotTime(slot.startTime)} - {formatSlotTime(slot.endTime)}</span>
-                      <span className={`text-[9px] font-bold px-2 py-0.5 rounded-full uppercase ${
-                        isSel 
-                          ? 'bg-white/20 text-white' 
-                          : isAvail
-                          ? 'bg-green-50 text-green-600 border border-green-200/50'
-                          : 'bg-gray-200 text-gray-500'
-                      }`}>
-                        {isAvail ? 'Available' : 'Booked'}
-                      </span>
+                      {formatSlotTime(slot.startTime)}
                     </button>
                   );
                 })}
               </div>
             ) : (
-              <div className="py-12 bg-white rounded-3xl text-center text-gray-400 text-xs font-bold uppercase border border-gray-150">
-                No Time Slots Available for this Service on this Date
+              <div className="py-8 bg-gray-50 rounded-xl text-center text-xs text-gray-500 border border-dashed border-gray-200 p-4">
+                No slots available on this date. Please pick another date above.
               </div>
             )}
-          </div>
-
-          {/* instant confirmation status */}
-          <div className="p-4 bg-green-50/50 border border-green-100/50 rounded-2xl flex items-center gap-3 mt-4">
-            <div className="w-9 h-9 rounded-xl bg-green-500/10 text-green-600 flex items-center justify-center flex-shrink-0">
-              <ShieldCheck size={18} />
-            </div>
-            <div>
-              <p className="text-sm font-black text-green-700 uppercase leading-none mb-1">
-                Instant Confirmation
-              </p>
-              <p className="text-[8px] font-extrabold text-green-600/75 uppercase leading-none">
-                No pre-payment required. Pay at the salon after service.
-              </p>
-            </div>
           </div>
 
         </div>

@@ -148,9 +148,9 @@ const OrderDetailsModal = ({ orderId, onClose }) => {
                     {details.notes || 'No instructions provided.'}
                   </p>
                 </div>
-                <div className="mt-4 pt-4 border-t border-gray-100 dark:border-white/5 flex justify-between items-center text-xs">
-                  <span className="font-bold text-gray-400 uppercase text-[9px]">Vendor ID</span>
-                  <span className="font-mono font-bold text-gray-600 dark:text-gray-400">{details.vendorId || 'N/A'}</span>
+                <div className="mt-4 pt-4 border-t border-zinc-200 dark:border-zinc-800 flex justify-between items-center text-xs">
+                  <span className="font-bold text-zinc-400 uppercase text-xs">Vendor ID</span>
+                  <span className="font-mono font-bold text-zinc-600 dark:text-zinc-300">{details.vendorId || 'N/A'}</span>
                 </div>
               </div>
             </div>
@@ -161,19 +161,19 @@ const OrderDetailsModal = ({ orderId, onClose }) => {
               <div className={`border rounded-2xl overflow-hidden ${isDarkMode ? 'border-white/5' : 'border-gray-100 shadow-sm bg-white dark:bg-transparent'}`}>
                 <table className="w-full text-xs text-left border-collapse">
                   <thead>
-                    <tr className={`border-b text-[9px] font-bold uppercase text-gray-400 ${isDarkMode ? 'bg-gray-900/40 border-white/5' : 'bg-gray-50 border-gray-100'}`}>
+                    <tr className={`border-b text-xs font-bold uppercase text-zinc-400 ${isDarkMode ? 'bg-zinc-900 border-zinc-800' : 'bg-zinc-50 border-zinc-200'}`}>
                       <th className="p-3">Product Name</th>
                       <th className="p-3 text-center">Qty</th>
                       <th className="p-3 text-right">Price</th>
                       <th className="p-3 text-right">Total</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-gray-100 dark:divide-white/5">
+                  <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800">
                     {details.items?.map((item, index) => (
-                      <tr key={index} className={isDarkMode ? 'hover:bg-white/5' : 'hover:bg-gray-50/50'}>
+                      <tr key={index} className={isDarkMode ? 'hover:bg-zinc-900/50' : 'hover:bg-zinc-50'}>
                         <td className="p-3">
-                          <span className={`font-bold ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>{item.productName}</span>
-                          {item.sku && <p className="text-[9px] text-gray-400 font-mono mt-0.5">SKU: {item.sku}</p>}
+                          <span className={`font-bold ${isDarkMode ? 'text-zinc-100' : 'text-zinc-800'}`}>{item.productName}</span>
+                          {item.sku && <p className="text-xs text-zinc-400 font-mono mt-0.5">SKU: {item.sku}</p>}
                         </td>
                         <td className="p-3 text-center font-bold text-gray-600 dark:text-gray-400">{item.quantity || 0}</td>
                         <td className="p-3 text-right font-medium text-gray-600 dark:text-gray-400">{formatCurrency(item.salesPrice || item.price || 0)}</td>
@@ -194,12 +194,12 @@ const OrderDetailsModal = ({ orderId, onClose }) => {
                   </div>
                   <div>
                     <span className="text-xs font-bold text-purple-600 dark:text-purple-400 uppercase tracking-wider">Coupon {details.appliedCoupon.code}</span>
-                    <p className="text-[9px] text-gray-400 uppercase mt-0.5">Partner: {details.appliedCoupon.influencerName || 'Global'}</p>
+                    <p className="text-xs text-zinc-400 uppercase mt-0.5">Partner: {details.appliedCoupon.influencerName || 'Global'}</p>
                   </div>
                 </div>
                 <div className="text-right text-xs">
                   <span className="font-bold text-purple-600 dark:text-purple-400">- {formatCurrency(details.appliedCoupon.discountAmount)}</span>
-                  <p className="text-[9px] text-gray-400 uppercase mt-0.5">Discount Applied</p>
+                  <p className="text-xs text-zinc-400 uppercase mt-0.5">Discount Applied</p>
                 </div>
               </div>
             )}

@@ -124,7 +124,7 @@ const MyAppointments = () => {
                 <div className="flex bg-gray-50 p-1 rounded-xl border border-gray-100/60 self-start sm:self-center">
                   <button 
                     onClick={() => setActiveFilter('upcoming')}
-                    className={`px-4 py-2 rounded-lg text-[9px] font-black uppercase transition-all duration-300 cursor-pointer ${
+                    className={`px-4 py-2 rounded-lg text-xs font-bold uppercase transition-all duration-300 cursor-pointer ${
                       activeFilter === 'upcoming' 
                         ? 'bg-white text-primary shadow-sm' 
                         : 'text-gray-400 hover:text-gray-900'
@@ -134,7 +134,7 @@ const MyAppointments = () => {
                   </button>
                   <button 
                     onClick={() => setActiveFilter('past')}
-                    className={`px-4 py-2 rounded-lg text-[9px] font-black uppercase transition-all duration-300 cursor-pointer ${
+                    className={`px-4 py-2 rounded-lg text-xs font-bold uppercase transition-all duration-300 cursor-pointer ${
                       activeFilter === 'past' 
                         ? 'bg-white text-primary shadow-sm' 
                         : 'text-gray-400 hover:text-gray-900'
@@ -174,10 +174,10 @@ const MyAppointments = () => {
                       {/* Center Content Metadata Node */}
                       <div className="flex-grow text-left space-y-1.5 w-full">
                          <div className="flex flex-wrap items-center gap-2">
-                            <span className={`text-[8px] font-bold uppercase px-2 py-0.5 rounded-md ${statusStyle}`}>
+                            <span className={`text-xs font-bold uppercase px-2.5 py-1 rounded-md ${statusStyle}`}>
                                {apt.bookingStatus || 'Pending'}
                             </span>
-                            <span className="text-[9px] font-mono font-bold text-gray-400 uppercase">ID: #${apt._id.substring(apt._id.length - 6).toUpperCase()}</span>
+                            <span className="text-xs font-mono font-bold text-gray-400 uppercase">ID: #${apt._id.substring(apt._id.length - 6).toUpperCase()}</span>
                          </div>
                          
                          <h3 className="text-xs sm:text-sm font-extrabold text-gray-800 line-clamp-1 uppercase leading-snug">
@@ -187,19 +187,19 @@ const MyAppointments = () => {
                          {/* Parameters Spacing Strip */}
                          <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 pt-1 text-sm font-bold text-gray-400 uppercase">
                             <div className="flex items-center gap-1">
-                               <Calendar size={12} className="text-primary flex-shrink-0" /> 
+                               <Calendar size={14} className="text-primary flex-shrink-0" /> 
                                <span className="text-gray-600 font-extrabold">{bookingDateStr}</span>
                             </div>
                             <div className="flex items-center gap-1">
-                               <Clock size={12} className="text-primary flex-shrink-0" /> 
+                               <Clock size={14} className="text-primary flex-shrink-0" /> 
                                <span className="text-gray-600 font-extrabold">{apt.slotStartTime} - {apt.slotEndTime || '1 hr'}</span>
                             </div>
                             <div className="flex items-center gap-1">
-                               <User size={12} className="text-primary flex-shrink-0" />
+                               <User size={14} className="text-primary flex-shrink-0" />
                                <span className="text-gray-600 font-extrabold">Stylist: {apt.staffId?.name || 'Any'}</span>
                             </div>
                             <div className="flex items-center gap-1 truncate max-w-[200px]">
-                               <MapPin size={12} className="text-primary flex-shrink-0" /> 
+                               <MapPin size={14} className="text-primary flex-shrink-0" /> 
                                <span className="truncate text-gray-500 font-bold">{apt.serviceAddress || apt.providerId?.address}</span>
                             </div>
                          </div>
@@ -208,7 +208,7 @@ const MyAppointments = () => {
                       {/* Right Area Info: Total amount & Actions */}
                       <div className="flex flex-row md:flex-col items-center md:items-end justify-between md:justify-center gap-4 w-full md:w-auto md:min-w-[150px] border-t md:border-t-0 border-gray-50 pt-4 md:pt-0">
                          <div className="text-left md:text-right">
-                            <p className="text-[8px] font-black uppercase text-gray-400">Total Amount</p>
+                            <p className="text-xs font-bold uppercase text-gray-400">Total Amount</p>
                             <p className="text-sm font-black text-gray-900">₹{apt.totalAmount || apt.subtotal}</p>
                          </div>
                          <div className="flex gap-2 w-full md:w-auto">
@@ -216,7 +216,7 @@ const MyAppointments = () => {
                               <>
                                  <button 
                                    onClick={() => toast.info(`Contact Salon: ${apt.providerId?.phone || 'N/A'}`)}
-                                   className="flex-1 bg-gray-900 hover:bg-black text-white px-4 py-2.5 rounded-xl font-bold uppercase text-[9px] shadow-md flex items-center justify-center gap-1.5 transition-all cursor-pointer whitespace-nowrap"
+                                   className="flex-1 bg-gray-900 hover:bg-black text-white px-4 py-2.5 rounded-xl font-bold uppercase text-xs shadow-md flex items-center justify-center gap-1.5 transition-all cursor-pointer whitespace-nowrap"
                                  >
                                     Contact Salon
                                  </button>
@@ -225,9 +225,9 @@ const MyAppointments = () => {
                               apt.bookingStatus === 'COMPLETED' && (
                                 <button 
                                   onClick={() => toast.success("Feature coming soon!")}
-                                  className="w-full border border-primary/20 hover:border-primary text-primary py-2.5 rounded-xl font-bold uppercase text-[9px] flex items-center justify-center gap-1.5 transition-all hover:bg-primary hover:text-white cursor-pointer shadow-sm shadow-primary/5"
+                                  className="w-full border border-primary/20 hover:border-primary text-primary py-2.5 rounded-xl font-bold uppercase text-xs flex items-center justify-center gap-1.5 transition-all hover:bg-primary hover:text-white cursor-pointer shadow-sm shadow-primary/5"
                                 >
-                                   <Star size={11} fill="currentColor" /> Leave Review
+                                   <Star size={13} fill="currentColor" /> Leave Review
                                 </button>
                               )
                             )}

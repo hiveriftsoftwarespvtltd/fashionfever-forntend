@@ -49,15 +49,25 @@ const VendorProfile = ({
             <div className="space-y-6">
               <div>
                 <label className="text-xs font-bold text-gray-400 uppercase block mb-1">Email Address</label>
-                <p className={`text-sm font-bold ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>{vendorData.email || 'N/A'}</p>
+                <p className={`text-sm font-bold ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>
+                  {vendorData.email || vendorData.ownerId?.email || 'N/A'}
+                </p>
               </div>
               <div>
                 <label className="text-xs font-bold text-gray-400 uppercase block mb-1">Phone Number</label>
-                <p className={`text-sm font-bold ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>{vendorData.phone || 'N/A'}</p>
+                <p className={`text-sm font-bold ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>
+                  {vendorData.phone || vendorData.ownerId?.phone || 'N/A'}
+                </p>
               </div>
               <div>
                 <label className="text-xs font-bold text-gray-400 uppercase block mb-1">Commission Rate</label>
                 <p className={`text-sm font-bold ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>{vendorData.commissionRate || 0}%</p>
+              </div>
+              <div>
+                <label className="text-xs font-bold text-gray-400 uppercase block mb-1">Region / Location</label>
+                <p className={`text-sm font-bold ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>
+                  {[vendorData.city, vendorData.state].filter(Boolean).join(', ') || 'N/A'} {vendorData.vendorPincode ? `(${vendorData.vendorPincode})` : ''}
+                </p>
               </div>
             </div>
 
@@ -68,8 +78,16 @@ const VendorProfile = ({
               </div>
               <div>
                 <label className="text-xs font-bold text-gray-400 uppercase block mb-1">Registered Address</label>
-                <p className={`text-sm font-medium leading-relaxed ${isDarkMode ? 'text-gray-300' : 'text-gray-650'}`}>{vendorData.address || 'No address added yet.'}</p>
+                <p className={`text-sm font-medium leading-relaxed ${isDarkMode ? 'text-gray-300' : 'text-gray-650'}`}>
+                  {vendorData.address || [vendorData.city, vendorData.state, vendorData.vendorPincode].filter(Boolean).join(', ') || 'No address added yet.'}
+                </p>
               </div>
+              {vendorData.ownerId?.name && (
+                <div>
+                  <label className="text-xs font-bold text-gray-400 uppercase block mb-1">Account Owner</label>
+                  <p className={`text-sm font-bold ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>{vendorData.ownerId.name}</p>
+                </div>
+              )}
             </div>
           </div>
         </div>

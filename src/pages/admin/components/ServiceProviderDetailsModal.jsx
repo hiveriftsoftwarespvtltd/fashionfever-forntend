@@ -33,13 +33,13 @@ const ServiceProviderDetailsModal = ({ provider, onClose }) => {
   if (!provider) return null;
 
   const DetailItem = ({ icon, label, value }) => (
-    <div className="flex gap-3 py-3 border-b border-gray-100/50 dark:border-white/5 last:border-b-0">
-      <div className="text-gray-400 dark:text-gray-500 flex-shrink-0 mt-0.5">
+    <div className="flex gap-3 py-3 border-b border-zinc-200 dark:border-zinc-800 last:border-b-0">
+      <div className="text-zinc-400 dark:text-zinc-500 flex-shrink-0 mt-0.5">
         {icon}
       </div>
       <div>
-        <span className="text-[9px] font-black text-gray-400 uppercase block tracking-wider leading-none mb-1">{label}</span>
-        <span className={`text-xs font-bold ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>{value || '—'}</span>
+        <span className="text-xs font-bold text-zinc-400 uppercase block tracking-wider leading-none mb-1">{label}</span>
+        <span className={`text-sm font-bold ${isDarkMode ? 'text-zinc-200' : 'text-zinc-800'}`}>{value || '—'}</span>
       </div>
     </div>
   );
@@ -60,12 +60,12 @@ const ServiceProviderDetailsModal = ({ provider, onClose }) => {
                 </h2>
                 <p className="text-sm font-bold text-primary uppercase mt-1">Service Provider Profile</p>
                 <div className="flex items-center gap-2 mt-1.5">
-                  <span className={`px-2 py-0.5 rounded text-[8px] font-black uppercase ${
+                  <span className={`px-2.5 py-0.5 rounded text-xs font-bold uppercase ${
                     provider.verificationStatus === 'APPROVED' ? 'bg-emerald-500/10 text-emerald-500' : 'bg-amber-500/10 text-amber-500'
                   }`}>
                     {provider.verificationStatus || 'PENDING'}
                   </span>
-                  <span className={`px-2 py-0.5 rounded text-[8px] font-black uppercase ${
+                  <span className={`px-2.5 py-0.5 rounded text-xs font-bold uppercase ${
                     provider.providerType === 'INDIVIDUAL' ? 'bg-blue-500/10 text-blue-500' : 'bg-purple-500/10 text-purple-500'
                   }`}>
                     {provider.providerType || 'INDIVIDUAL'}
@@ -133,10 +133,10 @@ const ServiceProviderDetailsModal = ({ provider, onClose }) => {
               isDarkMode ? 'bg-gray-900/40 border-white/5' : 'bg-emerald-50/10 border-emerald-100/50'
             }`}>
               <div className="flex items-center justify-between mb-4">
-                <span className="text-sm font-black uppercase text-gray-400 tracking-wider">
+                <span className="text-xs font-extrabold uppercase text-zinc-400 tracking-wider">
                   Partner Wallet Ledger
                 </span>
-                <span className={`px-2 py-0.5 rounded-full text-[9px] font-bold uppercase ${
+                <span className={`px-2.5 py-0.5 rounded-full text-xs font-bold uppercase ${
                   isDarkMode ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-emerald-100 text-emerald-800'
                 }`}>
                   Earnings Status
@@ -145,20 +145,20 @@ const ServiceProviderDetailsModal = ({ provider, onClose }) => {
               
               <div className="grid grid-cols-3 gap-2">
                 <div className="flex flex-col">
-                  <span className="text-[8px] font-black text-gray-400 uppercase">Liquid Balance</span>
-                  <span className={`text-sm font-black ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                  <span className="text-xs font-bold text-zinc-400 uppercase">Liquid Balance</span>
+                  <span className={`text-base font-black ${isDarkMode ? 'text-white' : 'text-zinc-900'}`}>
                     ₹{(wallet.balance || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                   </span>
                 </div>
-                <div className="flex flex-col border-l border-gray-100 dark:border-white/5 pl-3">
-                  <span className="text-[8px] font-black text-gray-400 uppercase">Pending Escrow</span>
-                  <span className="text-sm font-bold text-amber-500">
+                <div className="flex flex-col border-l border-zinc-200 dark:border-zinc-800 pl-3">
+                  <span className="text-xs font-bold text-zinc-400 uppercase">Pending Escrow</span>
+                  <span className="text-base font-bold text-amber-500">
                     ₹{(wallet.pendingBalance || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                   </span>
                 </div>
-                <div className="flex flex-col border-l border-gray-100 dark:border-white/5 pl-3">
-                  <span className="text-[8px] font-black text-gray-400 uppercase">Total Earnings</span>
-                  <span className="text-sm font-bold text-emerald-500">
+                <div className="flex flex-col border-l border-zinc-200 dark:border-zinc-800 pl-3">
+                  <span className="text-xs font-bold text-zinc-400 uppercase">Total Earnings</span>
+                  <span className="text-base font-bold text-emerald-500">
                     ₹{(wallet.totalEarnings || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                   </span>
                 </div>
@@ -177,14 +177,14 @@ const ServiceProviderDetailsModal = ({ provider, onClose }) => {
           {/* Legal Information */}
           <div className="mt-6 text-left">
             <h3 className={`text-sm font-black uppercase tracking-wider mb-2.5 ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>Legal & Tax Identifications</h3>
-            <div className={`p-4 rounded-2xl border grid grid-cols-2 gap-4 ${isDarkMode ? 'bg-gray-900/10 border-white/5' : 'bg-gray-50/50 border-gray-100'}`}>
+            <div className={`p-4 rounded-2xl border grid grid-cols-2 gap-4 ${isDarkMode ? 'bg-zinc-900 border-zinc-800' : 'bg-zinc-50 border-zinc-200'}`}>
               <div>
-                <span className="text-[9px] font-bold text-gray-400 uppercase block mb-1">GST Identification</span>
-                <span className="text-xs font-mono font-bold uppercase">{provider.gstNumber || 'N/A'}</span>
+                <span className="text-xs font-bold text-zinc-400 uppercase block mb-1">GST Identification</span>
+                <span className="text-sm font-mono font-bold uppercase">{provider.gstNumber || 'N/A'}</span>
               </div>
               <div>
-                <span className="text-[9px] font-bold text-gray-400 uppercase block mb-1">PAN Card Number</span>
-                <span className="text-xs font-mono font-bold uppercase">{provider.panNumber || 'N/A'}</span>
+                <span className="text-xs font-bold text-zinc-400 uppercase block mb-1">PAN Card Number</span>
+                <span className="text-sm font-mono font-bold uppercase">{provider.panNumber || 'N/A'}</span>
               </div>
             </div>
           </div>
@@ -209,23 +209,23 @@ const ServiceProviderDetailsModal = ({ provider, onClose }) => {
           </div>
 
           {/* Timestamps & ID */}
-          <div className={`p-4 rounded-2xl border space-y-2.5 mt-6 text-xs ${isDarkMode ? 'bg-gray-900/20 border-white/5 text-gray-400' : 'bg-gray-50 border-gray-100 text-gray-500'}`}>
+          <div className={`p-4 rounded-2xl border space-y-2.5 mt-6 text-xs ${isDarkMode ? 'bg-zinc-900 border-zinc-800 text-zinc-400' : 'bg-zinc-50 border-zinc-200 text-zinc-600'}`}>
             <div className="flex justify-between items-center">
-              <span className="text-[9px] font-bold uppercase text-gray-400">Account status</span>
+              <span className="text-xs font-bold uppercase text-zinc-400">Account status</span>
               <span className="font-bold flex items-center gap-1">
                 <div className={`w-1.5 h-1.5 rounded-full ${provider.isActive ? 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.5)]' : 'bg-red-500'}`}></div>
                 {provider.isActive ? 'Active & Live' : 'Inactive / Suspended'}
               </span>
             </div>
-            <div className="flex justify-between items-center border-t border-gray-100/50 dark:border-white/5 pt-2.5">
-              <span className="text-[9px] font-bold uppercase text-gray-400">Created At</span>
-              <span className="font-bold text-gray-700 dark:text-gray-500">
+            <div className="flex justify-between items-center border-t border-zinc-200 dark:border-zinc-800 pt-2.5">
+              <span className="text-xs font-bold uppercase text-zinc-400">Created At</span>
+              <span className="font-bold text-zinc-700 dark:text-zinc-400">
                 {new Date(provider.createdAt).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' })}
               </span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-[9px] font-bold uppercase text-gray-400">Last Updated</span>
-              <span className="font-bold text-gray-700 dark:text-gray-500">
+              <span className="text-xs font-bold uppercase text-zinc-400">Last Updated</span>
+              <span className="font-bold text-zinc-700 dark:text-zinc-400">
                 {new Date(provider.updatedAt).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' })}
               </span>
             </div>

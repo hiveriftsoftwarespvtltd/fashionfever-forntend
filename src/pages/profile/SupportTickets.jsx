@@ -740,9 +740,9 @@ const SupportTickets = () => {
                                 className="max-h-full max-w-full rounded object-contain"
                               />
                             ) : (
-                              <div className="flex flex-col items-center justify-center text-primary text-[8px] font-bold">
-                                <FileText size={16} />
-                                <span className="max-w-[50px] truncate">{file.name}</span>
+                              <div className="flex flex-col items-center justify-center text-primary text-xs font-bold">
+                                <FileText size={18} />
+                                <span className="max-w-[70px] truncate">{file.name}</span>
                               </div>
                             )}
                             <button

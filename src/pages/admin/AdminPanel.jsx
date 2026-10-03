@@ -68,7 +68,7 @@ import NotificationsManager from "./components/NotificationsManager";
 import AdminServiceLeads from "./components/AdminServiceLeads";
 import AdminBankAccounts from "./components/AdminBankAccounts";
 import { useUser } from '../../context/UserContext';
-
+import { getImageUrl } from '../../utils/imageUrl';
 import { toast } from '../../utils/toast';
 import {
   getAllUsers,
@@ -81,6 +81,7 @@ import {
   rejectVendor,
   getPendingVendors,
   getAllInfluencers,
+  updateInfluencerStatus,
   deleteInfluencer,
   deleteCoupon,
   getAllCoupons,
@@ -113,7 +114,8 @@ import {
   getCourseCategoryDetails,
   getAllCashbackSlabs,
   deleteCashbackSlab,
-  getAdminProfile
+  getAdminProfile,
+  updateInfluencerCommissionRate
 } from '../../api/adminService';
 import { useTheme } from '../../context/ThemeContext';
 
@@ -390,9 +392,9 @@ const AdminPanel = () => {
           list = response.data?.users || response.data?.vendors || response.data?.influencers || response.data?.coupons || response.data?.data || response.data || [];
         }
         if (activeTab === 'vendors') {
-          list = list.filter(u => u.role === 'vendor' && u.vendorId);
+          list = list.filter(u => u.roles?.includes('vendor') || u.role === 'vendor' || u.vendorId || u.businessName);
         } else if (activeTab === 'pending') {
-          list = list.filter(u => (u.vendorId?.status || u.status) === 'PENDING');
+          list = list.filter(u => (u.vendorId?.status || u.status || u.roleStatus?.vendor) === 'PENDING');
         } else if (activeTab === 'commission-slabs' || activeTab === 'cashback-slabs') {
           list = [...list].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
         }
@@ -441,6 +443,88 @@ const AdminPanel = () => {
     } catch (e) { toast.error('Rejection failed'); }
   };
 
+  const handleUpdateInfluencerStatus = async (influencerId, status) => {
+    try {
+      const res = await updateInfluencerStatus(influencerId, status);
+      if (res.success) {
+        toast.success(status === 'active' ? 'Influencer approved successfully!' : `Influencer status updated to ${status}`);
+        fetchData();
+      } else {
+        toast.error(res.message || 'Failed to update influencer status');
+      }
+    } catch (e) {
+      toast.error('Action failed');
+    }
+  };
+
+  const handleQuickCommissionRate = (inf) => {
+    const currentRateDisplay = typeof inf.commissionRate === 'number' ? `${inf.commissionRate}%` : 'Rate Unset';
+    const currentRateValue = typeof inf.commissionRate === 'number' ? inf.commissionRate : '';
+
+    Swal.fire({
+      title: `Commission Rate for ${inf.name || inf.userId?.name || 'Influencer'}`,
+      html: `
+        <div style="text-align: left; font-size: 13px; line-height: 1.6; margin-bottom: 15px; color: ${isDarkMode ? '#cbd5e1' : '#475569'};">
+          <p style="margin-bottom: 6px;">Current Configuration: <strong style="color: ${typeof inf.commissionRate === 'number' ? '#10b981' : '#f59e0b'};">${currentRateDisplay}</strong></p>
+          <p style="margin-bottom: 6px;">Enter a custom commission percentage between <strong>0% and 100%</strong>, or leave blank to keep/set as <strong>Rate Unset</strong>.</p>
+          <p style="font-size: 11px; opacity: 0.8; margin-top: 8px;"><em>Note: There is no global default rate. Unconfigured creators generate zero financial commission ledger records on customer orders.</em></p>
+        </div>
+      `,
+      input: 'number',
+      inputValue: currentRateValue,
+      inputAttributes: {
+        min: '0',
+        max: '100',
+        step: '0.1',
+        placeholder: 'e.g. 10 or 0 (leave blank for Unset)'
+      },
+      showCancelButton: true,
+      confirmButtonText: 'Save Rate',
+      cancelButtonText: 'Cancel',
+      confirmButtonColor: '#fe3e6a',
+      cancelButtonColor: '#71717a',
+      background: isDarkMode ? '#18181b' : '#ffffff',
+      color: isDarkMode ? '#ffffff' : '#18181b',
+      borderRadius: '20px',
+      customClass: {
+        popup: 'rounded-3xl border border-zinc-700/50',
+        confirmButton: 'rounded-xl font-bold uppercase text-xs px-5 py-2.5 text-white cursor-pointer',
+        cancelButton: 'rounded-xl font-bold uppercase text-xs px-5 py-2.5 cursor-pointer',
+        input: 'rounded-xl font-bold text-center text-lg'
+      },
+      inputValidator: (value) => {
+        if (value !== '' && value !== null && value !== undefined) {
+          const num = Number(value);
+          if (isNaN(num) || num < 0 || num > 100) {
+            return 'Commission rate must be a valid number between 0 and 100%';
+          }
+        }
+      }
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        const raw = result.value;
+        const targetRate = (raw !== '' && raw !== null && raw !== undefined)
+          ? parseFloat(Number(raw).toFixed(2))
+          : null;
+
+        const loadingToast = toast.loading('Updating commission rate...');
+        try {
+          const res = await updateInfluencerCommissionRate(inf._id, targetRate);
+          toast.dismiss(loadingToast);
+          if (res?.success || res?.statusCode === 200) {
+            toast.success(targetRate !== null ? `Commission rate set to ${targetRate}%!` : 'Commission rate set to Unset (Null)!');
+            fetchData();
+          } else {
+            toast.error(res?.message || 'Failed to update commission rate');
+          }
+        } catch (err) {
+          toast.dismiss(loadingToast);
+          toast.error('An error occurred while updating rate');
+        }
+      }
+    });
+  };
+
   const handleToggleUserStatus = async (userId) => {
     const loadingToast = toast.loading('Updating user status...');
     try {
@@ -460,37 +544,89 @@ const AdminPanel = () => {
 
   const userColumns = [
     {
-      header: 'User profile',
+      header: 'User Profile',
       render: (user) => (
-        <div className="flex items-center gap-4">
-          <div className={`w-10 h-10 lg:w-12 lg:h-12 rounded-2xl flex items-center justify-center font-bold ${isDarkMode ? 'bg-gray-700 text-gray-500' : 'bg-gray-100 text-gray-400'}`}>
+        <div className="flex items-center gap-3.5 text-left">
+          <div className={`w-11 h-11 rounded-xl flex items-center justify-center font-black text-sm flex-shrink-0 border ${
+            isDarkMode ? 'bg-zinc-800 border-zinc-700 text-zinc-100' : 'bg-zinc-100 border-zinc-200 text-zinc-800 shadow-sm'
+          }`}>
             {user.name?.charAt(0).toUpperCase() || 'U'}
           </div>
           <div className="flex flex-col">
-            <span className={`text-sm font-bold ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>{user.name}</span>
-            <span className="text-sm font-bold uppercase text-gray-400">{user.email}</span>
+            <span className={`text-sm font-extrabold ${isDarkMode ? 'text-zinc-100' : 'text-zinc-900'}`}>{user.name}</span>
+            <span className={`text-xs font-semibold ${isDarkMode ? 'text-zinc-400' : 'text-zinc-500'}`}>{user.email}</span>
           </div>
         </div>
       )
     },
-    { header: 'System role', render: (user) => <span className="px-3 py-1 rounded-lg bg-primary/10 text-primary text-sm font-bold uppercase tracking-wider">{user.role}</span> },
+    { 
+      header: 'System Role', 
+      render: (user) => (
+        <span className="px-2.5 py-1 rounded-lg bg-primary/10 text-primary text-xs font-black uppercase tracking-wider border border-primary/20">
+          {user.role}
+        </span>
+      ) 
+    },
     {
       header: 'Status',
-      render: (user) => (
-        <div className="flex items-center gap-2">
-          <div className={`w-1.5 h-1.5 rounded-full ${user.isActive && !user.isDeleted ? 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.5)]' : 'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.5)]'}`}></div>
-          <span className="text-sm font-semibold uppercase text-gray-400">{user.isActive && !user.isDeleted ? 'Active' : 'Banned'}</span>
-        </div>
-      )
+      render: (user) => {
+        const isActive = user.isActive && !user.isDeleted;
+        return (
+          <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-black uppercase tracking-wide border ${
+            isActive 
+              ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20' 
+              : 'bg-rose-500/10 text-rose-500 border-rose-500/20'
+          }`}>
+            <span className={`w-1.5 h-1.5 rounded-full ${isActive ? 'bg-emerald-500' : 'bg-rose-500'}`} />
+            {isActive ? 'Active' : 'Banned'}
+          </span>
+        );
+      }
     },
-    { header: 'Registration', render: (user) => <div className="flex flex-col"><span className={`text-sm font-bold ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>{new Date(user.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}</span><span className="text-sm uppercase font-bold text-gray-400">Onboarded</span></div> },
+    { 
+      header: 'Registration', 
+      render: (user) => (
+        <div className="flex flex-col text-left">
+          <span className={`text-xs font-extrabold ${isDarkMode ? 'text-zinc-200' : 'text-zinc-800'}`}>
+            {new Date(user.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}
+          </span>
+          <span className="text-xs uppercase font-bold text-zinc-400 mt-0.5">Onboarded</span>
+        </div>
+      ) 
+    },
     {
       header: 'Actions',
       render: (user) => (
         <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
-          <button onClick={() => handleToggleUserStatus(user._id)} className={`p-2.5 rounded-xl transition-all ${isDarkMode ? 'bg-white/5 text-gray-500 hover:text-green-500' : 'bg-gray-50 text-gray-400 hover:text-green-600'}`}><Power size={18} /></button>
-          <button onClick={() => setSelectedUserId(user._id)} className={`p-2.5 rounded-xl transition-all ${isDarkMode ? 'bg-white/5 text-gray-400 hover:text-primary' : 'bg-gray-50 text-gray-400 hover:text-primary'}`}><Eye size={18} /></button>
-          <button onClick={() => setItemToDelete(user)} className={`p-2.5 rounded-xl transition-all ${isDarkMode ? 'bg-white/5 text-gray-400 hover:text-red-500' : 'bg-gray-50 text-gray-400 hover:text-red-500'}`}><Trash2 size={18} /></button>
+          <button 
+            title={user.isActive ? "Deactivate User" : "Activate User"} 
+            onClick={() => handleToggleUserStatus(user._id)} 
+            className={`p-2 rounded-xl border transition-all cursor-pointer ${
+              user.isActive 
+                ? (isDarkMode ? 'bg-zinc-800 border-zinc-700 text-emerald-400 hover:bg-zinc-700' : 'bg-zinc-100 border-zinc-200 text-emerald-600 hover:bg-zinc-200') 
+                : (isDarkMode ? 'bg-zinc-800 border-zinc-700 text-zinc-500 hover:text-emerald-400' : 'bg-zinc-100 border-zinc-200 text-zinc-400 hover:text-emerald-600')
+            }`}
+          >
+            <Power size={16} />
+          </button>
+          <button 
+            title="View Details" 
+            onClick={() => setSelectedUserId(user._id)} 
+            className={`p-2 rounded-xl border transition-all cursor-pointer ${
+              isDarkMode ? 'bg-zinc-800 border-zinc-700 text-zinc-300 hover:text-primary hover:border-primary/30' : 'bg-zinc-100 border-zinc-200 text-zinc-600 hover:text-primary hover:border-primary/30'
+            }`}
+          >
+            <Eye size={16} />
+          </button>
+          <button 
+            title="Delete User" 
+            onClick={() => setItemToDelete(user)} 
+            className={`p-2 rounded-xl border transition-all cursor-pointer ${
+              isDarkMode ? 'bg-zinc-800 border-zinc-700 text-zinc-400 hover:text-rose-400 hover:border-rose-500/30' : 'bg-zinc-100 border-zinc-200 text-zinc-500 hover:text-rose-600 hover:border-rose-500/30'
+            }`}
+          >
+            <Trash2 size={16} />
+          </button>
         </div>
       )
     }
@@ -498,28 +634,55 @@ const AdminPanel = () => {
 
   const vendorColumns = [
     {
-      header: 'Vendor profile',
+      header: 'Vendor Profile',
       render: (vendor) => {
-        const business = vendor.vendorId;
-        const name = typeof business === 'object' ? business?.businessName : vendor.name;
-        const slug = typeof business === 'object' ? business?.slug : 'unknown-brand';
-        const logo = typeof business === 'object' ? business?.logo?.url : null;
-        const email = vendor.email || (typeof business === 'object' ? (business?.email || business?.user?.email || business?.userId?.email) : null) || vendor.userId?.email || vendor.businessEmail || '';
-        const phone = vendor.phone || vendor.mobile || (typeof business === 'object' ? (business?.phone || business?.mobile || business?.user?.phone) : null) || vendor.userId?.phone || '';
+        const isDirect = Boolean(vendor.businessName || vendor.slug || vendor.ownerId);
+        const business = isDirect ? vendor : (typeof vendor.vendorId === 'object' ? vendor.vendorId : vendor);
+        const owner = typeof vendor.ownerId === 'object' ? vendor.ownerId : (typeof business?.ownerId === 'object' ? business.ownerId : null);
+
+        const name = business?.businessName || vendor.name || owner?.name || 'Vendor Partner';
+        const ownerName = owner?.name && owner.name !== name ? owner.name : (vendor.name && vendor.name !== name ? vendor.name : null);
+        const slug = business?.slug || vendor.slug || 'brand';
+        const logoObj = business?.logo || vendor.logo;
+        const logo = logoObj ? getImageUrl(logoObj) : null;
+        const email = business?.email || business?.businessEmail || owner?.email || vendor.email || vendor.userId?.email || '';
+        const phone = business?.phone || business?.businessPhone || owner?.phone || vendor.phone || vendor.mobile || '';
+        const city = business?.city || vendor.city;
+        const state = business?.state || vendor.state;
+        const location = (city || state) ? `${city || ''}${city && state ? ', ' : ''}${state || ''}` : null;
+
         return (
-          <div className="flex items-center gap-4">
-            <div className={`w-12 h-12 rounded-2xl overflow-hidden flex items-center justify-center font-bold border ${isDarkMode ? 'bg-gray-800 border-white/5' : 'bg-gray-100 border-gray-100 shadow-sm'}`}>
+          <div className="flex items-center gap-3.5 text-left">
+            <div className={`w-11 h-11 rounded-xl overflow-hidden flex items-center justify-center font-black border flex-shrink-0 ${
+              isDarkMode ? 'bg-zinc-800 border-zinc-700 text-zinc-100' : 'bg-zinc-100 border-zinc-200 text-zinc-800 shadow-sm'
+            }`}>
               {logo ? (
-                <img src={logo} alt={name} className="w-full h-full object-cover" />
-              ) : (
-                <span className="text-primary font-bold">{name?.charAt(0).toUpperCase()}</span>
-              )}
+                <img
+                  src={logo}
+                  alt={name}
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                    if (e.target.nextSibling) e.target.nextSibling.style.display = 'flex';
+                  }}
+                />
+              ) : null}
+              <div
+                style={{ display: logo ? 'none' : 'flex' }}
+                className="w-full h-full items-center justify-center text-primary font-black text-base"
+              >
+                {name?.charAt(0).toUpperCase()}
+              </div>
             </div>
             <div className="flex flex-col">
-              <span className={`text-sm font-bold ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>{name || 'Vendor Partner'}</span>
-              {email && <span className="text-xs font-bold text-primary lowercase tracking-tight">{email}</span>}
-              {phone && <span className="text-[10px] font-extrabold text-gray-400">📞 {phone}</span>}
-              <span className="text-[10px] font-bold uppercase text-gray-400">/{slug}</span>
+              <span className={`text-sm font-extrabold ${isDarkMode ? 'text-zinc-100' : 'text-zinc-900'}`}>{name}</span>
+              {ownerName && <span className={`text-xs font-semibold ${isDarkMode ? 'text-zinc-400' : 'text-zinc-500'}`}>👤 {ownerName}</span>}
+              <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 mt-0.5">
+                {email && <span className="text-xs font-bold text-primary lowercase tracking-tight">{email}</span>}
+                {phone && <span className={`text-xs font-bold ${isDarkMode ? 'text-zinc-400' : 'text-zinc-500'}`}>📞 {phone}</span>}
+                {location && <span className={`text-xs font-semibold ${isDarkMode ? 'text-zinc-400' : 'text-zinc-500'}`}>📍 {location}</span>}
+              </div>
+              <span className="text-xs font-mono font-bold uppercase text-zinc-400 tracking-wider">/{slug}</span>
             </div>
           </div>
         );
@@ -528,29 +691,77 @@ const AdminPanel = () => {
     {
       header: 'Status',
       render: (vendor) => {
-        const vProfile = vendor.vendorId;
-        const isActive = typeof vProfile === 'object' ? vProfile?.isActive : vendor.isActive;
-        return <div className="flex items-center gap-2"><div className={`w-1.5 h-1.5 rounded-full ${isActive ? 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.5)]' : 'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.5)]'}`}></div><span className="text-sm font-semibold uppercase text-gray-400">{isActive ? 'Active' : 'Offline'}</span></div>
+        const isDirect = Boolean(vendor.businessName || vendor.slug || vendor.ownerId);
+        const business = isDirect ? vendor : (typeof vendor.vendorId === 'object' ? vendor.vendorId : vendor);
+        const status = vendor.status || business?.status || (business?.isActive ? 'APPROVED' : 'PENDING');
+        const isActive = business?.isActive ?? vendor.isActive;
+
+        if (status === 'PENDING') {
+          return (
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-black uppercase tracking-wide bg-amber-500/10 text-amber-500 border border-amber-500/20">
+              <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
+              Pending Review
+            </span>
+          );
+        }
+
+        if (status === 'REJECTED') {
+          return (
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-black uppercase tracking-wide bg-rose-500/10 text-rose-500 border border-rose-500/20">
+              <span className="w-1.5 h-1.5 rounded-full bg-rose-500" />
+              Rejected
+            </span>
+          );
+        }
+
+        return (
+          <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-black uppercase tracking-wide border ${
+            isActive 
+              ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20' 
+              : 'bg-zinc-500/10 text-zinc-400 border-zinc-500/20'
+          }`}>
+            <span className={`w-1.5 h-1.5 rounded-full ${isActive ? 'bg-emerald-500' : 'bg-zinc-400'}`} />
+            {isActive ? 'Active' : 'Offline'}
+          </span>
+        );
       }
     },
-    { header: 'Registration', render: (vendor) => <div className="flex flex-col"><span className={`text-sm font-bold ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>{new Date(vendor.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}</span><span className="text-sm uppercase font-bold text-gray-400">Onboarded</span></div> },
+    { 
+      header: 'Registration', 
+      render: (vendor) => {
+        const isDirect = Boolean(vendor.businessName || vendor.slug || vendor.ownerId);
+        const business = isDirect ? vendor : (typeof vendor.vendorId === 'object' ? vendor.vendorId : vendor);
+        const status = vendor.status || business?.status || (business?.isActive ? 'APPROVED' : 'PENDING');
+        const dateStr = vendor.createdAt ? new Date(vendor.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : 'N/A';
+        return (
+          <div className="flex flex-col text-left">
+            <span className={`text-xs font-extrabold ${isDarkMode ? 'text-zinc-200' : 'text-zinc-800'}`}>{dateStr}</span>
+            <span className={`text-xs uppercase font-bold tracking-wider mt-0.5 ${status === 'PENDING' ? 'text-amber-500 font-extrabold' : 'text-zinc-400'}`}>
+              {status === 'PENDING' ? 'Under Review' : 'Onboarded'}
+            </span>
+          </div>
+        );
+      }
+    },
     {
       header: 'Actions',
       render: (vendor) => {
+        const isDirect = Boolean(vendor.businessName || vendor.slug || vendor.ownerId);
         const vProfile = vendor.vendorId;
-        const vId = typeof vProfile === 'object' ? vProfile?._id : (vProfile || vendor._id);
-        const isPending = (vProfile?.status || vendor.status) === 'PENDING';
+        const vId = isDirect ? vendor._id : (typeof vProfile === 'object' ? vProfile?._id : (vProfile || vendor._id));
+        const status = vendor.status || vProfile?.status || (vProfile?.isActive ? 'APPROVED' : 'PENDING');
+        const isPending = status === 'PENDING';
         return (
-          <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
+          <div className="flex items-center gap-1.5" onClick={(e) => e.stopPropagation()}>
             {isPending && (
-              <div className="flex gap-1">
-                <button onClick={() => handleApproveVendor(vId)} className="p-2.5 bg-green-500 text-white rounded-xl shadow-lg shadow-green-500/20 hover:scale-110 transition-all"><CircleCheckBig size={16} /></button>
-                <button onClick={() => handleRejectVendor(vId)} className="p-2.5 bg-orange-500 text-white rounded-xl shadow-lg shadow-orange-500/20 hover:scale-110 transition-all"><CircleX size={16} /></button>
-              </div>
+              <>
+                <button title="Approve Vendor" onClick={() => handleApproveVendor(vId)} className="p-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl shadow-md shadow-emerald-500/20 hover:scale-105 active:scale-95 transition-all cursor-pointer"><CircleCheckBig size={16} /></button>
+                <button title="Reject Vendor" onClick={() => handleRejectVendor(vId)} className="p-2 bg-amber-500 hover:bg-amber-600 text-white rounded-xl shadow-md shadow-amber-500/20 hover:scale-105 active:scale-95 transition-all cursor-pointer"><CircleX size={16} /></button>
+              </>
             )}
-            <button onClick={() => toggleVendorStatus(vId).then(() => fetchData())} className={`p-2.5 rounded-xl transition-all ${isDarkMode ? 'bg-white/5 text-gray-500 hover:text-green-500' : 'bg-gray-50 text-gray-400 hover:text-green-600'}`}><Power size={18} /></button>
-            <button onClick={() => setSelectedVendorId(vId)} className={`p-2.5 rounded-xl transition-all ${isDarkMode ? 'bg-white/5 text-gray-400 hover:text-primary' : 'bg-gray-50 text-gray-400 hover:text-primary'}`}><Eye size={18} /></button>
-            <button onClick={() => setItemToDelete(vendor)} className={`p-2.5 rounded-xl transition-all ${isDarkMode ? 'bg-white/5 text-gray-400 hover:text-red-500' : 'bg-gray-50 text-gray-400 hover:text-red-500'}`}><Trash2 size={18} /></button>
+            <button title="Toggle Status" onClick={() => toggleVendorStatus(vId).then(() => fetchData())} className={`p-2 rounded-xl border transition-all cursor-pointer ${isDarkMode ? 'bg-zinc-800 border-zinc-700 text-zinc-400 hover:text-emerald-400' : 'bg-zinc-100 border-zinc-200 text-zinc-500 hover:text-emerald-600'}`}><Power size={16} /></button>
+            <button title="View Shop Details" onClick={() => setSelectedVendorId(vId)} className={`p-2 rounded-xl border transition-all cursor-pointer ${isDarkMode ? 'bg-zinc-800 border-zinc-700 text-zinc-300 hover:text-primary' : 'bg-zinc-100 border-zinc-200 text-zinc-600 hover:text-primary'}`}><Eye size={16} /></button>
+            <button title="Delete Vendor" onClick={() => setItemToDelete(vendor)} className={`p-2 rounded-xl border transition-all cursor-pointer ${isDarkMode ? 'bg-zinc-800 border-zinc-700 text-zinc-400 hover:text-rose-400' : 'bg-zinc-100 border-zinc-200 text-zinc-500 hover:text-rose-600'}`}><Trash2 size={16} /></button>
           </div>
         );
       }
@@ -561,31 +772,134 @@ const AdminPanel = () => {
     {
       header: 'Influencer',
       render: (inf) => (
-        <div className="flex items-center gap-4">
-          <div className={`w-10 h-10 lg:w-12 lg:h-12 rounded-2xl flex items-center justify-center font-bold ${isDarkMode ? 'bg-gray-700 text-gray-500' : 'bg-gray-100 text-gray-400'}`}>
+        <div className="flex items-center gap-3.5 text-left">
+          <div className={`w-11 h-11 rounded-xl flex items-center justify-center font-black text-sm flex-shrink-0 border ${
+            isDarkMode ? 'bg-zinc-800 border-zinc-700 text-zinc-100' : 'bg-zinc-100 border-zinc-200 text-zinc-800 shadow-sm'
+          }`}>
             {inf.name?.charAt(0) || inf.userId?.name?.charAt(0) || 'I'}
           </div>
           <div className="flex flex-col">
-            <span className={`text-sm font-bold ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>{inf.name || inf.userId?.name}</span>
-            <span className="text-sm font-bold uppercase text-gray-400">{inf.userId?.email}</span>
+            <span className={`text-sm font-extrabold ${isDarkMode ? 'text-zinc-100' : 'text-zinc-900'}`}>{inf.name || inf.userId?.name}</span>
+            <span className={`text-xs font-semibold ${isDarkMode ? 'text-zinc-400' : 'text-zinc-500'}`}>{inf.userId?.email}</span>
           </div>
         </div>
       )
     },
-    { header: 'Followers', render: (inf) => <span className={`text-xs font-bold ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>{inf.followers?.toLocaleString()}</span> },
-    { header: 'Commission', render: (inf) => <span className="px-3 py-1 rounded-lg bg-pink-500/10 text-pink-500 text-sm font-bold uppercase ">{inf.commissionRate}%</span> },
-    { header: 'Earnings', render: (inf) => <div className="flex flex-col"><span className={`text-sm font-bold ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>₹{inf.totalCommissionEarned?.toLocaleString()}</span><span className="text-sm uppercase font-bold text-gray-400">Total Paid</span></div> },
-    { header: 'Status', render: (inf) => <div className="flex items-center gap-2"><div className={`w-1.5 h-1.5 rounded-full ${inf.isActive ? 'bg-green-500' : 'bg-red-500'}`}></div><span className="text-sm font-semibold uppercase text-gray-400">{inf.status}</span></div> },
+    { 
+      header: 'Followers', 
+      render: (inf) => (
+        <span className={`text-xs font-extrabold ${isDarkMode ? 'text-zinc-200' : 'text-zinc-800'}`}>
+          {inf.followers ? Number(inf.followers).toLocaleString() : '0'}
+        </span>
+      ) 
+    },
+    { 
+      header: 'Commission', 
+      render: (inf) => {
+        if (typeof inf.commissionRate === 'number') {
+          return (
+            <span className="px-2.5 py-1 rounded-lg bg-pink-500/10 text-pink-500 text-xs font-black uppercase border border-pink-500/20 inline-flex items-center gap-1">
+              {inf.commissionRate}%
+              {inf.commissionRate === 0 && (
+                <span className="text-[10px] text-zinc-400 font-semibold">(0%)</span>
+              )}
+            </span>
+          );
+        }
+        return (
+          <span className="px-2.5 py-1 rounded-lg bg-amber-500/10 text-amber-500 text-xs font-black uppercase border border-amber-500/20 inline-flex items-center gap-1.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
+            Rate Unset
+          </span>
+        );
+      } 
+    },
+    { 
+      header: 'Earnings', 
+      render: (inf) => (
+        <div className="flex flex-col text-left">
+          <span className="text-xs font-black text-emerald-500">
+            ₹{Number(inf.totalCommissionEarned || 0).toLocaleString('en-IN')}
+          </span>
+          <span className="text-xs uppercase font-bold text-zinc-400">Total Paid</span>
+        </div>
+      ) 
+    },
+    { 
+      header: 'Status', 
+      render: (inf) => {
+        const isPending = (inf.status || '').toLowerCase() === 'pending';
+        const isActive = (inf.status || '').toLowerCase() === 'active';
+        return (
+          <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-black uppercase tracking-wide border ${
+            isActive 
+              ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20' 
+              : isPending
+                ? 'bg-amber-500/10 text-amber-500 border-amber-500/20'
+                : 'bg-rose-500/10 text-rose-500 border-rose-500/20'
+          }`}>
+            <span className={`w-1.5 h-1.5 rounded-full ${isActive ? 'bg-emerald-500' : isPending ? 'bg-amber-500' : 'bg-rose-500'}`} />
+            {isPending ? 'Pending' : (inf.status || (inf.isActive ? 'Active' : 'Inactive'))}
+          </span>
+        );
+      } 
+    },
     {
       header: 'Actions',
-      render: (inf) => (
-        <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
-          <button title="Create Coupon" onClick={() => setInfluencerForCoupon(inf)} className={`p-2.5 rounded-xl transition-all ${isDarkMode ? 'bg-white/5 text-gray-400 hover:text-green-500' : 'bg-gray-50 text-gray-400 hover:text-green-500'}`}><TicketPercent size={18} /></button>
-          <button title="Edit Profile" onClick={() => { setEditingInfluencer(inf); setIsOnboardingOpen(true); }} className={`p-2.5 rounded-xl transition-all ${isDarkMode ? 'bg-white/5 text-gray-400 hover:text-orange-500' : 'bg-gray-50 text-gray-400 hover:text-orange-500'}`}><Pencil size={18} /></button>
-          <button title="View Details" onClick={() => setSelectedInfluencerId(inf._id)} className={`p-2.5 rounded-xl transition-all ${isDarkMode ? 'bg-white/5 text-gray-400 hover:text-primary' : 'bg-gray-50 text-gray-400 hover:text-primary'}`}><Eye size={18} /></button>
-          <button title="Delete Influencer" onClick={() => setItemToDelete(inf)} className={`p-2.5 rounded-xl transition-all ${isDarkMode ? 'bg-white/5 text-gray-400 hover:text-red-500' : 'bg-gray-50 text-gray-400 hover:text-red-500'}`}><Trash2 size={18} /></button>
-        </div>
-      )
+      render: (inf) => {
+        const isPending = (inf.status || '').toLowerCase() === 'pending';
+        const isActive = (inf.status || '').toLowerCase() === 'active';
+        return (
+          <div className="flex items-center gap-1.5" onClick={(e) => e.stopPropagation()}>
+            {isPending && (
+              <>
+                <button
+                  title="Approve Influencer"
+                  onClick={() => handleUpdateInfluencerStatus(inf._id, 'active')}
+                  className="px-2.5 py-1.5 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl font-bold text-xs uppercase shadow-md shadow-emerald-500/20 hover:scale-105 active:scale-95 transition-all flex items-center gap-1 cursor-pointer"
+                >
+                  <CircleCheckBig size={15} /> Approve
+                </button>
+                <button
+                  title="Reject Influencer"
+                  onClick={() => handleUpdateInfluencerStatus(inf._id, 'rejected')}
+                  className="p-1.5 bg-amber-500 hover:bg-amber-600 text-white rounded-xl shadow-md shadow-amber-500/20 hover:scale-105 active:scale-95 transition-all cursor-pointer"
+                >
+                  <CircleX size={15} />
+                </button>
+              </>
+            )}
+            {!isPending && (
+              <button
+                title={isActive ? 'Block Influencer' : 'Activate Influencer'}
+                onClick={() => handleUpdateInfluencerStatus(inf._id, isActive ? 'blocked' : 'active')}
+                className={`p-2 rounded-xl border transition-all cursor-pointer ${
+                  isActive
+                    ? (isDarkMode ? 'bg-zinc-800 border-zinc-700 text-emerald-400 hover:text-amber-400' : 'bg-zinc-100 border-zinc-200 text-emerald-600 hover:text-amber-600')
+                    : (isDarkMode ? 'bg-zinc-800 border-zinc-700 text-zinc-400 hover:text-emerald-400' : 'bg-zinc-100 border-zinc-200 text-zinc-500 hover:text-emerald-600')
+                }`}
+              >
+                <Power size={16} />
+              </button>
+            )}
+            <button title="Create Coupon" onClick={() => setInfluencerForCoupon(inf)} className={`p-2 rounded-xl border transition-all cursor-pointer ${isDarkMode ? 'bg-zinc-800 border-zinc-700 text-zinc-300 hover:text-emerald-400' : 'bg-zinc-100 border-zinc-200 text-zinc-600 hover:text-emerald-600'}`}><TicketPercent size={16} /></button>
+            <button
+              title="Configure Commission Rate"
+              onClick={() => handleQuickCommissionRate(inf)}
+              className={`p-2 rounded-xl border transition-all cursor-pointer ${
+                isDarkMode 
+                  ? 'bg-zinc-800 border-zinc-700 text-pink-400 hover:text-pink-300 hover:bg-zinc-700' 
+                  : 'bg-zinc-100 border-zinc-200 text-pink-600 hover:text-pink-700 hover:bg-zinc-200'
+              }`}
+            >
+              <Percent size={16} />
+            </button>
+            <button title="Edit Profile" onClick={() => { setEditingInfluencer(inf); setIsOnboardingOpen(true); }} className={`p-2 rounded-xl border transition-all cursor-pointer ${isDarkMode ? 'bg-zinc-800 border-zinc-700 text-zinc-300 hover:text-amber-400' : 'bg-zinc-100 border-zinc-200 text-zinc-600 hover:text-amber-600'}`}><Pencil size={16} /></button>
+            <button title="View Details" onClick={() => setSelectedInfluencerId(inf._id)} className={`p-2 rounded-xl border transition-all cursor-pointer ${isDarkMode ? 'bg-zinc-800 border-zinc-700 text-zinc-300 hover:text-primary' : 'bg-zinc-100 border-zinc-200 text-zinc-600 hover:text-primary'}`}><Eye size={16} /></button>
+            <button title="Delete Influencer" onClick={() => setItemToDelete(inf)} className={`p-2 rounded-xl border transition-all cursor-pointer ${isDarkMode ? 'bg-zinc-800 border-zinc-700 text-zinc-400 hover:text-rose-400' : 'bg-zinc-100 border-zinc-200 text-zinc-500 hover:text-rose-600'}`}><Trash2 size={16} /></button>
+          </div>
+        );
+      }
     }
   ];
 
@@ -593,13 +907,13 @@ const AdminPanel = () => {
     {
       header: 'Commission Slab',
       render: (slab) => (
-        <div className="flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-pink-500/10 text-pink-500">
+        <div className="flex items-center gap-3 text-left">
+          <div className="w-10 h-10 rounded-xl bg-pink-500/10 text-pink-500 border border-pink-500/20 flex items-center justify-center flex-shrink-0">
             <Percent size={18} />
           </div>
           <div className="flex flex-col">
-            <span className={`text-sm font-bold ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>{slab.commissionRate}% Commission</span>
-            <span className="text-sm font-bold text-gray-400 uppercase">Slab ID: {slab._id}</span>
+            <span className={`text-sm font-extrabold ${isDarkMode ? 'text-zinc-100' : 'text-zinc-900'}`}>{slab.commissionRate}% Commission</span>
+            <span className="text-xs font-mono font-bold text-zinc-400 uppercase">ID: {slab._id?.substring(18)}</span>
           </div>
         </div>
       )
@@ -607,27 +921,31 @@ const AdminPanel = () => {
     {
       header: 'Sales Range',
       render: (slab) => (
-        <div className="flex flex-col">
-          <span className={`text-xs font-bold ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+        <div className="flex flex-col text-left">
+          <span className={`text-xs font-black ${isDarkMode ? 'text-zinc-200' : 'text-zinc-800'}`}>
             ₹{slab.minSales?.toLocaleString('en-IN')} - ₹{slab.maxSales?.toLocaleString('en-IN')}
           </span>
-          <span className="text-sm font-bold text-gray-400 uppercase">Min to Max Sales</span>
+          <span className="text-xs font-bold text-zinc-400 uppercase">Min to Max Target</span>
         </div>
       )
     },
     {
       header: 'Status',
       render: (slab) => (
-        <div className="flex items-center gap-2">
-          <div className={`w-1.5 h-1.5 rounded-full ${slab.isActive ? 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.5)]' : 'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.5)]'}`}></div>
-          <span className="text-sm font-semibold uppercase text-gray-400">{slab.isActive ? 'Active' : 'Inactive'}</span>
-        </div>
+        <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-black uppercase tracking-wide border ${
+          slab.isActive 
+            ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20' 
+            : 'bg-zinc-500/10 text-zinc-400 border-zinc-500/20'
+        }`}>
+          <span className={`w-1.5 h-1.5 rounded-full ${slab.isActive ? 'bg-emerald-500' : 'bg-zinc-400'}`} />
+          {slab.isActive ? 'Active' : 'Inactive'}
+        </span>
       )
     },
     {
       header: 'Created On',
       render: (slab) => (
-        <span className={`text-xs font-bold ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+        <span className={`text-xs font-bold ${isDarkMode ? 'text-zinc-300' : 'text-zinc-600'}`}>
           {new Date(slab.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}
         </span>
       )
@@ -635,21 +953,21 @@ const AdminPanel = () => {
     {
       header: 'Actions',
       render: (slab) => (
-        <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
-          <button title="View Details" onClick={() => setSelectedSlabId(slab._id)} className={`p-2.5 rounded-xl transition-all cursor-pointer ${isDarkMode ? 'bg-white/5 text-gray-400 hover:text-primary' : 'bg-gray-50 text-gray-400 hover:text-primary'}`}><Eye size={18} /></button>
-          <button title="Edit Slab" onClick={() => setEditingSlab(slab)} className={`p-2.5 rounded-xl transition-all cursor-pointer ${isDarkMode ? 'bg-white/5 text-gray-400 hover:text-orange-500' : 'bg-gray-50 text-gray-400 hover:text-orange-500'}`}><Pencil size={18} /></button>
+        <div className="flex items-center gap-1.5" onClick={(e) => e.stopPropagation()}>
+          <button title="View Details" onClick={() => setSelectedSlabId(slab._id)} className={`p-2 rounded-xl border transition-all cursor-pointer ${isDarkMode ? 'bg-zinc-800 border-zinc-700 text-zinc-300 hover:text-primary' : 'bg-zinc-100 border-zinc-200 text-zinc-600 hover:text-primary'}`}><Eye size={16} /></button>
+          <button title="Edit Slab" onClick={() => setEditingSlab(slab)} className={`p-2 rounded-xl border transition-all cursor-pointer ${isDarkMode ? 'bg-zinc-800 border-zinc-700 text-zinc-300 hover:text-amber-400' : 'bg-zinc-100 border-zinc-200 text-zinc-600 hover:text-amber-600'}`}><Pencil size={16} /></button>
           <button title="Delete Slab" onClick={() => {
             Swal.fire({
               title: 'Delete Commission Slab?',
               text: `Are you sure you want to delete this commission slab? (${slab.commissionRate}% rate, ₹${slab.minSales?.toLocaleString('en-IN')} - ₹${slab.maxSales?.toLocaleString('en-IN')})`,
               icon: 'warning',
               showCancelButton: true,
-              confirmButtonColor: '#da016a',
-              cancelButtonColor: '#94a3b8',
+              confirmButtonColor: '#fe3e6a',
+              cancelButtonColor: '#71717a',
               confirmButtonText: 'Yes, Delete',
               cancelButtonText: 'Cancel',
-              background: isDarkMode ? '#1f2937' : '#ffffff',
-              color: isDarkMode ? '#ffffff' : '#1f2937',
+              background: isDarkMode ? '#18181b' : '#ffffff',
+              color: isDarkMode ? '#ffffff' : '#18181b',
               borderRadius: '20px',
               customClass: {
                 popup: 'rounded-3xl border-none',
@@ -674,7 +992,7 @@ const AdminPanel = () => {
                 }
               }
             });
-          }} className={`p-2.5 rounded-xl transition-all cursor-pointer ${isDarkMode ? 'bg-white/5 text-gray-400 hover:text-red-500' : 'bg-gray-50 text-gray-400 hover:text-red-500'}`}><Trash2 size={18} /></button>
+          }} className={`p-2 rounded-xl border transition-all cursor-pointer ${isDarkMode ? 'bg-zinc-800 border-zinc-700 text-zinc-400 hover:text-rose-400' : 'bg-zinc-100 border-zinc-200 text-zinc-500 hover:text-rose-600'}`}><Trash2 size={16} /></button>
         </div>
       )
     }
@@ -684,15 +1002,15 @@ const AdminPanel = () => {
     {
       header: 'Cashback Slab',
       render: (slab) => (
-        <div className="flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-primary/10 text-primary">
+        <div className="flex items-center gap-3 text-left">
+          <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary border border-primary/20 flex items-center justify-center flex-shrink-0">
             <Percent size={18} />
           </div>
-          <div className="flex flex-col text-left">
-            <span className={`text-sm font-bold ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>
+          <div className="flex flex-col">
+            <span className={`text-sm font-extrabold ${isDarkMode ? 'text-zinc-100' : 'text-zinc-900'}`}>
               {slab.cashbackValue}{slab.cashbackType === 'PERCENTAGE' ? '%' : ' ₹'} Cashback
             </span>
-            <span className="text-sm font-bold text-gray-400 uppercase">Type: {slab.cashbackType}</span>
+            <span className="text-xs font-bold text-zinc-400 uppercase tracking-wider">Type: {slab.cashbackType}</span>
           </div>
         </div>
       )
@@ -701,48 +1019,52 @@ const AdminPanel = () => {
       header: 'Wallet Load Range',
       render: (slab) => (
         <div className="flex flex-col text-left">
-          <span className={`text-xs font-bold ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+          <span className={`text-xs font-black ${isDarkMode ? 'text-zinc-200' : 'text-zinc-800'}`}>
             ₹{slab.minValue?.toLocaleString('en-IN')} - ₹{slab.maxValue?.toLocaleString('en-IN')}
           </span>
-          <span className="text-sm font-bold text-gray-400 uppercase">Min to Max Load</span>
+          <span className="text-xs font-bold text-zinc-400 uppercase">Min to Max Load</span>
         </div>
       )
     },
     {
       header: 'Max Cashback Limit',
       render: (slab) => (
-        <span className={`text-xs font-bold ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-          {slab.maxCashback ? `₹${slab.maxCashback}` : 'No Limit'}
+        <span className={`text-xs font-black ${isDarkMode ? 'text-zinc-200' : 'text-zinc-800'}`}>
+          {slab.maxCashback ? `₹${slab.maxCashback?.toLocaleString('en-IN')}` : 'No Limit'}
         </span>
       )
     },
     {
       header: 'Status',
       render: (slab) => (
-        <div className="flex items-center gap-2">
-          <div className={`w-1.5 h-1.5 rounded-full ${slab.isActive ? 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.5)]' : 'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.5)]'}`}></div>
-          <span className="text-sm font-semibold uppercase text-gray-400">{slab.isActive ? 'Active' : 'Inactive'}</span>
-        </div>
+        <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-black uppercase tracking-wide border ${
+          slab.isActive 
+            ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20' 
+            : 'bg-zinc-500/10 text-zinc-400 border-zinc-500/20'
+        }`}>
+          <span className={`w-1.5 h-1.5 rounded-full ${slab.isActive ? 'bg-emerald-500' : 'bg-zinc-400'}`} />
+          {slab.isActive ? 'Active' : 'Inactive'}
+        </span>
       )
     },
     {
       header: 'Actions',
       render: (slab) => (
-        <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
-          <button title="View Details" onClick={() => setSelectedCashbackSlab(slab)} className={`p-2.5 rounded-xl transition-all cursor-pointer ${isDarkMode ? 'bg-white/5 text-gray-400 hover:text-primary' : 'bg-gray-50 text-gray-400 hover:text-primary'}`}><Eye size={18} /></button>
-          <button title="Edit Slab" onClick={() => { setEditingCashbackSlab(slab); setIsCreateCashbackSlabOpen(true); }} className={`p-2.5 rounded-xl transition-all cursor-pointer ${isDarkMode ? 'bg-white/5 text-gray-400 hover:text-orange-500' : 'bg-gray-50 text-gray-400 hover:text-orange-500'}`}><Pencil size={18} /></button>
+        <div className="flex items-center gap-1.5" onClick={(e) => e.stopPropagation()}>
+          <button title="View Details" onClick={() => setSelectedCashbackSlab(slab)} className={`p-2 rounded-xl border transition-all cursor-pointer ${isDarkMode ? 'bg-zinc-800 border-zinc-700 text-zinc-300 hover:text-primary' : 'bg-zinc-100 border-zinc-200 text-zinc-600 hover:text-primary'}`}><Eye size={16} /></button>
+          <button title="Edit Slab" onClick={() => { setEditingCashbackSlab(slab); setIsCreateCashbackSlabOpen(true); }} className={`p-2 rounded-xl border transition-all cursor-pointer ${isDarkMode ? 'bg-zinc-800 border-zinc-700 text-zinc-300 hover:text-amber-400' : 'bg-zinc-100 border-zinc-200 text-zinc-600 hover:text-amber-600'}`}><Pencil size={16} /></button>
           <button title="Delete Slab" onClick={() => {
             Swal.fire({
               title: 'Delete Cashback Slab?',
               text: `Are you sure you want to delete this cashback slab? (₹${slab.minValue} - ₹${slab.maxValue} range)`,
               icon: 'warning',
               showCancelButton: true,
-              confirmButtonColor: '#da016a',
-              cancelButtonColor: '#94a3b8',
+              confirmButtonColor: '#fe3e6a',
+              cancelButtonColor: '#71717a',
               confirmButtonText: 'Yes, Delete',
               cancelButtonText: 'Cancel',
-              background: isDarkMode ? '#1f2937' : '#ffffff',
-              color: isDarkMode ? '#ffffff' : '#1f2937',
+              background: isDarkMode ? '#18181b' : '#ffffff',
+              color: isDarkMode ? '#ffffff' : '#18181b',
               borderRadius: '20px',
               customClass: {
                 popup: 'rounded-3xl border-none',
@@ -767,7 +1089,7 @@ const AdminPanel = () => {
                 }
               }
             });
-          }} className={`p-2.5 rounded-xl transition-all cursor-pointer ${isDarkMode ? 'bg-white/5 text-gray-400 hover:text-red-500' : 'bg-gray-50 text-gray-400 hover:text-red-500'}`}><Trash2 size={18} /></button>
+          }} className={`p-2 rounded-xl border transition-all cursor-pointer ${isDarkMode ? 'bg-zinc-800 border-zinc-700 text-zinc-400 hover:text-rose-400' : 'bg-zinc-100 border-zinc-200 text-zinc-500 hover:text-rose-600'}`}><Trash2 size={16} /></button>
         </div>
       )
     }
@@ -777,13 +1099,13 @@ const AdminPanel = () => {
     {
       header: 'Coupon Code',
       render: (cp) => (
-        <div className="flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-primary/10 text-primary">
+        <div className="flex items-center gap-3 text-left">
+          <div className="w-10 h-10 rounded-xl bg-pink-500/10 text-pink-500 border border-pink-500/20 flex items-center justify-center flex-shrink-0">
             <TicketPercent size={18} />
           </div>
           <div className="flex flex-col">
-            <span className={`text-sm font-bold ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>{cp.code}</span>
-            <span className="text-sm font-bold text-gray-400 uppercase">{cp.description || 'Platform Discount'}</span>
+            <span className={`text-sm font-black tracking-wide font-mono ${isDarkMode ? 'text-zinc-100' : 'text-zinc-900'}`}>{cp.code}</span>
+            <span className="text-xs font-bold text-zinc-400 uppercase">{cp.description || 'Platform Discount'}</span>
           </div>
         </div>
       )
@@ -791,32 +1113,90 @@ const AdminPanel = () => {
     {
       header: 'Assigned To',
       render: (cp) => (
-        <div className="flex flex-col">
-          <span className={`text-xs font-bold ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>{cp.influencerId?.name || cp.influencerId || 'Global'}</span>
-          <span className="text-sm font-bold text-gray-400 uppercase">Partner</span>
+        <div className="flex flex-col text-left">
+          <span className={`text-xs font-bold ${isDarkMode ? 'text-zinc-200' : 'text-zinc-800'}`}>{cp.influencerId?.name || cp.influencerId || 'Global / Platform'}</span>
+          <span className="text-xs font-bold text-zinc-400 uppercase">Partner Scope</span>
         </div>
       )
     },
-    { header: 'Discount', render: (cp) => <span className={`text-sm font-bold text-primary`}>{cp.type === 'percentage' ? `${cp.value}%` : `₹${cp.value}`}</span> },
-    { header: 'Usage', render: (cp) => <div className="flex flex-col"><span className={`text-sm font-bold ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>{cp.totalUsed} / {cp.totalUsageLimit}</span><div className="w-16 h-1 bg-gray-100 rounded-full mt-1 overflow-hidden"><div className="h-full bg-primary" style={{ width: `${Math.min((cp.totalUsed / cp.totalUsageLimit) * 100, 100)}%` }}></div></div></div> },
-    { header: 'Status', render: (cp) => <span className={`px-2 py-1 rounded text-sm font-bold uppercase ${cp.isActive ? 'bg-green-500/10 text-green-500' : 'bg-red-500/10 text-red-500'}`}>{cp.isActive ? 'Active' : 'Expired'}</span> },
+    { 
+      header: 'Discount', 
+      render: (cp) => (
+        <span className="text-xs font-black px-2.5 py-1 rounded-lg bg-pink-500/10 text-pink-500 border border-pink-500/20">
+          {cp.type === 'percentage' ? `${cp.value}% OFF` : `₹${cp.value} OFF`}
+        </span>
+      ) 
+    },
+    { 
+      header: 'Usage Limit', 
+      render: (cp) => {
+        const percent = Math.min(((cp.totalUsed || 0) / (cp.totalUsageLimit || 1)) * 100, 100);
+        return (
+          <div className="flex flex-col gap-1 min-w-[90px] text-left">
+            <span className={`text-xs font-bold ${isDarkMode ? 'text-zinc-200' : 'text-zinc-800'}`}>{cp.totalUsed || 0} / {cp.totalUsageLimit || '∞'}</span>
+            <div className={`w-full h-1.5 rounded-full overflow-hidden ${isDarkMode ? 'bg-zinc-800' : 'bg-zinc-200'}`}>
+              <div className="h-full bg-primary rounded-full transition-all" style={{ width: `${percent}%` }} />
+            </div>
+          </div>
+        );
+      } 
+    },
+    { 
+      header: 'Status', 
+      render: (cp) => (
+        <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-black uppercase tracking-wide border ${
+          cp.isActive 
+            ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20' 
+            : 'bg-rose-500/10 text-rose-500 border-rose-500/20'
+        }`}>
+          <span className={`w-1.5 h-1.5 rounded-full ${cp.isActive ? 'bg-emerald-500' : 'bg-rose-500'}`} />
+          {cp.isActive ? 'Active' : 'Expired'}
+        </span>
+      ) 
+    },
     {
       header: 'Actions',
       render: (cp) => (
-        <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
-          <button title="View Details" onClick={() => setSelectedCouponId(cp._id)} className={`p-2.5 rounded-xl transition-all ${isDarkMode ? 'bg-white/5 text-gray-400 hover:text-primary' : 'bg-gray-50 text-gray-400 hover:text-primary'}`}><Eye size={18} /></button>
-          <button title="Edit Coupon" onClick={() => { setEditingCoupon(cp); setInfluencerForCoupon(true); }} className={`p-2.5 rounded-xl transition-all ${isDarkMode ? 'bg-white/5 text-gray-400 hover:text-orange-500' : 'bg-gray-50 text-gray-400 hover:text-orange-500'}`}><Pencil size={18} /></button>
+        <div className="flex items-center gap-1.5" onClick={(e) => e.stopPropagation()}>
+          <button title="View Details" onClick={() => setSelectedCouponId(cp._id)} className={`p-2 rounded-xl border transition-all cursor-pointer ${isDarkMode ? 'bg-zinc-800 border-zinc-700 text-zinc-300 hover:text-primary' : 'bg-zinc-100 border-zinc-200 text-zinc-600 hover:text-primary'}`}><Eye size={16} /></button>
+          <button title="Edit Coupon" onClick={() => { setEditingCoupon(cp); setInfluencerForCoupon(true); }} className={`p-2 rounded-xl border transition-all cursor-pointer ${isDarkMode ? 'bg-zinc-800 border-zinc-700 text-zinc-300 hover:text-amber-400' : 'bg-zinc-100 border-zinc-200 text-zinc-600 hover:text-amber-600'}`}><Pencil size={16} /></button>
           <button title="Delete Coupon" onClick={() => {
-            toast((t) => (
-              <div className="flex flex-col gap-3">
-                <p className="text-sm font-bold text-gray-800">Delete coupon <span className="text-primary">{cp.code}</span>?</p>
-                <div className="flex gap-2">
-                  <button onClick={async () => { toast.dismiss(t.id); await deleteCoupon(cp._id); fetchData(); }} className="flex-1 bg-red-500 hover:bg-red-600 text-white text-xs font-bold px-3 py-2 rounded-lg cursor-pointer">Yes, Delete</button>
-                  <button onClick={() => toast.dismiss(t.id)} className="flex-1 bg-gray-100 text-gray-700 text-xs font-bold px-3 py-2 rounded-lg cursor-pointer">Cancel</button>
-                </div>
-              </div>
-            ), { duration: 8000 });
-          }} className={`p-2.5 rounded-xl transition-all ${isDarkMode ? 'bg-white/5 text-gray-400 hover:text-red-500' : 'bg-gray-50 text-gray-400 hover:text-red-500'}`}><Trash2 size={18} /></button>
+            Swal.fire({
+              title: 'Delete Coupon?',
+              text: `Are you sure you want to delete coupon "${cp.code}"?`,
+              icon: 'warning',
+              showCancelButton: true,
+              confirmButtonColor: '#fe3e6a',
+              cancelButtonColor: '#71717a',
+              confirmButtonText: 'Yes, Delete',
+              cancelButtonText: 'Cancel',
+              background: isDarkMode ? '#18181b' : '#ffffff',
+              color: isDarkMode ? '#ffffff' : '#18181b',
+              borderRadius: '20px',
+              customClass: {
+                popup: 'rounded-3xl border-none',
+                confirmButton: 'rounded-xl font-bold uppercase text-xs px-5 py-2.5 text-white cursor-pointer',
+                cancelButton: 'rounded-xl font-bold uppercase text-xs px-5 py-2.5 cursor-pointer'
+              }
+            }).then(async (result) => {
+              if (result.isConfirmed) {
+                const loadingToast = toast.loading('Deleting coupon...');
+                try {
+                  const res = await deleteCoupon(cp._id);
+                  toast.dismiss(loadingToast);
+                  if (res?.success !== false) {
+                    toast.success('Coupon deleted successfully!');
+                    fetchData();
+                  } else {
+                    toast.error(res?.message || 'Failed to delete coupon.');
+                  }
+                } catch (err) {
+                  toast.dismiss(loadingToast);
+                  toast.error('Something went wrong during deletion.');
+                }
+              }
+            });
+          }} className={`p-2 rounded-xl border transition-all cursor-pointer ${isDarkMode ? 'bg-zinc-800 border-zinc-700 text-zinc-400 hover:text-rose-400' : 'bg-zinc-100 border-zinc-200 text-zinc-500 hover:text-rose-600'}`}><Trash2 size={16} /></button>
         </div>
       )
     }
@@ -826,32 +1206,43 @@ const AdminPanel = () => {
     {
       header: 'Category',
       render: (cat) => (
-        <div className="flex items-center gap-4">
-          <div className={`w-12 h-12 rounded-2xl overflow-hidden flex items-center justify-center font-bold border ${isDarkMode ? 'bg-gray-800 border-white/5' : 'bg-gray-100 border-gray-100 shadow-sm'}`}>
+        <div className="flex items-center gap-3 text-left">
+          <div className={`w-10 h-10 rounded-xl overflow-hidden flex items-center justify-center font-bold border flex-shrink-0 ${
+            isDarkMode ? 'bg-zinc-800 border-zinc-700' : 'bg-zinc-100 border-zinc-200'
+          }`}>
             {cat.image?.url ? (
               <img src={cat.image.url} alt={cat.label} className="w-full h-full object-cover" />
             ) : (
-              <span className="text-primary font-bold">{cat.label?.charAt(0)}</span>
+              <span className="text-primary font-black text-sm">{cat.label?.charAt(0) || 'C'}</span>
             )}
           </div>
           <div className="flex flex-col">
-            <span className={`text-sm font-bold ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>{cat.label}</span>
-            <span className="text-sm font-bold uppercase text-gray-400">/{cat.slug}</span>
+            <span className={`text-sm font-extrabold ${isDarkMode ? 'text-zinc-100' : 'text-zinc-900'}`}>{cat.label}</span>
+            <span className="text-xs font-mono font-bold text-zinc-400 lowercase">/{cat.slug}</span>
           </div>
         </div>
       )
     },
-    { header: 'Description', render: (cat) => <span className={`text-xs font-medium ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>{cat.description || 'No description'}</span> },
+    { 
+      header: 'Description', 
+      render: (cat) => (
+        <span className={`text-xs font-medium max-w-xs line-clamp-1 text-left ${isDarkMode ? 'text-zinc-300' : 'text-zinc-600'}`}>
+          {cat.description || 'No description provided'}
+        </span>
+      ) 
+    },
     {
       header: 'Tags',
       render: (cat) => (
         <div className="flex flex-wrap gap-1">
           {cat.tags && cat.tags.length > 0 ? (
-            cat.tags.map((tag, i) => (
-              <span key={i} className="px-2 py-0.5 rounded bg-primary/10 text-primary text-[9px] font-bold uppercase">{tag}</span>
+            cat.tags.slice(0, 3).map((tag, i) => (
+              <span key={i} className={`px-2 py-0.5 rounded-md text-xs font-bold uppercase border ${
+                isDarkMode ? 'bg-zinc-800 text-zinc-300 border-zinc-700' : 'bg-zinc-100 text-zinc-700 border-zinc-200'
+              }`}>{tag}</span>
             ))
           ) : (
-            <span className="text-gray-400 text-sm font-bold uppercase">No tags</span>
+            <span className="text-zinc-400 text-xs font-semibold">—</span>
           )}
         </div>
       )
@@ -859,16 +1250,20 @@ const AdminPanel = () => {
     {
       header: 'Status',
       render: (cat) => (
-        <div className="flex items-center gap-2">
-          <div className={`w-1.5 h-1.5 rounded-full ${cat.isActive ? 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.5)]' : 'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.5)]'}`}></div>
-          <span className="text-sm font-semibold uppercase text-gray-400">{cat.isActive ? 'Active' : 'Inactive'}</span>
-        </div>
+        <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-black uppercase tracking-wide border ${
+          cat.isActive 
+            ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20' 
+            : 'bg-zinc-500/10 text-zinc-400 border-zinc-500/20'
+        }`}>
+          <span className={`w-1.5 h-1.5 rounded-full ${cat.isActive ? 'bg-emerald-500' : 'bg-zinc-400'}`} />
+          {cat.isActive ? 'Active' : 'Inactive'}
+        </span>
       )
     },
     {
-      header: 'Created At',
+      header: 'Created On',
       render: (cat) => (
-        <span className={`text-xs font-bold ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+        <span className={`text-xs font-bold ${isDarkMode ? 'text-zinc-300' : 'text-zinc-600'}`}>
           {new Date(cat.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}
         </span>
       )
@@ -876,21 +1271,21 @@ const AdminPanel = () => {
     {
       header: 'Actions',
       render: (cat) => (
-        <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
-          <button title="View Category Details" onClick={() => setSelectedCategoryId(cat._id)} className={`p-2.5 rounded-xl transition-all cursor-pointer ${isDarkMode ? 'bg-white/5 text-gray-400 hover:text-primary' : 'bg-gray-50 text-gray-400 hover:text-primary'}`}><Eye size={18} /></button>
-          <button title="Edit Category" onClick={() => setEditingCategory(cat)} className={`p-2.5 rounded-xl transition-all cursor-pointer ${isDarkMode ? 'bg-white/5 text-gray-400 hover:text-orange-500' : 'bg-gray-50 text-gray-400 hover:text-orange-500'}`}><Pencil size={18} /></button>
+        <div className="flex items-center gap-1.5" onClick={(e) => e.stopPropagation()}>
+          <button title="View Category" onClick={() => setSelectedCategoryId(cat._id)} className={`p-2 rounded-xl border transition-all cursor-pointer ${isDarkMode ? 'bg-zinc-800 border-zinc-700 text-zinc-300 hover:text-primary' : 'bg-zinc-100 border-zinc-200 text-zinc-600 hover:text-primary'}`}><Eye size={16} /></button>
+          <button title="Edit Category" onClick={() => setEditingCategory(cat)} className={`p-2 rounded-xl border transition-all cursor-pointer ${isDarkMode ? 'bg-zinc-800 border-zinc-700 text-zinc-300 hover:text-amber-400' : 'bg-zinc-100 border-zinc-200 text-zinc-600 hover:text-amber-600'}`}><Pencil size={16} /></button>
           <button title="Delete Category" onClick={() => {
             Swal.fire({
               title: 'Delete Category?',
               text: `Are you sure you want to delete category "${cat.label || cat.name}"?`,
               icon: 'warning',
               showCancelButton: true,
-              confirmButtonColor: '#da016a',
-              cancelButtonColor: '#94a3b8',
+              confirmButtonColor: '#fe3e6a',
+              cancelButtonColor: '#71717a',
               confirmButtonText: 'Yes, Delete',
               cancelButtonText: 'Cancel',
-              background: isDarkMode ? '#1f2937' : '#ffffff',
-              color: isDarkMode ? '#ffffff' : '#1f2937',
+              background: isDarkMode ? '#18181b' : '#ffffff',
+              color: isDarkMode ? '#ffffff' : '#18181b',
               borderRadius: '20px',
               customClass: {
                 popup: 'rounded-3xl border-none',
@@ -915,7 +1310,7 @@ const AdminPanel = () => {
                 }
               }
             });
-          }} className={`p-2.5 rounded-xl transition-all cursor-pointer ${isDarkMode ? 'bg-white/5 text-gray-400 hover:text-red-500' : 'bg-gray-50 text-gray-400 hover:text-red-500'}`}><Trash2 size={18} /></button>
+          }} className={`p-2 rounded-xl border transition-all cursor-pointer ${isDarkMode ? 'bg-zinc-800 border-zinc-700 text-zinc-400 hover:text-rose-400' : 'bg-zinc-100 border-zinc-200 text-zinc-500 hover:text-rose-600'}`}><Trash2 size={16} /></button>
         </div>
       )
     }
@@ -923,37 +1318,48 @@ const AdminPanel = () => {
 
   const courseCategoryColumns = [
     {
-      header: 'Category',
+      header: 'Course Category',
       render: (cat) => {
         const logo = cat.icon?.url || cat.icon || '';
         return (
-          <div className="flex items-center gap-4">
-            <div className={`w-12 h-12 rounded-2xl overflow-hidden flex items-center justify-center font-bold border ${isDarkMode ? 'bg-gray-800 border-white/5' : 'bg-gray-100 border-gray-100 shadow-sm'}`}>
+          <div className="flex items-center gap-3 text-left">
+            <div className={`w-10 h-10 rounded-xl overflow-hidden flex items-center justify-center font-bold border flex-shrink-0 ${
+              isDarkMode ? 'bg-zinc-800 border-zinc-700' : 'bg-zinc-100 border-zinc-200'
+            }`}>
               {logo ? (
                 <img src={logo} alt={cat.label} className="w-full h-full object-cover" />
               ) : (
-                <span className="text-primary font-bold">{cat.label?.charAt(0).toUpperCase()}</span>
+                <span className="text-primary font-black text-sm">{cat.label?.charAt(0).toUpperCase()}</span>
               )}
             </div>
             <div className="flex flex-col">
-              <span className={`text-sm font-bold ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>{cat.label}</span>
-              <span className="text-sm font-bold uppercase text-gray-400">Name: {cat.name}</span>
+              <span className={`text-sm font-extrabold ${isDarkMode ? 'text-zinc-100' : 'text-zinc-900'}`}>{cat.label}</span>
+              <span className="text-xs font-bold text-zinc-400 uppercase">Slug: {cat.name}</span>
             </div>
           </div>
         );
       }
     },
-    { header: 'Description', render: (cat) => <span className={`text-xs font-medium ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>{cat.description || 'No description'}</span> },
+    { 
+      header: 'Description', 
+      render: (cat) => (
+        <span className={`text-xs font-medium max-w-xs line-clamp-1 text-left ${isDarkMode ? 'text-zinc-300' : 'text-zinc-600'}`}>
+          {cat.description || 'No description'}
+        </span>
+      ) 
+    },
     {
       header: 'Tags',
       render: (cat) => (
         <div className="flex flex-wrap gap-1">
           {cat.tags && cat.tags.length > 0 ? (
-            cat.tags.map((tag, i) => (
-              <span key={i} className="px-2 py-0.5 rounded bg-primary/10 text-primary text-[9px] font-bold uppercase">{tag}</span>
+            cat.tags.slice(0, 3).map((tag, i) => (
+              <span key={i} className={`px-2 py-0.5 rounded-md text-xs font-bold uppercase border ${
+                isDarkMode ? 'bg-zinc-800 text-zinc-300 border-zinc-700' : 'bg-zinc-100 text-zinc-700 border-zinc-200'
+              }`}>{tag}</span>
             ))
           ) : (
-            <span className="text-gray-400 text-sm font-bold uppercase">No tags</span>
+            <span className="text-zinc-400 text-xs font-semibold">—</span>
           )}
         </div>
       )
@@ -961,16 +1367,20 @@ const AdminPanel = () => {
     {
       header: 'Status',
       render: (cat) => (
-        <div className="flex items-center gap-2">
-          <div className={`w-1.5 h-1.5 rounded-full ${cat.isActive ? 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.5)]' : 'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.5)]'}`}></div>
-          <span className="text-sm font-semibold uppercase text-gray-400">{cat.isActive ? 'Active' : 'Inactive'}</span>
-        </div>
+        <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-black uppercase tracking-wide border ${
+          cat.isActive 
+            ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20' 
+            : 'bg-zinc-500/10 text-zinc-400 border-zinc-500/20'
+        }`}>
+          <span className={`w-1.5 h-1.5 rounded-full ${cat.isActive ? 'bg-emerald-500' : 'bg-zinc-400'}`} />
+          {cat.isActive ? 'Active' : 'Inactive'}
+        </span>
       )
     },
     {
-      header: 'Created At',
+      header: 'Created On',
       render: (cat) => (
-        <span className={`text-xs font-bold ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+        <span className={`text-xs font-bold ${isDarkMode ? 'text-zinc-300' : 'text-zinc-600'}`}>
           {new Date(cat.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}
         </span>
       )
@@ -978,20 +1388,20 @@ const AdminPanel = () => {
     {
       header: 'Actions',
       render: (cat) => (
-        <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
-          <button title="View Category Details" onClick={() => setSelectedCourseCategoryId(cat._id)} className={`p-2.5 rounded-xl transition-all cursor-pointer ${isDarkMode ? 'bg-white/5 text-gray-400 hover:text-primary' : 'bg-gray-50 text-gray-400 hover:text-primary'}`}><Eye size={18} /></button>
+        <div className="flex items-center gap-1.5" onClick={(e) => e.stopPropagation()}>
+          <button title="View Details" onClick={() => setSelectedCourseCategoryId(cat._id)} className={`p-2 rounded-xl border transition-all cursor-pointer ${isDarkMode ? 'bg-zinc-800 border-zinc-700 text-zinc-300 hover:text-primary' : 'bg-zinc-100 border-zinc-200 text-zinc-600 hover:text-primary'}`}><Eye size={16} /></button>
           <button title="Delete Category" onClick={() => {
             Swal.fire({
               title: 'Delete Course Category?',
               text: `Are you sure you want to delete course category "${cat.label || cat.name}"?`,
               icon: 'warning',
               showCancelButton: true,
-              confirmButtonColor: '#da016a',
-              cancelButtonColor: '#94a3b8',
+              confirmButtonColor: '#fe3e6a',
+              cancelButtonColor: '#71717a',
               confirmButtonText: 'Yes, Delete',
               cancelButtonText: 'Cancel',
-              background: isDarkMode ? '#1f2937' : '#ffffff',
-              color: isDarkMode ? '#ffffff' : '#1f2937',
+              background: isDarkMode ? '#18181b' : '#ffffff',
+              color: isDarkMode ? '#ffffff' : '#18181b',
               borderRadius: '20px',
               customClass: {
                 popup: 'rounded-3xl border-none',
@@ -1016,7 +1426,7 @@ const AdminPanel = () => {
                 }
               }
             });
-          }} className={`p-2.5 rounded-xl transition-all cursor-pointer ${isDarkMode ? 'bg-white/5 text-gray-400 hover:text-red-500' : 'bg-gray-50 text-gray-400 hover:text-red-500'}`}><Trash2 size={18} /></button>
+          }} className={`p-2 rounded-xl border transition-all cursor-pointer ${isDarkMode ? 'bg-zinc-800 border-zinc-700 text-zinc-400 hover:text-rose-400' : 'bg-zinc-100 border-zinc-200 text-zinc-500 hover:text-rose-600'}`}><Trash2 size={16} /></button>
         </div>
       )
     }
@@ -1024,39 +1434,71 @@ const AdminPanel = () => {
 
   const orderColumns = [
     {
-      header: 'Order Number',
+      header: 'Order Details',
       render: (order) => (
-        <div className="flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-primary/10 text-primary">
+        <div className="flex items-center gap-3 text-left">
+          <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary border border-primary/20 flex items-center justify-center flex-shrink-0">
             <ShoppingBag size={18} />
           </div>
           <div className="flex flex-col">
-            <span className={`text-sm font-bold ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>{order.orderNumber}</span>
-            <span className="text-sm font-bold text-gray-400 uppercase">Payment: {order.paymentMethod}</span>
+            <span className={`text-sm font-black font-mono ${isDarkMode ? 'text-zinc-100' : 'text-zinc-900'}`}>{order.orderNumber}</span>
+            <span className="text-xs font-bold text-zinc-400 uppercase">Payment: {order.paymentMethod || 'Online'}</span>
           </div>
         </div>
       )
     },
-    { header: 'Status', render: (order) => <span className={`px-2 py-1 rounded text-sm font-bold uppercase ${order.status === 'delivered' ? 'bg-green-500/10 text-green-500' : 'bg-orange-500/10 text-orange-500'}`}>{order.status}</span> },
-    { header: 'Date & Time', render: (order) => <span className={`text-xs font-bold ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>{new Date(order.createdAt).toLocaleString('en-IN', { dateStyle: 'short', timeStyle: 'short' })}</span> },
-    { header: 'Total Value', render: (order) => <span className={`text-sm font-bold text-primary`}>₹{order.totalAmount?.toLocaleString()}</span> },
+    { 
+      header: 'Status', 
+      render: (order) => {
+        const isDelivered = order.status?.toLowerCase() === 'delivered';
+        const isCancelled = order.status?.toLowerCase() === 'cancelled';
+        return (
+          <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-black uppercase tracking-wide border ${
+            isDelivered 
+              ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20' 
+              : isCancelled 
+                ? 'bg-rose-500/10 text-rose-500 border-rose-500/20'
+                : 'bg-amber-500/10 text-amber-500 border-amber-500/20'
+          }`}>
+            <span className={`w-1.5 h-1.5 rounded-full ${isDelivered ? 'bg-emerald-500' : isCancelled ? 'bg-rose-500' : 'bg-amber-500'}`} />
+            {order.status || 'Pending'}
+          </span>
+        );
+      } 
+    },
+    { 
+      header: 'Date & Time', 
+      render: (order) => (
+        <span className={`text-xs font-bold ${isDarkMode ? 'text-zinc-300' : 'text-zinc-600'}`}>
+          {new Date(order.createdAt).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' })}
+        </span>
+      ) 
+    },
+    { 
+      header: 'Total Value', 
+      render: (order) => (
+        <span className={`text-sm font-black ${isDarkMode ? 'text-zinc-100' : 'text-zinc-900'}`}>
+          ₹{order.totalAmount?.toLocaleString('en-IN')}
+        </span>
+      ) 
+    },
     {
       header: 'Actions',
       render: (order) => (
-        <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
-          <button title="View Details" onClick={() => setSelectedOrderId(order._id)} className={`p-2.5 rounded-xl transition-all ${isDarkMode ? 'bg-white/5 text-gray-400 hover:text-primary' : 'bg-gray-50 text-gray-400 hover:text-primary'}`}><Eye size={18} /></button>
+        <div className="flex items-center gap-1.5" onClick={(e) => e.stopPropagation()}>
+          <button title="View Details" onClick={() => setSelectedOrderId(order._id)} className={`p-2 rounded-xl border transition-all cursor-pointer ${isDarkMode ? 'bg-zinc-800 border-zinc-700 text-zinc-300 hover:text-primary' : 'bg-zinc-100 border-zinc-200 text-zinc-600 hover:text-primary'}`}><Eye size={16} /></button>
           <button title="Delete Order" onClick={() => {
             Swal.fire({
               title: 'Delete Order?',
               text: `Are you sure you want to delete order "${order.orderNumber}"?`,
               icon: 'warning',
               showCancelButton: true,
-              confirmButtonColor: '#da016a',
-              cancelButtonColor: '#94a3b8',
+              confirmButtonColor: '#fe3e6a',
+              cancelButtonColor: '#71717a',
               confirmButtonText: 'Yes, Delete',
               cancelButtonText: 'Cancel',
-              background: isDarkMode ? '#1f2937' : '#ffffff',
-              color: isDarkMode ? '#ffffff' : '#1f2937',
+              background: isDarkMode ? '#18181b' : '#ffffff',
+              color: isDarkMode ? '#ffffff' : '#18181b',
               borderRadius: '20px',
               customClass: {
                 popup: 'rounded-3xl border-none',
@@ -1067,7 +1509,7 @@ const AdminPanel = () => {
               if (result.isConfirmed) {
                 const loadingToast = toast.loading('Deleting order...');
                 try {
-                  const res = await deleteCategory(order._id); // Delete API
+                  const res = await deleteCategory(order._id);
                   toast.dismiss(loadingToast);
                   if (res.success) {
                     toast.success(res.message || 'Order deleted successfully!');
@@ -1081,7 +1523,7 @@ const AdminPanel = () => {
                 }
               }
             });
-          }} className={`p-2.5 rounded-xl transition-all ${isDarkMode ? 'bg-white/5 text-gray-400 hover:text-red-500' : 'bg-gray-50 text-gray-400 hover:text-red-500'}`}><Trash2 size={18} /></button>
+          }} className={`p-2 rounded-xl border transition-all cursor-pointer ${isDarkMode ? 'bg-zinc-800 border-zinc-700 text-zinc-400 hover:text-rose-400' : 'bg-zinc-100 border-zinc-200 text-zinc-500 hover:text-rose-600'}`}><Trash2 size={16} /></button>
         </div>
       )
     }
@@ -1091,46 +1533,66 @@ const AdminPanel = () => {
     {
       header: 'Product Details',
       render: (product) => (
-        <div className="flex items-center gap-4">
-          <div className={`w-12 h-12 rounded-2xl overflow-hidden flex items-center justify-center font-bold border ${isDarkMode ? 'bg-gray-800 border-white/5' : 'bg-gray-100 border-gray-100 shadow-sm'}`}>
+        <div className="flex items-center gap-3 text-left">
+          <div className={`w-10 h-10 rounded-xl overflow-hidden flex items-center justify-center font-bold border flex-shrink-0 ${
+            isDarkMode ? 'bg-zinc-800 border-zinc-700' : 'bg-zinc-100 border-zinc-200'
+          }`}>
             {product.image?.url || (product.images && product.images[0]?.url) ? (
               <img src={product.image?.url || product.images[0].url} alt={product.name} className="w-full h-full object-cover" />
             ) : (
-              <span className="text-primary font-bold">{product.name?.charAt(0).toUpperCase()}</span>
+              <span className="text-primary font-black text-sm">{product.name?.charAt(0).toUpperCase()}</span>
             )}
           </div>
           <div className="flex flex-col">
-            <span className={`text-sm font-bold ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>{product.name}</span>
-            <span className="text-sm font-bold text-gray-400 uppercase">Code: {product._id?.substring(18)}</span>
+            <span className={`text-sm font-extrabold max-w-xs truncate ${isDarkMode ? 'text-zinc-100' : 'text-zinc-900'}`}>{product.name}</span>
+            <span className="text-xs font-mono font-bold text-zinc-400 uppercase">ID: {product._id?.substring(18)}</span>
           </div>
         </div>
       )
     },
-    { header: 'Price', render: (product) => <span className={`text-sm font-bold text-primary`}>₹{product.price?.toLocaleString()}</span> },
-    { header: 'Inventory', render: (product) => <span className={`text-xs font-bold ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>{product.stock !== undefined ? product.stock : 'N/A'} units</span> },
+    { 
+      header: 'Price', 
+      render: (product) => (
+        <span className={`text-sm font-black ${isDarkMode ? 'text-zinc-100' : 'text-zinc-900'}`}>
+          ₹{product.price?.toLocaleString('en-IN')}
+        </span>
+      ) 
+    },
+    { 
+      header: 'Inventory', 
+      render: (product) => (
+        <span className={`text-xs font-bold ${isDarkMode ? 'text-zinc-300' : 'text-zinc-600'}`}>
+          {product.stock !== undefined ? `${product.stock} units` : 'N/A'}
+        </span>
+      ) 
+    },
     {
       header: 'Status',
       render: (product) => {
         const active = product.isActive && !product.isDeleted;
         return (
-          <div className="flex items-center gap-2">
-            <div className={`w-1.5 h-1.5 rounded-full ${active ? 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.5)]' : 'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.5)]'}`}></div>
-            <span className="text-sm font-semibold uppercase text-gray-400">{product.status || 'ACTIVE'}</span>
-          </div>
+          <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-black uppercase tracking-wide border ${
+            active 
+              ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20' 
+              : 'bg-rose-500/10 text-rose-500 border-rose-500/20'
+          }`}>
+            <span className={`w-1.5 h-1.5 rounded-full ${active ? 'bg-emerald-500' : 'bg-rose-500'}`} />
+            {product.status || (active ? 'ACTIVE' : 'INACTIVE')}
+          </span>
         );
       }
     },
     {
       header: 'Actions',
       render: (product) => (
-        <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
+        <div className="flex items-center gap-1.5" onClick={(e) => e.stopPropagation()}>
           <button
             title="View Product Details"
             onClick={() => {
               Swal.fire({
                 title: product.name,
                 html: `
-                  <div class="text-left text-xs space-y-3 font-outfit mt-4 text-gray-600 dark:text-gray-300">
+                  <div class="text-left text-xs space-y-2.5 font-outfit mt-4 text-zinc-600 dark:text-zinc-300">
                     <p><strong>Slug:</strong> /${product.slug}</p>
                     <p><strong>Description:</strong> ${product.description || 'N/A'}</p>
                     <p><strong>Category ID:</strong> ${product.categoryId || 'N/A'}</p>
@@ -1142,10 +1604,10 @@ const AdminPanel = () => {
                     <p><strong>Has Variants:</strong> ${product.hasVariants ? 'Yes' : 'No'}</p>
                   </div>
                 `,
-                confirmButtonColor: '#da016a',
+                confirmButtonColor: '#fe3e6a',
                 confirmButtonText: 'Close',
-                background: isDarkMode ? '#1f2937' : '#ffffff',
-                color: isDarkMode ? '#ffffff' : '#1f2937',
+                background: isDarkMode ? '#18181b' : '#ffffff',
+                color: isDarkMode ? '#ffffff' : '#18181b',
                 borderRadius: '20px',
                 customClass: {
                   popup: 'rounded-3xl border-none p-6 md:p-8',
@@ -1153,9 +1615,9 @@ const AdminPanel = () => {
                 }
               });
             }}
-            className={`p-2.5 rounded-xl transition-all cursor-pointer ${isDarkMode ? 'bg-white/5 text-gray-400 hover:text-primary' : 'bg-gray-50 text-gray-400 hover:text-primary'}`}
+            className={`p-2 rounded-xl border transition-all cursor-pointer ${isDarkMode ? 'bg-zinc-800 border-zinc-700 text-zinc-300 hover:text-primary' : 'bg-zinc-100 border-zinc-200 text-zinc-600 hover:text-primary'}`}
           >
-            <Eye size={18} />
+            <Eye size={16} />
           </button>
           <button
             title="Delete Product"
@@ -1165,12 +1627,12 @@ const AdminPanel = () => {
                 text: `Are you sure you want to delete product "${product.name}"?`,
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonColor: '#da016a',
-                cancelButtonColor: '#94a3b8',
+                confirmButtonColor: '#fe3e6a',
+                cancelButtonColor: '#71717a',
                 confirmButtonText: 'Yes, Delete',
                 cancelButtonText: 'Cancel',
-                background: isDarkMode ? '#1f2937' : '#ffffff',
-                color: isDarkMode ? '#ffffff' : '#1f2937',
+                background: isDarkMode ? '#18181b' : '#ffffff',
+                color: isDarkMode ? '#ffffff' : '#18181b',
                 borderRadius: '20px',
                 customClass: {
                   popup: 'rounded-3xl border-none',
@@ -1197,9 +1659,9 @@ const AdminPanel = () => {
                 }
               });
             }}
-            className={`p-2.5 rounded-xl transition-all cursor-pointer ${isDarkMode ? 'bg-white/5 text-gray-400 hover:text-red-500' : 'bg-gray-50 text-gray-400 hover:text-red-500'}`}
+            className={`p-2 rounded-xl border transition-all cursor-pointer ${isDarkMode ? 'bg-zinc-800 border-zinc-700 text-zinc-400 hover:text-rose-400' : 'bg-zinc-100 border-zinc-200 text-zinc-500 hover:text-rose-600'}`}
           >
-            <Trash2 size={18} />
+            <Trash2 size={16} />
           </button>
         </div>
       )
@@ -1213,17 +1675,19 @@ const AdminPanel = () => {
         const userDetails = item.userId || {};
         const logo = item.profileImage?.url || item.profileImage || userDetails.avatar;
         return (
-          <div className="flex items-center gap-4">
-            <div className={`w-12 h-12 rounded-2xl overflow-hidden flex items-center justify-center font-bold border ${isDarkMode ? 'bg-gray-800 border-white/5' : 'bg-gray-100 border-gray-100 shadow-sm'}`}>
+          <div className="flex items-center gap-3 text-left">
+            <div className={`w-10 h-10 rounded-xl overflow-hidden flex items-center justify-center font-bold border flex-shrink-0 ${
+              isDarkMode ? 'bg-zinc-800 border-zinc-700' : 'bg-zinc-100 border-zinc-200'
+            }`}>
               {logo ? (
                 <img src={logo} alt={userDetails.name} className="w-full h-full object-cover" />
               ) : (
-                <span className="text-primary font-bold">{userDetails.name?.charAt(0).toUpperCase()}</span>
+                <span className="text-primary font-black text-sm">{userDetails.name?.charAt(0).toUpperCase() || 'E'}</span>
               )}
             </div>
             <div className="flex flex-col">
-              <span className={`text-sm font-bold ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>{userDetails.name || 'Educator Partner'}</span>
-              <span className="text-sm font-bold uppercase text-gray-400">{userDetails.email}</span>
+              <span className={`text-sm font-extrabold ${isDarkMode ? 'text-zinc-100' : 'text-zinc-900'}`}>{userDetails.name || 'Educator Partner'}</span>
+              <span className="text-xs font-bold text-zinc-400 lowercase">{userDetails.email}</span>
             </div>
           </div>
         );
@@ -1231,37 +1695,41 @@ const AdminPanel = () => {
     },
     {
       header: 'Bio',
-      render: (item) => {
-        return <span className={`text-xs font-medium ${isDarkMode ? 'text-gray-400' : 'text-gray-600'} line-clamp-2 max-w-xs`}>{item.bio || 'No bio description'}</span>;
-      }
+      render: (item) => (
+        <span className={`text-xs font-medium max-w-xs line-clamp-1 text-left ${isDarkMode ? 'text-zinc-300' : 'text-zinc-600'}`}>
+          {item.bio || 'No bio provided'}
+        </span>
+      )
     },
     {
       header: 'Expertise',
-      render: (item) => {
-        return (
-          <div className="flex flex-wrap gap-1 max-w-xs">
-            {item.expertise && item.expertise.length > 0 ? (
-              item.expertise.map((exp, i) => (
-                <span key={i} className="px-2 py-0.5 rounded bg-primary/10 text-primary text-[9px] font-bold uppercase">{exp}</span>
-              ))
-            ) : (
-              <span className="text-gray-450 text-sm font-bold uppercase">None</span>
-            )}
-          </div>
-        );
-      }
+      render: (item) => (
+        <div className="flex flex-wrap gap-1 max-w-xs">
+          {item.expertise && item.expertise.length > 0 ? (
+            item.expertise.slice(0, 3).map((exp, i) => (
+              <span key={i} className={`px-2 py-0.5 rounded-md text-xs font-bold uppercase border ${
+                isDarkMode ? 'bg-zinc-800 text-zinc-300 border-zinc-700' : 'bg-zinc-100 text-zinc-700 border-zinc-200'
+              }`}>{exp}</span>
+            ))
+          ) : (
+            <span className="text-zinc-400 text-xs font-semibold">—</span>
+          )}
+        </div>
+      )
     },
     {
       header: 'Active Status',
       render: (item) => {
         const isActive = item.isActive;
         return (
-          <div className="flex items-center gap-2">
-            <div className={`w-1.5 h-1.5 rounded-full ${isActive ? 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.5)]' : 'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.5)]'}`}></div>
-            <span className="text-sm font-semibold uppercase text-gray-400">
-              {isActive ? 'Active' : 'Inactive'}
-            </span>
-          </div>
+          <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-black uppercase tracking-wide border ${
+            isActive 
+              ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20' 
+              : 'bg-zinc-500/10 text-zinc-400 border-zinc-500/20'
+          }`}>
+            <span className={`w-1.5 h-1.5 rounded-full ${isActive ? 'bg-emerald-500' : 'bg-zinc-400'}`} />
+            {isActive ? 'Active' : 'Inactive'}
+          </span>
         );
       }
     },
@@ -1270,12 +1738,14 @@ const AdminPanel = () => {
       render: (item) => {
         const isApproved = item.isApproved;
         return (
-          <div className="flex items-center gap-2">
-            <div className={`w-1.5 h-1.5 rounded-full ${isApproved ? 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.5)]' : 'bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.5)]'}`}></div>
-            <span className="text-sm font-semibold uppercase text-gray-400">
-              {isApproved ? 'Approved' : 'Pending'}
-            </span>
-          </div>
+          <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-black uppercase tracking-wide border ${
+            isApproved 
+              ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20' 
+              : 'bg-amber-500/10 text-amber-500 border-amber-500/20'
+          }`}>
+            <span className={`w-1.5 h-1.5 rounded-full ${isApproved ? 'bg-emerald-500' : 'bg-amber-500'}`} />
+            {isApproved ? 'Approved' : 'Pending'}
+          </span>
         );
       }
     },
@@ -1286,7 +1756,7 @@ const AdminPanel = () => {
         const educatorId = item._id;
 
         return (
-          <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
+          <div className="flex items-center gap-1.5" onClick={(e) => e.stopPropagation()}>
             {!isApproved && (
               <button
                 title="Approve Educator"
@@ -1306,9 +1776,9 @@ const AdminPanel = () => {
                     toast.error('Something went wrong during approval.');
                   }
                 }}
-                className="p-2 bg-green-500 text-white rounded-xl shadow-lg shadow-green-500/20 hover:scale-110 transition-all cursor-pointer"
+                className="p-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl shadow-lg shadow-emerald-500/20 transition-all cursor-pointer"
               >
-                <CircleCheckBig size={15} />
+                <CircleCheckBig size={16} />
               </button>
             )}
             {isApproved && (
@@ -1330,9 +1800,9 @@ const AdminPanel = () => {
                     toast.error('Something went wrong.');
                   }
                 }}
-                className="p-2 bg-red-500 text-white rounded-xl shadow-lg shadow-red-500/20 hover:scale-110 transition-all cursor-pointer"
+                className="p-2 bg-rose-500 hover:bg-rose-600 text-white rounded-xl shadow-lg shadow-rose-500/20 transition-all cursor-pointer"
               >
-                <CircleX size={15} />
+                <CircleX size={16} />
               </button>
             )}
             <button
@@ -1353,14 +1823,15 @@ const AdminPanel = () => {
                   toast.error('Something went wrong.');
                 }
               }}
-              className={`p-2 rounded-xl transition-all cursor-pointer ${item.isActive
-                  ? (isDarkMode ? 'bg-white/5 text-green-500 hover:text-red-500' : 'bg-gray-50 text-green-600 hover:text-red-500')
-                  : (isDarkMode ? 'bg-white/5 text-gray-400 hover:text-green-500' : 'bg-gray-50 text-gray-400 hover:text-green-600')
-                }`}
+              className={`p-2 rounded-xl border transition-all cursor-pointer ${
+                item.isActive
+                  ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-500 hover:text-rose-500'
+                  : (isDarkMode ? 'bg-zinc-800 border-zinc-700 text-zinc-400 hover:text-emerald-400' : 'bg-zinc-100 border-zinc-200 text-zinc-500 hover:text-emerald-600')
+              }`}
             >
-              <Power size={15} />
+              <Power size={16} />
             </button>
-            <button onClick={() => setItemToDelete(item)} className={`p-2.5 rounded-xl transition-all ${isDarkMode ? 'bg-white/5 text-gray-400 hover:text-red-500' : 'bg-gray-50 text-gray-400 hover:text-red-500'}`}><Trash2 size={15} /></button>
+            <button title="Delete Educator" onClick={() => setItemToDelete(item)} className={`p-2 rounded-xl border transition-all cursor-pointer ${isDarkMode ? 'bg-zinc-800 border-zinc-700 text-zinc-400 hover:text-rose-400' : 'bg-zinc-100 border-zinc-200 text-zinc-500 hover:text-rose-600'}`}><Trash2 size={16} /></button>
           </div>
         );
       }
@@ -1368,7 +1839,7 @@ const AdminPanel = () => {
   ];
 
   return (
-    <div className={`flex min-h-screen font-outfit transition-colors duration-300 ${isDarkMode ? 'bg-gray-950 text-white' : 'bg-gray-50 text-gray-800'}`}>
+    <div className={`flex min-h-screen font-outfit transition-colors duration-300 ${isDarkMode ? 'bg-zinc-950 text-zinc-100' : 'bg-zinc-50 text-zinc-800'}`}>
       <UserDetailsModal userId={selectedUserId} onClose={() => setSelectedUserId(null)} />
       <OrderDetailsModal orderId={selectedOrderId} onClose={() => setSelectedOrderId(null)} />
       <InfluencerDetailsModal key={`inf-${selectedInfluencerId}`} influencerId={selectedInfluencerId} onClose={() => setSelectedInfluencerId(null)} onEditCoupon={(coupon) => { setEditingCoupon(coupon); setInfluencerForCoupon(true); }} onRefresh={fetchData} />
@@ -1455,34 +1926,34 @@ const AdminPanel = () => {
         ref={containerRef}
         className="flex-1 flex flex-col min-h-screen min-w-0 h-screen overflow-y-scroll"
       >
-        <header className={`h-24 flex-shrink-0 flex items-center justify-between px-6 lg:px-10 border-b sticky top-0 z-[1000] ${isDarkMode ? 'bg-gray-950/90 backdrop-blur-xl border-white/5' : 'bg-white/80 backdrop-blur-xl border-gray-100'}`}>
+        <header className={`h-20 flex-shrink-0 flex items-center justify-between px-6 lg:px-10 border-b sticky top-0 z-[100] ${isDarkMode ? 'bg-zinc-950/80 backdrop-blur-xl border-zinc-800' : 'bg-white/80 backdrop-blur-xl border-zinc-200'}`}>
           <div className="flex items-center gap-4 flex-1">
-            <button onClick={() => setIsSidebarOpen(true)} className="lg:hidden p-2 hover:bg-gray-100 dark:hover:bg-white/5 rounded-xl transition-colors">
-              <Menu size={20} className={isDarkMode ? 'text-gray-400' : 'text-gray-600'} />
+            <button onClick={() => setIsSidebarOpen(true)} className="lg:hidden p-2 hover:bg-zinc-100 dark:hover:bg-zinc-900 rounded-xl transition-colors cursor-pointer">
+              <Menu size={20} className={isDarkMode ? 'text-zinc-400' : 'text-zinc-600'} />
             </button>
             <div className="relative flex-1 max-w-md hidden sm:block">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-              <input type="text" placeholder="Search platform..." value={filters.search} onChange={(e) => setFilters(p => ({ ...p, search: e.target.value }))} onKeyDown={(e) => e.key === 'Enter' && fetchData()} className={`w-full pl-12 pr-4 py-3 border-none rounded-xl text-sm outline-none font-medium placeholder:text-gray-400 placeholder:font-normal placeholder:text-xs transition-all ${isDarkMode ? 'bg-white/5 text-gray-200' : 'bg-gray-50 text-gray-800 focus:bg-gray-100'}`} />
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400" size={16} />
+              <input type="text" placeholder="Search platform directory..." value={filters.search} onChange={(e) => setFilters(p => ({ ...p, search: e.target.value }))} onKeyDown={(e) => e.key === 'Enter' && fetchData()} className={`w-full pl-10 pr-4 py-2.5 border rounded-xl text-xs outline-none font-medium placeholder:text-zinc-400 transition-all ${isDarkMode ? 'bg-zinc-900 border-zinc-800 text-zinc-100 focus:border-zinc-700' : 'bg-zinc-50 border-zinc-200 text-zinc-900 focus:border-zinc-300'}`} />
             </div>
           </div>
-          <div className="flex items-center gap-4 ml-4">
-            <button onClick={toggleTheme} className={`p-3 rounded-xl transition-all border ${isDarkMode ? 'bg-white/5 text-primary border-white/5 shadow-xl shadow-primary/10' : 'bg-gray-50 text-primary border-transparent hover:bg-gray-100'}`}>{isDarkMode ? <Sun size={20} /> : <Moon size={20} />}</button>
-            <div className={`w-10 h-10 rounded-xl bg-primary text-white flex items-center justify-center font-bold shadow-lg shadow-primary/20`}>AD</div>
+          <div className="flex items-center gap-3 ml-4">
+            <button onClick={toggleTheme} className={`p-2.5 rounded-xl border transition-all cursor-pointer ${isDarkMode ? 'bg-zinc-900 border-zinc-800 text-amber-400 hover:border-zinc-700' : 'bg-white border-zinc-200 text-zinc-700 hover:bg-zinc-100'}`}>{isDarkMode ? <Sun size={18} /> : <Moon size={18} />}</button>
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-primary to-pink-500 text-white flex items-center justify-center font-black text-xs shadow-md shadow-primary/20">AD</div>
           </div>
         </header>
 
-        <main className="p-4 lg:p-10 space-y-6 lg:space-y-10 flex-grow">
+        <main className="p-4 lg:p-8 space-y-6 lg:space-y-8 flex-grow">
           {/* Shared directories block */}
           <div className={['users', 'vendors', 'pending', 'influencers', 'commission-slabs', 'coupons', 'categories', 'course-categories', 'orders', 'products', 'educators', 'all-educators', 'cashback-slabs'].includes(activeTab) ? 'block animate-in fade-in duration-300' : 'hidden'}>
-            <div className="space-y-6 lg:space-y-8">
+            <div className="space-y-6">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                  <h2 className={`text-lg lg:text-3xl font-bold uppercase transition-colors duration-300 ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>{activeTab.replace('-', ' ')} Directory</h2>
-                  <p className="text-sm font-semibold uppercase text-gray-400 mt-1">Oversee global system accounts</p>
+                  <h2 className={`text-xl lg:text-2xl font-black uppercase tracking-tight ${isDarkMode ? 'text-zinc-100' : 'text-zinc-900'}`}>{activeTab.replace('-', ' ')} Directory</h2>
+                  <p className="text-xs font-semibold uppercase text-zinc-400 tracking-wider mt-0.5">Oversee and manage platform records</p>
                 </div>
-                <div className={`px-4 lg:px-6 py-3 lg:py-4 rounded-2xl lg:rounded-[24px] border shadow-sm transition-colors duration-300 ${isDarkMode ? 'bg-gray-800 border-white/5' : 'bg-white border-gray-100'}`}>
-                  <p className="text-sm font-bold uppercase text-gray-400 mb-0.5">Total {activeTab === 'commission-slabs' ? 'Slabs' : activeTab}</p>
-                  <p className="text-xl lg:text-2xl font-bold">{pagination.total}</p>
+                <div className={`px-5 py-3 rounded-2xl border transition-all ${isDarkMode ? 'bg-zinc-900/90 border-zinc-800' : 'bg-white border-zinc-200 shadow-sm'}`}>
+                  <p className="text-xs font-bold uppercase text-zinc-400 tracking-wider mb-0.5">Total Records</p>
+                  <p className={`text-xl lg:text-2xl font-black tracking-tight ${isDarkMode ? 'text-zinc-100' : 'text-zinc-900'}`}>{pagination.total || 0}</p>
                 </div>
               </div>
 
@@ -1490,9 +1961,9 @@ const AdminPanel = () => {
                 <div className="flex">
                   <button
                     onClick={() => { setIsSendLinkOpen(true); }}
-                    className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 lg:px-8 py-3 lg:py-4 bg-primary text-white rounded-2xl font-bold text-xs uppercase shadow-xl shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all"
+                    className="flex items-center justify-center gap-2 px-5 py-2.5 bg-primary hover:bg-primary/90 text-white rounded-xl font-bold text-xs uppercase shadow-lg shadow-primary/20 transition-all cursor-pointer"
                   >
-                    <Sparkles size={18} />
+                    <Sparkles size={16} />
                     Send Invitation Link
                   </button>
                 </div>
@@ -1502,9 +1973,9 @@ const AdminPanel = () => {
                 <div className="flex">
                   <button
                     onClick={() => setIsCreateSlabOpen(true)}
-                    className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 lg:px-8 py-3 lg:py-4 bg-primary text-white rounded-2xl font-bold text-xs uppercase shadow-xl shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all cursor-pointer"
+                    className="flex items-center justify-center gap-2 px-5 py-2.5 bg-primary hover:bg-primary/90 text-white rounded-xl font-bold text-xs uppercase shadow-lg shadow-primary/20 transition-all cursor-pointer"
                   >
-                    <Plus size={18} />
+                    <Plus size={16} />
                     Create Slab
                   </button>
                 </div>
@@ -1514,9 +1985,9 @@ const AdminPanel = () => {
                 <div className="flex">
                   <button
                     onClick={() => setIsCreateCategoryOpen(true)}
-                    className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 lg:px-8 py-3 lg:py-4 bg-primary text-white rounded-2xl font-bold text-xs uppercase shadow-xl shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all cursor-pointer"
+                    className="flex items-center justify-center gap-2 px-5 py-2.5 bg-primary hover:bg-primary/90 text-white rounded-xl font-bold text-xs uppercase shadow-lg shadow-primary/20 transition-all cursor-pointer"
                   >
-                    <Plus size={18} />
+                    <Plus size={16} />
                     Create Category
                   </button>
                 </div>
@@ -1526,9 +1997,9 @@ const AdminPanel = () => {
                 <div className="flex">
                   <button
                     onClick={() => setIsCreateCourseCategoryOpen(true)}
-                    className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 lg:px-8 py-3 lg:py-4 bg-primary text-white rounded-2xl font-bold text-xs uppercase shadow-xl shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all cursor-pointer"
+                    className="flex items-center justify-center gap-2 px-5 py-2.5 bg-primary hover:bg-primary/90 text-white rounded-xl font-bold text-xs uppercase shadow-lg shadow-primary/20 transition-all cursor-pointer"
                   >
-                    <Plus size={18} />
+                    <Plus size={16} />
                     Create Course Category
                   </button>
                 </div>
@@ -1538,9 +2009,9 @@ const AdminPanel = () => {
                 <div className="flex">
                   <button
                     onClick={() => { setEditingCashbackSlab(null); setIsCreateCashbackSlabOpen(true); }}
-                    className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 lg:px-8 py-3 lg:py-4 bg-primary text-white rounded-2xl font-bold text-xs uppercase shadow-xl shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all cursor-pointer"
+                    className="flex items-center justify-center gap-2 px-5 py-2.5 bg-primary hover:bg-primary/90 text-white rounded-xl font-bold text-xs uppercase shadow-lg shadow-primary/20 transition-all cursor-pointer"
                   >
-                    <Plus size={18} />
+                    <Plus size={16} />
                     Create Cashback Slab
                   </button>
                 </div>
@@ -1556,11 +2027,11 @@ const AdminPanel = () => {
                         icon: 'warning',
                         showCancelButton: true,
                         confirmButtonColor: '#ef4444',
-                        cancelButtonColor: '#94a3b8',
+                        cancelButtonColor: '#71717a',
                         confirmButtonText: 'Yes, Delete All',
                         cancelButtonText: 'Cancel',
-                        background: isDarkMode ? '#1f2937' : '#ffffff',
-                        color: isDarkMode ? '#ffffff' : '#1f2937',
+                        background: isDarkMode ? '#18181b' : '#ffffff',
+                        color: isDarkMode ? '#ffffff' : '#18181b',
                         borderRadius: '20px',
                         customClass: {
                           popup: 'rounded-3xl border-none',
@@ -1586,9 +2057,9 @@ const AdminPanel = () => {
                         }
                       });
                     }}
-                    className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 lg:px-8 py-3 lg:py-4 bg-red-500 hover:bg-red-600 text-white rounded-2xl font-bold text-xs uppercase shadow-xl shadow-red-500/20 hover:scale-[1.02] active:scale-95 transition-all cursor-pointer"
+                    className="flex items-center justify-center gap-2 px-5 py-2.5 bg-rose-500 hover:bg-rose-600 text-white rounded-xl font-bold text-xs uppercase shadow-lg shadow-rose-500/20 transition-all cursor-pointer"
                   >
-                    <Trash2 size={18} />
+                    <Trash2 size={16} />
                     Delete All Products
                   </button>
                 </div>
@@ -1632,10 +2103,28 @@ const AdminPanel = () => {
                   else setSelectedVendorId(item.vendorId?._id || item._id);
                 }}
               />
-              <div className="flex justify-center gap-3">
-                <button onClick={() => setPagination(p => ({ ...p, page: p.page - 1 }))} disabled={pagination.page === 1} className={`p-4 rounded-2xl disabled:opacity-30 shadow-sm transition-all ${isDarkMode ? 'bg-gray-800 text-white hover:bg-primary' : 'bg-white text-gray-600 hover:bg-primary hover:text-white border border-gray-100'}`}><ChevronLeft size={20} /></button>
-                <div className="w-14 h-14 flex items-center justify-center bg-primary text-white rounded-2xl font-bold shadow-2xl shadow-primary/30 ring-4 ring-primary/10">{pagination.page}</div>
-                <button onClick={() => setPagination(p => ({ ...p, page: p.page + 1 }))} disabled={dataList.length < pagination.limit} className={`p-4 rounded-2xl disabled:opacity-30 shadow-sm transition-all ${isDarkMode ? 'bg-gray-800 text-white hover:bg-primary' : 'bg-white text-gray-600 hover:bg-primary hover:text-white border border-gray-100'}`}><ChevronRight size={20} /></button>
+              <div className="flex justify-center items-center gap-2 pt-2">
+                <button 
+                  onClick={() => setPagination(p => ({ ...p, page: p.page - 1 }))} 
+                  disabled={pagination.page === 1} 
+                  className={`w-11 h-11 flex items-center justify-center rounded-xl border transition-all disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer ${
+                    isDarkMode ? 'bg-zinc-900 border-zinc-800 text-zinc-300 hover:border-zinc-700 hover:text-white' : 'bg-white border-zinc-200 text-zinc-700 hover:bg-zinc-100'
+                  }`}
+                >
+                  <ChevronLeft size={18} />
+                </button>
+                <div className="w-11 h-11 flex items-center justify-center bg-primary text-white rounded-xl font-black text-sm shadow-md shadow-primary/20">
+                  {pagination.page}
+                </div>
+                <button 
+                  onClick={() => setPagination(p => ({ ...p, page: p.page + 1 }))} 
+                  disabled={dataList.length < pagination.limit} 
+                  className={`w-11 h-11 flex items-center justify-center rounded-xl border transition-all disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer ${
+                    isDarkMode ? 'bg-zinc-900 border-zinc-800 text-zinc-300 hover:border-zinc-700 hover:text-white' : 'bg-white border-zinc-200 text-zinc-700 hover:bg-zinc-100'
+                  }`}
+                >
+                  <ChevronRight size={18} />
+                </button>
               </div>
             </div>
           </div>

@@ -512,7 +512,7 @@ const ManageSections = ({ course: propCourse, isDarkMode: propDarkMode, onBack }
               
               <div className="space-y-4">
                 <div className="space-y-1">
-                  <label className="text-[9px] font-black uppercase text-gray-400 tracking-wider">Section Title</label>
+                  <label className="text-xs font-bold uppercase text-zinc-400 tracking-wider">Section Title</label>
                   <input 
                     type="text"
                     placeholder="e.g. Overview, Advanced Techniques"
@@ -520,14 +520,14 @@ const ManageSections = ({ course: propCourse, isDarkMode: propDarkMode, onBack }
                     onChange={(e) => setTitle(e.target.value)}
                     className={`w-full text-xs font-bold px-3.5 py-3 rounded-xl border outline-none transition-all ${
                       isDarkMode 
-                        ? 'bg-gray-950 border-white/5 focus:border-primary/50 text-white' 
-                        : 'bg-white border-gray-200 focus:border-primary/50 text-gray-800'
+                        ? 'bg-zinc-950 border-zinc-800 focus:border-primary/50 text-white' 
+                        : 'bg-white border-zinc-200 focus:border-primary/50 text-zinc-800'
                     }`}
                   />
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-[9px] font-black uppercase text-gray-400 tracking-wider">Display Order</label>
+                  <label className="text-xs font-bold uppercase text-zinc-400 tracking-wider">Display Order</label>
                   <input 
                     type="number"
                     min="1"
@@ -587,8 +587,8 @@ const ManageSections = ({ course: propCourse, isDarkMode: propDarkMode, onBack }
                             #{section.order || (idx + 1)}
                           </span>
                           <div>
-                            <p className={`font-bold text-xs ${isDarkMode ? 'text-white' : 'text-gray-850'}`}>{section.title}</p>
-                            <p className="text-[9px] text-gray-400 font-semibold uppercase mt-0.5">
+                            <p className={`font-bold text-xs ${isDarkMode ? 'text-white' : 'text-zinc-800'}`}>{section.title}</p>
+                            <p className="text-xs text-zinc-400 font-semibold uppercase mt-0.5">
                               {section.totalVideos || 0} Videos • {section.totalAttachments || 0} Attachments
                             </p>
                           </div>
@@ -642,10 +642,10 @@ const ManageSections = ({ course: propCourse, isDarkMode: propDarkMode, onBack }
                           {/* Section-level attachments list & form */}
                           <div className="space-y-2 border-b border-gray-100 dark:border-white/5 pb-4">
                             <div className="flex justify-between items-center">
-                              <h5 className="text-sm font-black uppercase text-gray-400 tracking-wider">Section Attachments</h5>
+                              <h5 className="text-xs font-bold uppercase text-zinc-400 tracking-wider">Section Attachments</h5>
                               <button 
                                 onClick={() => setAddingAttachmentSectionId(addingAttachmentSectionId === section._id ? null : section._id)}
-                                className="text-[9px] font-black uppercase text-primary hover:underline cursor-pointer"
+                                className="text-xs font-bold uppercase text-primary hover:underline cursor-pointer"
                               >
                                 {addingAttachmentSectionId === section._id ? 'Cancel' : '+ Add Section Attachment'}
                               </button>
@@ -655,8 +655,8 @@ const ManageSections = ({ course: propCourse, isDarkMode: propDarkMode, onBack }
                             {attachments.filter(att => att.sectionId === section._id && !att.lessonId).length > 0 ? (
                               <div className="space-y-1.5">
                                 {attachments.filter(att => att.sectionId === section._id && !att.lessonId).map(att => (
-                                  <div key={att._id} className={`flex justify-between items-center p-1.5 px-2 rounded-lg text-[9px] font-semibold ${
-                                    isDarkMode ? 'bg-gray-955/60 text-gray-300' : 'bg-gray-50 text-gray-600'
+                                  <div key={att._id} className={`flex justify-between items-center p-2 rounded-lg text-xs font-semibold ${
+                                    isDarkMode ? 'bg-zinc-950 text-zinc-300' : 'bg-zinc-50 text-zinc-600'
                                   }`}>
                                     <span>{att.type} • <a href={att.url} target="_blank" rel="noreferrer" className="text-primary hover:underline">{att.url}</a> ({att.duration}s)</span>
                                     <div className="flex items-center gap-1">
@@ -681,23 +681,23 @@ const ManageSections = ({ course: propCourse, isDarkMode: propDarkMode, onBack }
                                 ))}
                               </div>
                             ) : (
-                              <p className="text-[9px] font-bold text-gray-450 uppercase">No section-level attachments yet.</p>
+                              <p className="text-xs font-bold text-zinc-400 uppercase">No section-level attachments yet.</p>
                             )}
 
                             {/* Section Attachment Form */}
                             {addingAttachmentSectionId === section._id && (
-                              <form onSubmit={(e) => handleAttachmentSubmit(e, section._id, null)} className={`mt-2 p-3 rounded-lg border ${
-                                isDarkMode ? 'bg-gray-955 border-white/5' : 'bg-gray-55 border-gray-200'
-                              } space-y-2`}>
-                                <span className="text-[9px] font-black uppercase text-primary tracking-wider">{editingAttachment ? 'Edit Attachment Details' : 'Add Section Attachment'}</span>
-                                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                              <form onSubmit={(e) => handleAttachmentSubmit(e, section._id, null)} className={`mt-2 p-3.5 rounded-lg border ${
+                                isDarkMode ? 'bg-zinc-950 border-zinc-800' : 'bg-zinc-50 border-zinc-200'
+                              } space-y-2.5`}>
+                                <span className="text-xs font-bold uppercase text-primary tracking-wider">{editingAttachment ? 'Edit Attachment Details' : 'Add Section Attachment'}</span>
+                                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
                                   <div>
-                                    <label className="text-[7px] font-black uppercase text-gray-400 block mb-0.5">Type</label>
+                                    <label className="text-xs font-bold uppercase text-zinc-400 block mb-1">Type</label>
                                     <select 
                                       value={attachmentType}
                                       onChange={(e) => setAttachmentType(e.target.value)}
-                                      className={`w-full text-sm font-bold p-1 rounded border outline-none ${
-                                        isDarkMode ? 'bg-gray-900 border-white/5 text-white' : 'bg-white border-gray-200 text-gray-805'
+                                      className={`w-full text-xs font-bold p-2 rounded-lg border outline-none ${
+                                        isDarkMode ? 'bg-zinc-900 border-zinc-800 text-white' : 'bg-white border-zinc-200 text-zinc-800'
                                       }`}
                                     >
                                       <option value="OTHER">OTHER</option>
@@ -707,42 +707,42 @@ const ManageSections = ({ course: propCourse, isDarkMode: propDarkMode, onBack }
                                     </select>
                                   </div>
                                   <div className="sm:col-span-2">
-                                    <label className="text-[7px] font-black uppercase text-gray-400 block mb-0.5">Attachment URL</label>
+                                    <label className="text-xs font-bold uppercase text-zinc-400 block mb-1">Attachment URL</label>
                                     <input 
                                       type="text" 
                                       placeholder="e.g. dropbox.com/my-resource"
                                       value={attachmentUrl}
                                       onChange={(e) => setAttachmentUrl(e.target.value)}
-                                      className={`w-full text-sm font-bold p-1 rounded border outline-none ${
-                                        isDarkMode ? 'bg-gray-900 border-white/5 text-white' : 'bg-white border-gray-200 text-gray-805'
+                                      className={`w-full text-xs font-bold p-2 rounded-lg border outline-none ${
+                                        isDarkMode ? 'bg-zinc-900 border-zinc-800 text-white' : 'bg-white border-zinc-200 text-zinc-800'
                                       }`}
                                     />
                                   </div>
                                 </div>
                                 <div className="flex justify-between items-center pt-1">
                                   <div>
-                                    <label className="text-[7px] font-black uppercase text-gray-400 block mb-0.5">Duration (Seconds)</label>
+                                    <label className="text-xs font-bold uppercase text-zinc-400 block mb-1">Duration (Seconds)</label>
                                     <input 
                                       type="number" 
                                       value={attachmentDuration}
                                       onChange={(e) => setAttachmentDuration(e.target.value)}
-                                      className={`w-20 text-sm font-bold p-1 rounded border outline-none ${
-                                        isDarkMode ? 'bg-gray-900 border-white/5 text-white' : 'bg-white border-gray-200 text-gray-850'
+                                      className={`w-28 text-xs font-bold p-2 rounded-lg border outline-none ${
+                                        isDarkMode ? 'bg-zinc-900 border-zinc-800 text-white' : 'bg-white border-zinc-200 text-zinc-800'
                                       }`}
                                     />
                                   </div>
-                                  <div className="flex gap-1.5 mt-2">
+                                  <div className="flex gap-2 mt-2">
                                     <button 
                                       type="button" 
                                       onClick={resetAttachmentForm}
-                                      className="px-3 py-1.5 border border-gray-200 dark:border-white/5 hover:bg-gray-100 dark:hover:bg-white/5 text-[9px] font-bold uppercase rounded-lg transition-all cursor-pointer"
+                                      className="px-3 py-1.5 border border-zinc-200 dark:border-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-xs font-bold uppercase rounded-lg transition-all cursor-pointer"
                                     >
                                       Cancel
                                     </button>
                                     <button 
                                       type="submit" 
                                       disabled={attachmentSubmitLoading}
-                                      className="px-3 py-1.5 bg-primary hover:bg-primary/95 text-white text-[9px] font-bold uppercase rounded-lg shadow-sm transition-all cursor-pointer active:scale-95 disabled:opacity-50"
+                                      className="px-3 py-1.5 bg-primary hover:bg-primary/95 text-white text-xs font-bold uppercase rounded-lg shadow-sm transition-all cursor-pointer active:scale-95 disabled:opacity-50"
                                     >
                                       {attachmentSubmitLoading ? 'Saving...' : editingAttachment ? 'UPDATE' : 'ADD'}
                                     </button>
@@ -768,12 +768,12 @@ const ManageSections = ({ course: propCourse, isDarkMode: propDarkMode, onBack }
                                       <div>
                                         <div className="flex items-center gap-2">
                                           <span className="font-bold text-xs">#{lesson.order}</span>
-                                          <p className="font-bold text-gray-750 dark:text-gray-200">{lesson.title}</p>
+                                          <p className="font-bold text-zinc-800 dark:text-zinc-200">{lesson.title}</p>
                                           {lesson.isPreview && (
-                                            <span className="px-1.5 py-0.5 rounded text-[8px] font-black uppercase bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">Preview</span>
+                                            <span className="px-2 py-0.5 rounded text-xs font-bold uppercase bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">Preview</span>
                                           )}
                                         </div>
-                                        <p className="text-[9px] text-gray-400 font-semibold uppercase mt-0.5">
+                                        <p className="text-xs text-zinc-400 font-semibold uppercase mt-0.5">
                                           Duration: {Math.floor(lesson.durationInSeconds / 60)}m {lesson.durationInSeconds % 60}s • Video ID: {lesson.videoId || lesson.youtubeVideoId || 'None'}
                                         </p>
                                         {lesson.description && <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 font-medium">{lesson.description}</p>}
@@ -813,10 +813,10 @@ const ManageSections = ({ course: propCourse, isDarkMode: propDarkMode, onBack }
                                     {/* Render Attachments of this Lesson */}
                                     {attachments.filter(att => att.lessonId === lesson._id).length > 0 && (
                                       <div className="mt-2 space-y-1.5 pl-4 border-l border-primary/20">
-                                        <span className="text-[8px] font-black uppercase text-gray-400 tracking-wider">Attachments:</span>
+                                        <span className="text-xs font-bold uppercase text-zinc-400 tracking-wider">Attachments:</span>
                                         {attachments.filter(att => att.lessonId === lesson._id).map(att => (
-                                          <div key={att._id} className={`flex justify-between items-center p-1.5 px-2 rounded-lg text-[9px] font-semibold ${
-                                            isDarkMode ? 'bg-gray-955/60 text-gray-300' : 'bg-gray-50 text-gray-600'
+                                          <div key={att._id} className={`flex justify-between items-center p-2 rounded-lg text-xs font-semibold ${
+                                            isDarkMode ? 'bg-zinc-950 text-zinc-300' : 'bg-zinc-50 text-zinc-600'
                                           }`}>
                                             <span>{att.type} • <a href={att.url} target="_blank" rel="noreferrer" className="text-primary hover:underline">{att.url}</a> ({att.duration}s)</span>
                                             <div className="flex items-center gap-1">
@@ -844,18 +844,18 @@ const ManageSections = ({ course: propCourse, isDarkMode: propDarkMode, onBack }
 
                                     {/* Add Attachment Form */}
                                     {addingAttachmentLessonId === lesson._id && (
-                                      <form onSubmit={(e) => handleAttachmentSubmit(e, section._id, lesson._id)} className={`mt-2 p-3 rounded-lg border ${
-                                        isDarkMode ? 'bg-gray-955 border-white/5' : 'bg-gray-55 border-gray-200'
-                                      } space-y-2`}>
-                                        <span className="text-[9px] font-black uppercase text-primary tracking-wider">{editingAttachment ? 'Edit Attachment Details' : 'Add Attachment'}</span>
-                                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                                      <form onSubmit={(e) => handleAttachmentSubmit(e, section._id, lesson._id)} className={`mt-2 p-3.5 rounded-lg border ${
+                                        isDarkMode ? 'bg-zinc-950 border-zinc-800' : 'bg-zinc-50 border-zinc-200'
+                                      } space-y-2.5`}>
+                                        <span className="text-xs font-bold uppercase text-primary tracking-wider">{editingAttachment ? 'Edit Attachment Details' : 'Add Attachment'}</span>
+                                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
                                           <div>
-                                            <label className="text-[7px] font-black uppercase text-gray-400 block mb-0.5">Type</label>
+                                            <label className="text-xs font-bold uppercase text-zinc-400 block mb-1">Type</label>
                                             <select 
                                               value={attachmentType}
                                               onChange={(e) => setAttachmentType(e.target.value)}
-                                              className={`w-full text-sm font-bold p-1 rounded border outline-none ${
-                                                isDarkMode ? 'bg-gray-900 border-white/5 text-white' : 'bg-white border-gray-200 text-gray-805'
+                                              className={`w-full text-xs font-bold p-2 rounded-lg border outline-none ${
+                                                isDarkMode ? 'bg-zinc-900 border-zinc-800 text-white' : 'bg-white border-zinc-200 text-zinc-800'
                                               }`}
                                             >
                                               <option value="OTHER">OTHER</option>
@@ -865,42 +865,42 @@ const ManageSections = ({ course: propCourse, isDarkMode: propDarkMode, onBack }
                                             </select>
                                           </div>
                                           <div className="sm:col-span-2">
-                                            <label className="text-[7px] font-black uppercase text-gray-400 block mb-0.5">Attachment URL</label>
+                                            <label className="text-xs font-bold uppercase text-zinc-400 block mb-1">Attachment URL</label>
                                             <input 
                                               type="text" 
                                               placeholder="e.g. dropbox.com/my-resource"
                                               value={attachmentUrl}
                                               onChange={(e) => setAttachmentUrl(e.target.value)}
-                                              className={`w-full text-sm font-bold p-1 rounded border outline-none ${
-                                                isDarkMode ? 'bg-gray-900 border-white/5 text-white' : 'bg-white border-gray-200 text-gray-805'
+                                              className={`w-full text-xs font-bold p-2 rounded-lg border outline-none ${
+                                                isDarkMode ? 'bg-zinc-900 border-zinc-800 text-white' : 'bg-white border-zinc-200 text-zinc-800'
                                               }`}
                                             />
                                           </div>
                                         </div>
                                         <div className="flex justify-between items-center pt-1">
                                           <div>
-                                            <label className="text-[7px] font-black uppercase text-gray-400 block mb-0.5">Duration (Seconds)</label>
+                                            <label className="text-xs font-bold uppercase text-zinc-400 block mb-1">Duration (Seconds)</label>
                                             <input 
                                               type="number" 
                                               value={attachmentDuration}
                                               onChange={(e) => setAttachmentDuration(e.target.value)}
-                                              className={`w-20 text-sm font-bold p-1 rounded border outline-none ${
-                                                isDarkMode ? 'bg-gray-900 border-white/5 text-white' : 'bg-white border-gray-200 text-gray-850'
+                                              className={`w-28 text-xs font-bold p-2 rounded-lg border outline-none ${
+                                                isDarkMode ? 'bg-zinc-900 border-zinc-800 text-white' : 'bg-white border-zinc-200 text-zinc-800'
                                               }`}
                                             />
                                           </div>
-                                          <div className="flex gap-1.5 mt-2">
+                                          <div className="flex gap-2 mt-2">
                                             <button 
                                               type="button" 
                                               onClick={resetAttachmentForm}
-                                              className="px-3 py-1.5 border border-gray-200 dark:border-white/5 hover:bg-gray-100 dark:hover:bg-white/5 text-[9px] font-bold uppercase rounded-lg transition-all cursor-pointer"
+                                              className="px-3 py-1.5 border border-zinc-200 dark:border-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-xs font-bold uppercase rounded-lg transition-all cursor-pointer"
                                             >
                                               Cancel
                                             </button>
                                             <button 
                                               type="submit" 
                                               disabled={attachmentSubmitLoading}
-                                              className="px-3 py-1.5 bg-primary hover:bg-primary/95 text-white text-[9px] font-bold uppercase rounded-lg shadow-sm transition-all cursor-pointer active:scale-95 disabled:opacity-50"
+                                              className="px-3 py-1.5 bg-primary hover:bg-primary/95 text-white text-xs font-bold uppercase rounded-lg shadow-sm transition-all cursor-pointer active:scale-95 disabled:opacity-50"
                                             >
                                               {attachmentSubmitLoading ? 'Saving...' : editingAttachment ? 'UPDATE' : 'ADD'}
                                             </button>
@@ -917,14 +917,14 @@ const ManageSections = ({ course: propCourse, isDarkMode: propDarkMode, onBack }
                           </div>
 
                           {/* Lesson form */}
-                          <form onSubmit={(e) => handleLessonSubmit(e, section._id)} className={`p-4 rounded-xl border ${isDarkMode ? 'bg-gray-900 border-white/5' : 'bg-white border-gray-200'} space-y-3`}>
-                            <h5 className="text-sm font-black uppercase text-primary tracking-wider">
+                          <form onSubmit={(e) => handleLessonSubmit(e, section._id)} className={`p-4 rounded-xl border ${isDarkMode ? 'bg-zinc-900 border-zinc-800' : 'bg-white border-zinc-200'} space-y-3`}>
+                            <h5 className="text-xs font-bold uppercase text-primary tracking-wider">
                               {editingLesson ? 'Edit Lesson Details' : 'Add New Lesson'}
                             </h5>
 
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                               <div className="space-y-1">
-                                <label className="text-[8px] font-black uppercase text-gray-400 tracking-wider">Lesson Title</label>
+                                <label className="text-xs font-bold uppercase text-zinc-400 tracking-wider">Lesson Title</label>
                                 <input 
                                   type="text"
                                   placeholder="e.g. Skin Prep Basics"
@@ -932,14 +932,14 @@ const ManageSections = ({ course: propCourse, isDarkMode: propDarkMode, onBack }
                                   onChange={(e) => setLessonTitle(e.target.value)}
                                   className={`w-full text-xs font-bold px-3 py-2 rounded-lg border outline-none transition-all ${
                                     isDarkMode 
-                                      ? 'bg-gray-955 border-white/5 focus:border-primary/50 text-white' 
-                                      : 'bg-gray-55 border-gray-200 focus:border-primary/50 text-gray-800'
+                                      ? 'bg-zinc-950 border-zinc-800 focus:border-primary/50 text-white' 
+                                      : 'bg-zinc-50 border-zinc-200 focus:border-primary/50 text-zinc-800'
                                   }`}
                                 />
                               </div>
 
                               <div className="space-y-1">
-                                <label className="text-[8px] font-black uppercase text-gray-400 tracking-wider">Display Order</label>
+                                <label className="text-xs font-bold uppercase text-zinc-400 tracking-wider">Display Order</label>
                                 <input 
                                   type="number"
                                   min="1"
@@ -948,15 +948,15 @@ const ManageSections = ({ course: propCourse, isDarkMode: propDarkMode, onBack }
                                   onChange={(e) => setLessonOrder(e.target.value)}
                                   className={`w-full text-xs font-bold px-3 py-2 rounded-lg border outline-none transition-all ${
                                     isDarkMode 
-                                      ? 'bg-gray-955 border-white/5 focus:border-primary/50 text-white' 
-                                      : 'bg-gray-55 border-gray-200 focus:border-primary/50 text-gray-800'
+                                      ? 'bg-zinc-950 border-zinc-800 focus:border-primary/50 text-white' 
+                                      : 'bg-zinc-50 border-zinc-200 focus:border-primary/50 text-zinc-800'
                                   }`}
                                 />
                               </div>
                             </div>
 
                             <div className="space-y-1">
-                              <label className="text-[8px] font-black uppercase text-gray-400 tracking-wider">Description</label>
+                              <label className="text-xs font-bold uppercase text-zinc-400 tracking-wider">Description</label>
                               <textarea 
                                 placeholder="Explain what students will learn in this lesson..."
                                 value={lessonDescription}
@@ -964,15 +964,15 @@ const ManageSections = ({ course: propCourse, isDarkMode: propDarkMode, onBack }
                                 rows={2}
                                 className={`w-full text-xs font-semibold px-3 py-2 rounded-lg border outline-none transition-all resize-none ${
                                   isDarkMode 
-                                    ? 'bg-gray-955 border-white/5 focus:border-primary/50 text-white' 
-                                    : 'bg-gray-55 border-gray-200 focus:border-primary/50 text-gray-800'
+                                    ? 'bg-zinc-950 border-zinc-800 focus:border-primary/50 text-white' 
+                                    : 'bg-zinc-50 border-zinc-200 focus:border-primary/50 text-zinc-800'
                                 }`}
                               />
                             </div>
 
                             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                               <div className="space-y-1 sm:col-span-2">
-                                <label className="text-[8px] font-black uppercase text-gray-400 tracking-wider">Video URL</label>
+                                <label className="text-xs font-bold uppercase text-zinc-400 tracking-wider">Video URL</label>
                                 <input 
                                   type="text"
                                   placeholder="e.g. https://www.youtube.com/watch?v=..."
@@ -980,14 +980,14 @@ const ManageSections = ({ course: propCourse, isDarkMode: propDarkMode, onBack }
                                   onChange={(e) => setLessonVideoUrl(e.target.value)}
                                   className={`w-full text-xs font-bold px-3 py-2 rounded-lg border outline-none transition-all ${
                                     isDarkMode 
-                                      ? 'bg-gray-955 border-white/5 focus:border-primary/50 text-white' 
-                                      : 'bg-gray-55 border-gray-200 focus:border-primary/50 text-gray-800'
+                                      ? 'bg-zinc-950 border-zinc-800 focus:border-primary/50 text-white' 
+                                      : 'bg-zinc-50 border-zinc-200 focus:border-primary/50 text-zinc-800'
                                   }`}
                                 />
                               </div>
 
                               <div className="space-y-1">
-                                <label className="text-[8px] font-black uppercase text-gray-400 tracking-wider">Video ID</label>
+                                <label className="text-xs font-bold uppercase text-zinc-400 tracking-wider">Video ID</label>
                                 <input 
                                   type="text"
                                   placeholder="e.g. mv82MM1rU_g"
@@ -995,8 +995,8 @@ const ManageSections = ({ course: propCourse, isDarkMode: propDarkMode, onBack }
                                   onChange={(e) => setLessonVideoId(e.target.value)}
                                   className={`w-full text-xs font-bold px-3 py-2 rounded-lg border outline-none transition-all ${
                                     isDarkMode 
-                                      ? 'bg-gray-955 border-white/5 focus:border-primary/50 text-white' 
-                                      : 'bg-gray-55 border-gray-200 focus:border-primary/50 text-gray-800'
+                                      ? 'bg-zinc-950 border-zinc-800 focus:border-primary/50 text-white' 
+                                      : 'bg-zinc-50 border-zinc-200 focus:border-primary/50 text-zinc-800'
                                   }`}
                                 />
                               </div>
@@ -1005,7 +1005,7 @@ const ManageSections = ({ course: propCourse, isDarkMode: propDarkMode, onBack }
                             <div className="flex items-center justify-between gap-3 pt-2">
                               <div className="flex items-center gap-3">
                                 <div className="space-y-1">
-                                  <label className="block text-[8px] font-black uppercase text-gray-400 tracking-wider">Duration (Seconds)</label>
+                                  <label className="block text-xs font-bold uppercase text-zinc-400 tracking-wider">Duration (Seconds)</label>
                                   <input 
                                     type="number"
                                     min="0"
@@ -1027,7 +1027,7 @@ const ManageSections = ({ course: propCourse, isDarkMode: propDarkMode, onBack }
                                     onChange={(e) => setLessonIsPreview(e.target.checked)}
                                     className="accent-primary w-3.5 h-3.5 cursor-pointer"
                                   />
-                                  <span className="text-[9px] font-black uppercase text-gray-500 tracking-wider">Free Preview</span>
+                                  <span className="text-xs font-bold uppercase text-zinc-400 tracking-wider">Free Preview</span>
                                 </label>
                               </div>
 
@@ -1036,7 +1036,7 @@ const ManageSections = ({ course: propCourse, isDarkMode: propDarkMode, onBack }
                                   <button
                                     type="button"
                                     onClick={resetLessonForm}
-                                    className="px-3 py-2 border border-gray-200 dark:border-white/5 hover:bg-gray-100 dark:hover:bg-white/5 text-[9px] font-black uppercase rounded-lg transition-all cursor-pointer"
+                                    className="px-3 py-2 border border-zinc-200 dark:border-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-xs font-bold uppercase rounded-lg transition-all cursor-pointer"
                                   >
                                     Cancel
                                   </button>
@@ -1044,7 +1044,7 @@ const ManageSections = ({ course: propCourse, isDarkMode: propDarkMode, onBack }
                                 <button
                                   type="submit"
                                   disabled={lessonSubmitLoading}
-                                  className="flex items-center gap-1 px-4 py-2 bg-primary hover:bg-primary/95 text-white text-[9px] font-black uppercase rounded-lg shadow-sm transition-all cursor-pointer active:scale-95 disabled:opacity-50"
+                                  className="flex items-center gap-1.5 px-4 py-2 bg-primary hover:bg-primary/95 text-white text-xs font-bold uppercase rounded-lg shadow-sm transition-all cursor-pointer active:scale-95 disabled:opacity-50"
                                 >
                                   {lessonSubmitLoading ? (
                                     <Loader2 size={10} className="animate-spin" />

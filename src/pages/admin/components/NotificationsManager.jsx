@@ -923,17 +923,21 @@ const NotificationsManager = ({ isDarkMode }) => {
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 animate-in slide-in-from-top duration-300">
                       <div className="space-y-1">
                         <label className="text-xs font-bold text-gray-400 block">Scheduled Date & Time</label>
-                        <input
-                          type="datetime-local"
-                          required={isScheduled}
-                          value={scheduledAt}
-                          onChange={e => setScheduledAt(e.target.value)}
-                          className={`w-full px-4 py-2.5 rounded-xl border text-xs font-bold outline-none transition-all ${
-                            isDarkMode 
-                              ? 'bg-gray-900 border-white/5 text-white focus:border-primary/50' 
-                              : 'bg-gray-55 border-gray-150 text-gray-850 focus:border-primary/50'
-                          }`}
-                        />
+                        <div className="relative">
+                          <input
+                            type="datetime-local"
+                            required={isScheduled}
+                            value={scheduledAt}
+                            onChange={e => setScheduledAt(e.target.value)}
+                            onClick={(e) => e.target.showPicker?.()}
+                            className={`w-full pl-10 pr-4 py-2.5 rounded-xl border text-xs font-bold outline-none transition-all cursor-pointer ${
+                              isDarkMode 
+                                ? 'bg-gray-900 border-white/5 text-white focus:border-primary/50' 
+                                : 'bg-gray-55 border-gray-150 text-gray-850 focus:border-primary/50'
+                            }`}
+                          />
+                          <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 text-primary pointer-events-none" size={16} />
+                        </div>
                       </div>
 
                       <div className="flex items-center gap-2 h-full pt-6">

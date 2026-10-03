@@ -340,7 +340,7 @@ const EducatorDashboard = () => {
     {
       header: 'Category',
       render: (course) => (
-        <span className="px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase bg-primary/10 text-primary">
+        <span className="px-2.5 py-1 rounded-full text-xs font-bold uppercase bg-primary/10 text-primary">
           {course.categoryId?.label || course.categoryId?.name || 'Academy'}
         </span>
       )
@@ -348,8 +348,8 @@ const EducatorDashboard = () => {
     {
       header: 'Duration',
       render: (course) => (
-        <div className="flex flex-col text-sm font-bold uppercase text-gray-450 space-y-0.5">
-          <span className="flex items-center gap-1"><Clock size={11} className="text-primary" /> {course.totalDurationInMinutes ?? 0} mins</span>
+        <div className="flex flex-col text-xs font-semibold uppercase text-zinc-400 space-y-0.5">
+          <span className="flex items-center gap-1"><Clock size={12} className="text-primary" /> {course.totalDurationInMinutes ?? 0} mins</span>
           <span>{course.totalLessons ?? 0} lessons</span>
         </div>
       )
@@ -357,16 +357,16 @@ const EducatorDashboard = () => {
     {
       header: 'Level',
       render: (course) => (
-        <div className="font-bold uppercase tracking-wider text-sm text-gray-405">
+        <div className="font-bold uppercase tracking-wider text-xs text-zinc-400">
           <div>{course.level || 'Beginner'}</div>
-          <div className="text-[9px] text-gray-400 font-medium mt-0.5">{course.language || 'English'}</div>
+          <div className="text-xs text-zinc-400 font-medium mt-0.5">{course.language || 'English'}</div>
         </div>
       )
     },
     {
       header: 'Price',
       render: (course) => (
-        <span className="font-black text-sm text-primary">
+        <span className="font-bold text-sm text-primary">
           {course.isFree ? 'FREE' : `₹${course.sellingPrice?.toLocaleString()}`}
         </span>
       )
@@ -374,8 +374,8 @@ const EducatorDashboard = () => {
     {
       header: 'Status',
       render: (course) => (
-        <span className={`px-2.5 py-0.5 rounded-full text-[8px] font-black uppercase border tracking-wider ${
-          course.status === 'PUBLISHED' ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20' : 'bg-amber-500/10 text-amber-500 border-amber-500/20'
+        <span className={`px-2.5 py-1 rounded-full text-xs font-bold uppercase border tracking-wider ${
+          course.status === 'PUBLISHED' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 'bg-amber-500/10 text-amber-400 border-amber-500/20'
         }`}>
           {course.status}
         </span>
@@ -418,7 +418,7 @@ const EducatorDashboard = () => {
   ];
 
   return (
-    <div className={`flex h-screen overflow-hidden font-outfit text-left transition-colors duration-300 ${isDarkMode ? 'bg-gray-950 text-white' : 'bg-gray-55 text-gray-800'}`}>
+    <div className={`flex h-screen overflow-hidden font-outfit text-left transition-colors duration-300 ${isDarkMode ? 'bg-zinc-950 text-zinc-100' : 'bg-zinc-50 text-zinc-900'}`}>
       
       {/* Educator Sidebar */}
       <EducatorSidebar 
@@ -433,45 +433,45 @@ const EducatorDashboard = () => {
       {/* Main Content Scrollable Wrapper */}
       <div 
         ref={containerRef}
-        className={`flex-grow flex flex-col h-screen overflow-y-scroll transition-colors duration-300 ${isDarkMode ? 'bg-gray-900/30' : 'bg-gray-50'}`}
+        className={`flex-grow flex flex-col h-screen overflow-y-scroll transition-colors duration-300 ${isDarkMode ? 'bg-zinc-950' : 'bg-zinc-50'}`}
       >
         {/* Header Block */}
-        <header className={`h-24 flex-shrink-0 flex items-center justify-between px-6 lg:px-10 border-b sticky top-0 z-[1000] transition-colors duration-300 ${
-          isDarkMode ? 'bg-gray-905/90 border-white/5 backdrop-blur-xl text-white' : 'bg-white border-gray-100 backdrop-blur-xl text-gray-800'
+        <header className={`h-16 lg:h-20 flex-shrink-0 flex items-center justify-between px-6 lg:px-10 border-b sticky top-0 z-40 backdrop-blur-md transition-colors duration-300 ${
+          isDarkMode ? 'bg-zinc-950/85 border-zinc-800/80 text-white' : 'bg-white/95 border-zinc-200 text-zinc-900'
         }`}>
           <div className="flex items-center gap-3">
             {/* Hamburger for mobile */}
             <button 
               onClick={() => setIsSidebarOpen(true)}
-              className={`md:hidden p-2 rounded-xl border transition-all ${isDarkMode ? 'bg-white/5 border-white/5 text-gray-300' : 'bg-white border-gray-150 text-gray-650'}`}
+              className={`md:hidden p-2 rounded-xl border transition-all ${isDarkMode ? 'bg-zinc-900 border-zinc-800 text-zinc-300' : 'bg-zinc-100 border-zinc-200 text-zinc-700'}`}
             >
               <Menu size={18} />
             </button>
             <div>
-              <h1 className={`text-sm sm:text-base font-bold capitalize ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>
+              <h1 className={`text-base lg:text-lg font-bold capitalize tracking-tight ${isDarkMode ? 'text-white' : 'text-zinc-900'}`}>
                 {activeTab === 'overview' ? 'Overview' : activeTab === 'courses' ? 'Manage Courses' : activeTab === 'manage-sections' ? 'Manage Sections' : 'Profile Settings'}
               </h1>
             </div>
           </div>
-          <div className="flex gap-2 items-center justify-end sm:justify-start">
+          <div className="flex gap-2.5 items-center justify-end sm:justify-start">
             {/* Theme Toggle Button */}
             <button 
               onClick={toggleTheme} 
-              className={`p-2.5 sm:p-3 rounded-xl transition-all border ${isDarkMode ? 'bg-white/5 text-primary border-white/5 shadow-xl shadow-primary/10' : 'bg-white text-primary border-gray-155 hover:bg-gray-50'}`}
+              className={`p-2.5 rounded-xl transition-all border ${isDarkMode ? 'bg-zinc-900 text-amber-400 border-zinc-800 hover:bg-zinc-800' : 'bg-zinc-100 text-zinc-700 border-zinc-200 hover:bg-zinc-200'}`}
             >
-              {isDarkMode ? <Sun size={15} /> : <Moon size={15} />}
+              {isDarkMode ? <Sun size={17} /> : <Moon size={17} />}
             </button>
 
-            <button className={`p-2.5 sm:p-3 border rounded-xl transition-all relative cursor-pointer ${isDarkMode ? 'bg-white/5 border-white/5 text-gray-455 hover:text-gray-200' : 'bg-white border-gray-150 hover:bg-gray-50 text-gray-500'}`}>
-              <Bell size={15} />
+            <button className={`p-2.5 border rounded-xl transition-all relative cursor-pointer ${isDarkMode ? 'bg-zinc-900 border-zinc-800 text-zinc-400 hover:text-zinc-200' : 'bg-zinc-100 border-zinc-200 hover:bg-zinc-200 text-zinc-600'}`}>
+              <Bell size={17} />
               <div className="absolute top-2 right-2 w-1.5 h-1.5 bg-primary rounded-full" />
             </button>
             
             <button 
               onClick={handleLogout}
-              className="md:hidden flex items-center justify-center p-2.5 sm:p-3 bg-red-500/10 text-red-500 rounded-xl hover:bg-red-500/20 transition-all cursor-pointer"
+              className="md:hidden flex items-center justify-center p-2.5 bg-red-500/10 text-red-500 rounded-xl hover:bg-red-500/20 transition-all cursor-pointer"
             >
-              <LogOut size={15} />
+              <LogOut size={17} />
             </button>
           </div>
         </header>

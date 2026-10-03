@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../context/UserContext';
-import { Mail, Lock, User, ArrowRight, Eye, EyeOff, Loader2, ShieldCheck, KeyRound, Phone, ChevronDown } from 'lucide-react';
+import { Mail, Lock, User, ArrowRight, Eye, EyeOff, Loader2, ShieldCheck, KeyRound, Phone, ChevronDown, Tag } from 'lucide-react';
 import { registerUser, verifyEmail, loginUser, verifyLoginOtp, sendForgotPasswordOtp, verifyForgotPasswordOtp, sendVerifyEmailOtp } from '../api/authService';
+import { getStoredReferralCode, clearStoredReferralCode } from '../utils/referralTracking';
 
 const Auth = () => {
   const navigate = useNavigate();
@@ -16,6 +17,14 @@ const Auth = () => {
     roles: ['user'], // Default roles as an array
     phone: '' // Added phone
   });
+  const [referralCode, setReferralCode] = useState(() => getStoredReferralCode() || '');
+
+  useEffect(() => {
+    const code = getStoredReferralCode();
+    if (code && !referralCode) {
+      setReferralCode(code);
+    }
+  }, []);
 
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({ type: '', text: '' });
@@ -79,22 +88,32 @@ const Auth = () => {
 
           setTimeout(() => {
             const user = result.data.safeUser;
-            let role = user.role || (Array.isArray(user.roles) ? (user.roles.find(r => r !== 'user') || 'user') : 'user');
-            if (role === 'super_admin') role = 'admin';
-            if (role === 'admin') navigate('/admin?tab=dashboard');
-            else if (role === 'vendor') {
-              if (user.vendorId) navigate('/vendor/dashboard');
-              else navigate('/vendor/register');
-            }
-            else if (role === 'delivery_person' || role === 'rider' || role === 'driver') {
+            const rolesList = Array.isArray(user.roles) ? user.roles : (user.role ? [user.role] : ['user']);
+            const roleStatuses = typeof user.roleStatus === 'object' && user.roleStatus ? user.roleStatus : {};
+            
+            const isVendor = rolesList.includes('vendor') || user.role === 'vendor' || !!roleStatuses.vendor || !!roleStatuses['vendor'] || !!user.vendorId || !!user.vendor;
+
+            if (rolesList.includes('admin') || rolesList.includes('super_admin') || user.role === 'admin') {
+              navigate('/admin?tab=dashboard');
+            } else if (isVendor) {
+              if (user.vendorId || user.isVendorOnboardingCompleted || user.vendor || rolesList.includes('vendor') || roleStatuses.vendor === 'APPROVED') {
+                navigate('/vendor/dashboard');
+              } else {
+                navigate('/vendor/register');
+              }
+            } else if (rolesList.includes('delivery_person') || rolesList.includes('rider') || user.role === 'delivery_person') {
               navigate('/rider/dashboard');
-            }
-            else if (role === 'influencer') navigate('/influencer/dashboard');
-            else if (role === 'distributor') navigate('/distributor/dashboard');
-            else if (role === 'service_provider') navigate('/service-provider/dashboard');
-            else if (role === 'educator') {
+            } else if (rolesList.includes('service_provider') || user.role === 'service_provider' || !!roleStatuses.service_provider) {
+              navigate('/service-provider/dashboard');
+            } else if (rolesList.includes('educator') || user.role === 'educator' || !!roleStatuses.educator) {
               navigate('/educator/dashboard');
-            } else navigate('/');
+            } else if (rolesList.includes('influencer') || user.role === 'influencer' || !!roleStatuses.influencer) {
+              navigate('/influencer/dashboard');
+            } else if (rolesList.includes('distributor') || user.role === 'distributor' || !!roleStatuses.distributor) {
+              navigate('/distributor/dashboard');
+            } else {
+              navigate('/');
+            }
           }, 1500);
         } else {
           setMessage({
@@ -112,12 +131,14 @@ const Auth = () => {
       }
     } else {
       try {
+        const effectiveReferral = (referralCode || getStoredReferralCode() || '').trim().toUpperCase();
         const payload = {
           name: formData.name,
           email: formData.email,
           phone: formData.phone,
           password: formData.password,
-          roles: formData.roles && formData.roles.length > 0 ? formData.roles : ['user']
+          roles: formData.roles && formData.roles.length > 0 ? formData.roles : ['user'],
+          ...(effectiveReferral && { referralCode: effectiveReferral })
         };
         const response = await registerUser(payload);
         const result = response;
@@ -181,12 +202,12 @@ const Auth = () => {
 
           setTimeout(() => {
             const user = result.data.safeUser;
+            const rolesList = Array.isArray(user.roles) ? user.roles : (user.role ? [user.role] : ['user']);
             let role = user.role || (Array.isArray(user.roles) ? (user.roles.find(r => r !== 'user') || 'user') : 'user');
             if (role === 'super_admin') role = 'admin';
             if (role === 'admin') navigate('/admin?tab=dashboard');
-            else if (role === 'vendor') {
-              if (user.vendorId) navigate('/vendor/dashboard');
-              else navigate('/vendor/register');
+            else if (role === 'vendor' || user.vendorId || user.vendor || rolesList.includes('vendor')) {
+              navigate('/vendor/dashboard');
             }
             else if (role === 'influencer') navigate('/influencer/dashboard');
             else if (role === 'distributor') navigate('/distributor/dashboard');
@@ -196,6 +217,7 @@ const Auth = () => {
             } else navigate('/');
           }, 1500);
         } else {
+          clearStoredReferralCode();
           setTimeout(() => {
             setIsLogin(true);
             setShowOTP(false);
@@ -538,8 +560,8 @@ const Auth = () => {
                               <label
                                 key={role.id}
                                 className={`flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer select-none transition-colors ${isChecked
-                                    ? 'bg-primary/5 text-primary'
-                                    : 'hover:bg-gray-50 text-gray-600'
+                                  ? 'bg-primary/5 text-primary'
+                                  : 'hover:bg-gray-50 text-gray-600'
                                   }`}
                               >
                                 <input
@@ -610,6 +632,27 @@ const Auth = () => {
                   {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
               </div>
+
+              {!isLogin && (
+                <div className="relative group">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400 group-focus-within:text-primary transition-colors">
+                    <Tag size={18} />
+                  </div>
+                  <input
+                    name="referralCode"
+                    type="text"
+                    value={referralCode}
+                    onChange={(e) => setReferralCode(e.target.value.toUpperCase())}
+                    className="block w-full pl-10 pr-20 py-3 border border-gray-200 rounded-xl leading-5 bg-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary sm:text-sm transition-all font-bold tracking-wider uppercase"
+                    placeholder="Referral Code (Optional)"
+                  />
+                  {referralCode && (
+                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+                      Applied
+                    </span>
+                  )}
+                </div>
+              )}
 
               {isLogin && (
                 <div className="flex items-center justify-between">

@@ -21,15 +21,15 @@ const EducatorProfile = ({
   setEditImagePreview
 }) => {
   return (
-    <div className={`border p-4 sm:p-6 md:p-8 rounded-[2rem] shadow-sm max-w-2xl space-y-6 ${isDarkMode ? 'bg-gray-900 border-white/5' : 'bg-white border-gray-100'}`}>
-      <div className={`flex justify-between items-center gap-4 border-b pb-3 ${isDarkMode ? 'border-white/5' : 'border-gray-100'}`}>
-        <h3 className={`text-sm sm:text-base font-black uppercase tracking-tight ${isDarkMode ? 'text-gray-200' : 'text-gray-850'}`}>
+    <div className={`border p-5 sm:p-7 md:p-8 rounded-[2rem] shadow-sm max-w-2xl space-y-6 ${isDarkMode ? 'bg-zinc-900 border-zinc-800 shadow-md' : 'bg-white border-zinc-200'}`}>
+      <div className={`flex justify-between items-center gap-4 border-b pb-4 ${isDarkMode ? 'border-zinc-800' : 'border-zinc-200'}`}>
+        <h3 className={`text-base font-extrabold uppercase tracking-tight ${isDarkMode ? 'text-zinc-100' : 'text-zinc-900'}`}>
           Profile specifications
         </h3>
         {!isEditing && (
           <button
             onClick={() => setIsEditing(true)}
-            className="whitespace-nowrap flex-shrink-0 px-3.5 py-2 sm:px-4 sm:py-2 bg-primary hover:bg-primary/95 text-sm sm:text-xs font-black uppercase rounded-xl shadow-md shadow-primary/10 transition-all cursor-pointer"
+            className="whitespace-nowrap flex-shrink-0 px-4 py-2 bg-primary hover:bg-primary/95 text-white text-xs font-bold uppercase rounded-xl shadow-md shadow-primary/10 transition-all cursor-pointer"
           >
             Edit Profile
           </button>
@@ -40,21 +40,21 @@ const EducatorProfile = ({
         <form onSubmit={handleUpdateProfile} className="space-y-5 text-left">
           {/* Photo Upload */}
           <div className="space-y-2">
-            <label className="text-[9px] sm:text-sm font-black uppercase tracking-wider text-gray-400 block">Profile Photo</label>
+            <label className="text-xs font-bold uppercase tracking-wider text-zinc-400 block">Profile Photo</label>
             <div className="flex items-center gap-4">
-              <div className={`w-14 h-14 sm:w-16 sm:h-16 rounded-2xl border flex items-center justify-center overflow-hidden flex-shrink-0 ${isDarkMode ? 'bg-gray-950/50 border-white/5' : 'bg-gray-55 border-gray-150'}`}>
+              <div className={`w-14 h-14 sm:w-16 sm:h-16 rounded-2xl border flex items-center justify-center overflow-hidden flex-shrink-0 ${isDarkMode ? 'bg-zinc-950 border-zinc-800' : 'bg-zinc-100 border-zinc-200'}`}>
                 {editImagePreview ? (
                   <img src={editImagePreview} alt="Preview" className="w-full h-full object-cover" />
                 ) : (
-                  <User size={22} className="text-gray-400" />
+                  <User size={22} className="text-zinc-400" />
                 )}
               </div>
               <div>
                 <label 
                   htmlFor="profile-image-upload" 
-                  className={`inline-flex items-center gap-2 px-3.5 py-2 border text-[9px] sm:text-sm font-black uppercase rounded-xl cursor-pointer hover:bg-primary/5 hover:border-primary/30 transition-all ${isDarkMode ? 'bg-white/5 border-white/5 text-gray-300' : 'bg-white border-gray-200 text-gray-700'}`}
+                  className={`inline-flex items-center gap-2 px-3.5 py-2 border text-xs font-bold uppercase rounded-xl cursor-pointer hover:bg-primary/5 hover:border-primary/30 transition-all ${isDarkMode ? 'bg-zinc-950 border-zinc-800 text-zinc-300' : 'bg-white border-zinc-200 text-zinc-700'}`}
                 >
-                  <Upload size={11} className="text-primary" />
+                  <Upload size={14} className="text-primary" />
                   Upload Image
                 </label>
                 <input 
@@ -70,24 +70,24 @@ const EducatorProfile = ({
 
           {/* Bio */}
           <div className="space-y-2">
-            <label className="text-[9px] sm:text-sm font-black uppercase tracking-wider text-gray-400 block">Short Bio</label>
+            <label className="text-xs font-bold uppercase tracking-wider text-zinc-400 block">Short Bio</label>
             <textarea
               value={editBio}
               onChange={(e) => setEditBio(e.target.value)}
               rows={4}
               required
-              className={`block w-full px-4 py-3 border rounded-xl leading-normal placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/10 focus:border-primary text-xs font-bold transition-all resize-none text-gray-700 font-outfit ${isDarkMode ? 'bg-gray-950 border-white/5 text-white placeholder-gray-655 focus:border-primary' : 'bg-white border-gray-200 text-gray-700'}`}
+              className={`block w-full px-4 py-3 border rounded-xl leading-normal placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-primary/10 focus:border-primary text-xs font-semibold transition-all resize-none font-outfit ${isDarkMode ? 'bg-zinc-950 border-zinc-800 text-white placeholder-zinc-500 focus:border-primary' : 'bg-white border-zinc-200 text-zinc-800'}`}
             />
           </div>
 
           {/* Expertise */}
           <div className="space-y-2">
             <div className="flex justify-between items-center">
-              <label className="text-[9px] sm:text-sm font-black uppercase tracking-wider text-gray-400 block">Areas of Expertise</label>
+              <label className="text-xs font-bold uppercase tracking-wider text-zinc-400 block">Areas of Expertise</label>
               <button
                 type="button"
                 onClick={handleAddExpertise}
-                className="text-[9px] font-black text-primary hover:underline uppercase"
+                className="text-xs font-bold text-primary hover:underline uppercase cursor-pointer"
               >
                 + Add Tag
               </button>
@@ -101,13 +101,13 @@ const EducatorProfile = ({
                     onChange={(e) => handleExpertiseChange(idx, e.target.value)}
                     placeholder={`Expertise Tag #${idx + 1}`}
                     required
-                    className={`block w-full px-4 py-2.5 border rounded-xl leading-normal text-xs font-bold transition-all font-outfit ${isDarkMode ? 'bg-gray-950 border-white/5 text-white' : 'bg-white border-gray-200 text-gray-755'}`}
+                    className={`block w-full px-4 py-2.5 border rounded-xl leading-normal text-xs font-semibold transition-all font-outfit ${isDarkMode ? 'bg-zinc-950 border-zinc-800 text-white' : 'bg-white border-zinc-200 text-zinc-800'}`}
                   />
                   {editExpertise.length > 1 && (
                     <button
                       type="button"
                       onClick={() => handleRemoveExpertise(idx)}
-                      className={`p-2.5 border hover:bg-red-500/15 hover:border-red-500/30 hover:text-red-500 rounded-xl transition-all cursor-pointer ${isDarkMode ? 'bg-white/5 border-white/5 text-gray-400' : 'bg-gray-50 border-gray-155 text-gray-500'}`}
+                      className={`p-2.5 border hover:bg-red-500/15 hover:border-red-500/30 hover:text-red-500 rounded-xl transition-all cursor-pointer ${isDarkMode ? 'bg-zinc-950 border-zinc-800 text-zinc-400' : 'bg-zinc-50 border-zinc-200 text-zinc-500'}`}
                     >
                       <X size={14} />
                     </button>
@@ -118,11 +118,11 @@ const EducatorProfile = ({
           </div>
 
           {/* Actions */}
-          <div className={`flex gap-3 pt-4 border-t font-outfit ${isDarkMode ? 'border-white/5' : 'border-gray-100'}`}>
+          <div className={`flex gap-3 pt-4 border-t font-outfit ${isDarkMode ? 'border-zinc-800' : 'border-zinc-200'}`}>
             <button
               type="submit"
               disabled={updateLoading}
-              className="flex-1 py-3 bg-primary hover:bg-primary/95 text-white text-sm sm:text-xs font-black uppercase rounded-xl shadow-md shadow-primary/15 transition-all cursor-pointer flex justify-center items-center"
+              className="flex-1 py-3 bg-primary hover:bg-primary/95 text-white text-xs font-bold uppercase rounded-xl shadow-md shadow-primary/15 transition-all cursor-pointer flex justify-center items-center"
             >
               {updateLoading ? 'Saving...' : 'Save Changes'}
             </button>
@@ -135,33 +135,33 @@ const EducatorProfile = ({
                 setEditImagePreview(profile?.profileImage?.url || profile?.profileImage);
                 setEditFile(null);
               }}
-              className={`flex-1 py-3 text-sm sm:text-xs font-black uppercase rounded-xl transition-all cursor-pointer ${isDarkMode ? 'bg-white/5 hover:bg-white/10 text-gray-300' : 'bg-white hover:bg-gray-150 text-gray-700'}`}
+              className={`flex-1 py-3 text-xs font-bold uppercase rounded-xl transition-all cursor-pointer ${isDarkMode ? 'bg-zinc-800 hover:bg-zinc-700 text-zinc-200' : 'bg-zinc-100 hover:bg-zinc-200 text-zinc-700'}`}
             >
               Cancel
             </button>
           </div>
         </form>
       ) : (
-        <div className={`space-y-4 text-xs font-bold ${isDarkMode ? 'text-gray-350' : 'text-gray-600'}`}>
+        <div className={`space-y-4 text-xs font-bold ${isDarkMode ? 'text-zinc-300' : 'text-zinc-600'}`}>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <span className="text-[9px] uppercase text-gray-400">Full Name</span>
-              <p className={`p-3 border rounded-xl mt-1 ${isDarkMode ? 'bg-gray-950 border-white/5 text-gray-205' : 'bg-gray-50 border-gray-100 text-gray-800'}`}>{user?.name}</p>
+              <span className="text-xs uppercase font-bold text-zinc-400">Full Name</span>
+              <p className={`p-3 border rounded-xl mt-1 text-sm font-semibold ${isDarkMode ? 'bg-zinc-950 border-zinc-800 text-zinc-200' : 'bg-zinc-50 border-zinc-200 text-zinc-800'}`}>{user?.name}</p>
             </div>
             <div>
-              <span className="text-[9px] uppercase text-gray-400">Email Address</span>
-              <p className={`p-3 border rounded-xl mt-1 ${isDarkMode ? 'bg-gray-950 border-white/5 text-gray-205' : 'bg-gray-50 border-gray-100 text-gray-800'}`}>{user?.email}</p>
+              <span className="text-xs uppercase font-bold text-zinc-400">Email Address</span>
+              <p className={`p-3 border rounded-xl mt-1 text-sm font-mono font-medium ${isDarkMode ? 'bg-zinc-950 border-zinc-800 text-zinc-200' : 'bg-zinc-50 border-zinc-200 text-zinc-800'}`}>{user?.email}</p>
             </div>
           </div>
           <div>
-            <span className="text-[9px] uppercase text-gray-400">Bio Specification</span>
-            <p className={`p-3 border rounded-xl mt-1 leading-relaxed ${isDarkMode ? 'bg-gray-950 border-white/5 text-gray-300' : 'bg-gray-50 border-gray-100 text-gray-800'}`}>{profile?.bio}</p>
+            <span className="text-xs uppercase font-bold text-zinc-400">Bio Specification</span>
+            <p className={`p-3 border rounded-xl mt-1 leading-relaxed text-xs font-medium ${isDarkMode ? 'bg-zinc-950 border-zinc-800 text-zinc-300' : 'bg-zinc-50 border-zinc-200 text-zinc-800'}`}>{profile?.bio}</p>
           </div>
           <div>
-            <span className="text-[9px] uppercase text-gray-400">Expertise Tags</span>
+            <span className="text-xs uppercase font-bold text-zinc-400">Expertise Tags</span>
             <div className="flex flex-wrap gap-2 mt-2">
               {profile?.expertise?.map((exp, idx) => (
-                <span key={idx} className="px-3 py-1 bg-primary/10 text-primary border border-primary/20 rounded-full text-[9px] font-black uppercase">
+                <span key={idx} className="px-3 py-1 bg-primary/10 text-primary border border-primary/20 rounded-full text-xs font-bold uppercase">
                   {exp}
                 </span>
               ))}

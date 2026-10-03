@@ -16,6 +16,9 @@ export const getImageUrl = (img) => {
   // Convert old localhost or IP URLs stored in database to backendBase
   if (url.includes('localhost') || url.includes('192.168.') || url.includes(':9000')) {
     url = url.replace(/http:\/\/(192\.168\.\d+\.\d+|localhost|[\w.-]+)(:\d+)?(\/api\/v1)?/, backendBase);
+    if (url.startsWith('http://fashionfever.in')) {
+      url = url.replace('http://fashionfever.in', 'https://fashionfever.in');
+    }
   }
 
   // Convert old live domain URLs missing subpath

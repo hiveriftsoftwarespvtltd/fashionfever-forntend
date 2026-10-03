@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Sparkles, X, Loader2, Upload } from 'lucide-react';
+import { Sparkles, X, Loader2, Upload, Calendar } from 'lucide-react';
 import { toast } from '../../../utils/toast';
 import { addHomeContent, updateHomeContent } from '../../../api/adminService';
 import { useTheme } from '../../../context/ThemeContext';
@@ -339,11 +339,31 @@ const CreateHomeContentModal = ({ isOpen, onClose, onSuccess, editData }) => {
                 </div>
                 <div className="space-y-2">
                   <label className="text-sm font-bold uppercase text-gray-400">Start Date</label>
-                  <input type="date" name="startDate" value={formData.startDate} onChange={handleChange} className={`w-full px-4 py-3 rounded-2xl text-xs font-medium outline-none border transition-all ${isDarkMode ? 'bg-gray-900 border-gray-700 text-white focus:border-primary/50' : 'bg-gray-50 border-gray-100 text-gray-800 focus:bg-white focus:border-primary/30'}`} />
+                  <div className="relative">
+                    <input
+                      type="date"
+                      name="startDate"
+                      value={formData.startDate}
+                      onChange={handleChange}
+                      onClick={(e) => e.target.showPicker?.()}
+                      className={`w-full pl-10 pr-3 py-3 rounded-2xl text-xs font-medium outline-none border transition-all cursor-pointer ${isDarkMode ? 'bg-gray-900 border-gray-700 text-white focus:border-primary/50' : 'bg-gray-50 border-gray-100 text-gray-800 focus:bg-white focus:border-primary/30'}`}
+                    />
+                    <Calendar className="absolute left-3.5 top-1/2 -translate-y-1/2 text-primary pointer-events-none" size={15} />
+                  </div>
                 </div>
                 <div className="space-y-2">
                   <label className="text-sm font-bold uppercase text-gray-400">End Date</label>
-                  <input type="date" name="endDate" value={formData.endDate} onChange={handleChange} className={`w-full px-4 py-3 rounded-2xl text-xs font-medium outline-none border transition-all ${isDarkMode ? 'bg-gray-900 border-gray-700 text-white focus:border-primary/50' : 'bg-gray-50 border-gray-100 text-gray-800 focus:bg-white focus:border-primary/30'}`} />
+                  <div className="relative">
+                    <input
+                      type="date"
+                      name="endDate"
+                      value={formData.endDate}
+                      onChange={handleChange}
+                      onClick={(e) => e.target.showPicker?.()}
+                      className={`w-full pl-10 pr-3 py-3 rounded-2xl text-xs font-medium outline-none border transition-all cursor-pointer ${isDarkMode ? 'bg-gray-900 border-gray-700 text-white focus:border-primary/50' : 'bg-gray-50 border-gray-100 text-gray-800 focus:bg-white focus:border-primary/30'}`}
+                    />
+                    <Calendar className="absolute left-3.5 top-1/2 -translate-y-1/2 text-primary pointer-events-none" size={15} />
+                  </div>
                 </div>
               </div>
 

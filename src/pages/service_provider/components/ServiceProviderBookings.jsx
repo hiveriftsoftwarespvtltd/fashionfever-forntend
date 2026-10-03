@@ -119,7 +119,7 @@ const ServiceProviderBookings = ({ isDarkMode, bookings = [], setBookings }) => 
         else badgeStyle = 'bg-rose-500/10 text-rose-500 border-rose-500/20';
 
         return (
-          <span className={`px-2.5 py-1 rounded-xl text-[9px] font-black uppercase tracking-wider border ${badgeStyle}`}>
+          <span className={`px-2.5 py-1 rounded-xl text-xs font-bold uppercase tracking-wider border ${badgeStyle}`}>
             {row.status}
           </span>
         );

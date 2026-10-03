@@ -15,7 +15,13 @@ import {
   Briefcase,
   Pencil,
   Eye,
-  Trash2
+  Trash2,
+  Sparkles,
+  UploadCloud,
+  ImageIcon,
+  Users,
+  Check,
+  FileText
 } from 'lucide-react';
 import Swal from 'sweetalert2';
 import { toast } from '../../../utils/toast';
@@ -549,7 +555,7 @@ const ServiceProviderServices = ({ isDarkMode, services = [], setServices }) => 
 
                     {/* Service Type */}
                     <td className="py-4 px-6 text-center">
-                      <span className={`px-2.5 py-1 rounded-full text-[9px] font-black uppercase tracking-wider ${
+                      <span className={`px-2.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${
                         item.serviceType === 'BOTH' 
                           ? 'bg-purple-500/10 text-purple-500 border border-purple-500/20'
                           : item.serviceType === 'MALE'
@@ -562,7 +568,7 @@ const ServiceProviderServices = ({ isDarkMode, services = [], setServices }) => 
 
                     {/* Service Gender */}
                     <td className="py-4 px-6 text-center">
-                      <span className={`px-2.5 py-1 rounded-full text-[9px] font-black uppercase tracking-wider ${
+                      <span className={`px-2.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${
                         item.serviceGender === 'BOTH' 
                           ? 'bg-purple-500/10 text-purple-500 border border-purple-500/20'
                           : item.serviceGender === 'ONLY_MEN'
@@ -581,7 +587,7 @@ const ServiceProviderServices = ({ isDarkMode, services = [], setServices }) => 
                             ? 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.5)]'
                             : 'bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.5)]'
                         }`} />
-                        <span className="text-[9px] font-black uppercase text-gray-400 tracking-wider">
+                        <span className="text-xs font-bold uppercase text-zinc-400 tracking-wider">
                           {item.isActive ? 'Active' : 'Draft'}
                         </span>
                       </div>
@@ -629,58 +635,55 @@ const ServiceProviderServices = ({ isDarkMode, services = [], setServices }) => 
 
       {/* Create / Edit Service Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-[3000] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm overflow-y-auto font-outfit">
-          <div className={`w-full max-w-2xl my-auto rounded-3xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200 ${
-            isDarkMode ? 'bg-gray-800 border border-gray-700' : 'bg-white'
+        <div className="fixed inset-0 z-[3000] flex items-center justify-center p-3 sm:p-5 bg-zinc-950/60 backdrop-blur-sm overflow-y-auto font-outfit animate-in fade-in duration-200">
+          <div className={`w-full max-w-2xl my-auto rounded-2xl shadow-2xl overflow-hidden border ${
+            isDarkMode ? 'bg-zinc-900 border-zinc-800' : 'bg-white border-zinc-200'
           }`}>
-            <div className="p-6 md:p-8 max-h-[90vh] overflow-y-auto">
+            <div className="p-6 max-h-[90vh] overflow-y-auto text-left">
               
               {/* Modal Header */}
-              <div className="flex justify-between items-center mb-6">
-                <div className="flex items-center gap-3">
-                  <div className="p-3 bg-primary/10 text-primary rounded-xl">
-                    <Plus size={20} />
-                  </div>
-                  <div className="text-left">
-                    <h2 className={`text-lg font-bold uppercase ${isDarkMode ? 'text-white' : 'text-gray-850'}`}>
-                      {editingService ? 'Update Service Details' : 'Create New Service'}
-                    </h2>
-                    <p className="text-sm font-bold text-gray-400 uppercase mt-0.5">
-                      {editingService ? `Modify specifications for: ${editingService.title}` : 'Publish a new beauty or hair treatment to your catalogue'}
-                    </p>
-                  </div>
+              <div className="flex items-center justify-between pb-4 mb-5 border-b border-zinc-100 dark:border-zinc-800">
+                <div>
+                  <h2 className="text-lg font-bold text-zinc-900 dark:text-zinc-100">
+                    {editingService ? 'Edit Service' : 'Add New Service'}
+                  </h2>
+                  <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
+                    {editingService 
+                      ? 'Update service details, pricing, and images' 
+                      : 'Fill in the information below to add a service to your catalog'}
+                  </p>
                 </div>
                 <button 
+                  type="button"
                   onClick={() => setIsModalOpen(false)} 
-                  className={`p-2 rounded-xl transition-all cursor-pointer ${
-                    isDarkMode ? 'hover:bg-white/5 text-gray-500 hover:text-white' : 'hover:bg-gray-50 text-gray-400 hover:text-gray-600'
-                  }`}
+                  className="p-1.5 rounded-lg text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+                  aria-label="Close modal"
                 >
                   <X size={18} />
                 </button>
               </div>
 
               {/* Form Body */}
-              <form onSubmit={handleSubmit} className="space-y-5 text-left">
+              <form onSubmit={handleSubmit} className="space-y-4 text-left">
                 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {/* Category Selection */}
-                  <div className="space-y-1.5">
-                    <label className="text-sm font-black uppercase tracking-wider text-gray-400 flex items-center gap-1.5">
-                      <Tag size={11} className="text-primary" /> Service Category *
+                {/* Category & Title */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                  <div>
+                    <label className="block text-xs font-medium text-zinc-700 dark:text-zinc-300 mb-1.5">
+                      Category <span className="text-red-500">*</span>
                     </label>
                     <select
                       name="categoryId"
                       value={formData.categoryId}
                       onChange={handleInputChange}
                       required
-                      className={`w-full px-4 py-3 rounded-xl text-xs font-bold outline-none border transition-all cursor-pointer ${
+                      className={`w-full px-3.5 py-2 rounded-xl text-xs sm:text-sm font-medium border outline-none transition-all cursor-pointer ${
                         isDarkMode 
-                          ? 'bg-gray-900 border-gray-700 focus:border-primary/50 text-white' 
-                          : 'bg-gray-50 border-gray-100 focus:bg-white focus:border-primary/30 text-gray-800'
+                          ? 'bg-zinc-800/80 border-zinc-700/80 text-zinc-100 focus:border-primary' 
+                          : 'bg-zinc-50/80 border-zinc-200 text-zinc-800 focus:bg-white focus:border-primary'
                       }`}
                     >
-                      <option value="">Select a Category</option>
+                      <option value="">Select category</option>
                       {categories.map(cat => (
                         <option key={cat._id} value={cat._id}>
                           {cat.label || cat.name}
@@ -689,334 +692,281 @@ const ServiceProviderServices = ({ isDarkMode, services = [], setServices }) => 
                     </select>
                   </div>
 
-                  {/* Service Title */}
-                  <div className="space-y-1.5">
-                    <label className="text-sm font-black uppercase tracking-wider text-gray-400">
-                      Service Title *
+                  <div>
+                    <label className="block text-xs font-medium text-zinc-700 dark:text-zinc-300 mb-1.5">
+                      Service Title <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="text"
                       name="title"
                       value={formData.title}
                       onChange={handleInputChange}
-                      placeholder="e.g. Bridal HD Makeup"
+                      placeholder="e.g. Hair Spa & Deep Conditioning"
                       required
-                      className={`w-full px-4 py-3 rounded-xl text-xs font-bold outline-none border transition-all ${
+                      className={`w-full px-3.5 py-2 rounded-xl text-xs sm:text-sm font-medium border outline-none transition-all ${
                         isDarkMode 
-                          ? 'bg-gray-900 border-gray-700 focus:border-primary/50 text-white' 
-                          : 'bg-gray-50 border-gray-100 focus:bg-white focus:border-primary/30 text-gray-800'
+                          ? 'bg-zinc-800/80 border-zinc-700/80 text-zinc-100 placeholder:text-zinc-500 focus:border-primary' 
+                          : 'bg-zinc-50/80 border-zinc-200 text-zinc-800 placeholder:text-zinc-400 focus:bg-white focus:border-primary'
                       }`}
                     />
                   </div>
                 </div>
 
                 {/* Description */}
-                <div className="space-y-1.5">
-                  <label className="text-sm font-black uppercase tracking-wider text-gray-400">
-                    Service Description *
+                <div>
+                  <label className="block text-xs font-medium text-zinc-700 dark:text-zinc-300 mb-1.5">
+                    Description <span className="text-red-500">*</span>
                   </label>
                   <textarea
                     name="description"
                     value={formData.description}
                     onChange={handleInputChange}
-                    placeholder="Provide a comprehensive breakdown of what this treatment includes, products used, styling techniques, and prep details..."
+                    placeholder="Describe what is included, products used, and session procedure..."
                     required
                     rows={3}
-                    className={`w-full px-4 py-3 rounded-xl text-xs font-bold outline-none border transition-all resize-none ${
+                    className={`w-full px-3.5 py-2 rounded-xl text-xs sm:text-sm font-medium border outline-none transition-all resize-none ${
                       isDarkMode 
-                        ? 'bg-gray-900 border-gray-700 focus:border-primary/50 text-white' 
-                        : 'bg-gray-50 border-gray-100 focus:bg-white focus:border-primary/30 text-gray-800'
+                        ? 'bg-zinc-800/80 border-zinc-700/80 text-zinc-100 placeholder:text-zinc-500 focus:border-primary' 
+                        : 'bg-zinc-50/80 border-zinc-200 text-zinc-800 placeholder:text-zinc-400 focus:bg-white focus:border-primary'
                     }`}
                   />
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-                  {/* Duration */}
-                  <div className="space-y-1.5">
-                    <label className="text-sm font-black uppercase tracking-wider text-gray-400 flex items-center gap-1">
-                      <Clock size={11} /> Duration (Mins) *
+                {/* Duration & Pricing */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                  <div>
+                    <label className="block text-xs font-medium text-zinc-700 dark:text-zinc-300 mb-1.5">
+                      Duration (Mins) <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="number"
                       name="durationMinutes"
                       value={formData.durationMinutes}
                       onChange={handleInputChange}
-                      placeholder="60"
+                      placeholder="45"
                       required
                       min="1"
-                      className={`w-full px-4 py-3 rounded-xl text-xs font-bold outline-none border transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${
+                      className={`w-full px-3 py-2 rounded-xl text-xs sm:text-sm font-medium border outline-none transition-all ${
                         isDarkMode 
-                          ? 'bg-gray-900 border-gray-700 focus:border-primary/50 text-white' 
-                          : 'bg-gray-50 border-gray-100 focus:bg-white focus:border-primary/30 text-gray-800'
+                          ? 'bg-zinc-800/80 border-zinc-700/80 text-zinc-100 placeholder:text-zinc-500 focus:border-primary' 
+                          : 'bg-zinc-50/80 border-zinc-200 text-zinc-800 placeholder:text-zinc-400 focus:bg-white focus:border-primary'
                       }`}
                     />
                   </div>
 
-                  {/* Cost Price */}
-                  <div className="space-y-1.5">
-                    <label className="text-sm font-black uppercase tracking-wider text-gray-400 flex items-center gap-1">
-                      <IndianRupee size={11} /> Cost Price (₹) *
+                  <div>
+                    <label className="block text-xs font-medium text-zinc-700 dark:text-zinc-300 mb-1.5">
+                      Cost Price (₹) <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="number"
                       name="costPrice"
                       value={formData.costPrice}
                       onChange={handleInputChange}
-                      placeholder="1000"
+                      placeholder="0.00"
                       required
                       min="0"
-                      className={`w-full px-4 py-3 rounded-xl text-xs font-bold outline-none border transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${
+                      className={`w-full px-3 py-2 rounded-xl text-xs sm:text-sm font-medium border outline-none transition-all ${
                         isDarkMode 
-                          ? 'bg-gray-900 border-gray-700 focus:border-primary/50 text-white' 
-                          : 'bg-gray-50 border-gray-100 focus:bg-white focus:border-primary/30 text-gray-800'
+                          ? 'bg-zinc-800/80 border-zinc-700/80 text-zinc-100 placeholder:text-zinc-500 focus:border-primary' 
+                          : 'bg-zinc-50/80 border-zinc-200 text-zinc-800 placeholder:text-zinc-400 focus:bg-white focus:border-primary'
                       }`}
                     />
                   </div>
 
-                  {/* Selling Price */}
-                  <div className="space-y-1.5">
-                    <label className="text-sm font-black uppercase tracking-wider text-gray-400 flex items-center gap-1">
-                      <IndianRupee size={11} /> Selling Price (₹) *
+                  <div>
+                    <label className="block text-xs font-medium text-zinc-700 dark:text-zinc-300 mb-1.5">
+                      Selling Price (₹) <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="number"
                       name="sellingPrice"
                       value={formData.sellingPrice}
                       onChange={handleInputChange}
-                      placeholder="600"
+                      placeholder="0.00"
                       required
                       min="0"
-                      className={`w-full px-4 py-3 rounded-xl text-xs font-bold outline-none border transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${
+                      className={`w-full px-3 py-2 rounded-xl text-xs sm:text-sm font-medium border outline-none transition-all ${
                         isDarkMode 
-                          ? 'bg-gray-900 border-gray-700 focus:border-primary/50 text-white' 
-                          : 'bg-gray-50 border-gray-100 focus:bg-white focus:border-primary/30 text-gray-800'
+                          ? 'bg-zinc-800/80 border-zinc-700/80 text-zinc-100 placeholder:text-zinc-500 focus:border-primary' 
+                          : 'bg-zinc-50/80 border-zinc-200 text-zinc-800 placeholder:text-zinc-400 focus:bg-white focus:border-primary'
                       }`}
                     />
                   </div>
 
-                  {/* Offered Price */}
-                  <div className="space-y-1.5">
-                    <label className="text-sm font-black uppercase tracking-wider text-gray-400 flex items-center gap-1">
-                      <IndianRupee size={11} /> Offered Price (₹) *
-                    </label>
+                  <div>
+                    <div className="flex items-center justify-between mb-1.5">
+                      <label className="block text-xs font-medium text-zinc-700 dark:text-zinc-300">
+                        Offer Price (₹) <span className="text-red-500">*</span>
+                      </label>
+                      {formData.sellingPrice && formData.offeredPrice && Number(formData.sellingPrice) > Number(formData.offeredPrice) && (
+                        <span className="text-[10px] font-semibold text-emerald-600 dark:text-emerald-400">
+                          {Math.round(((Number(formData.sellingPrice) - Number(formData.offeredPrice)) / Number(formData.sellingPrice)) * 100)}% off
+                        </span>
+                      )}
+                    </div>
                     <input
                       type="number"
                       name="offeredPrice"
                       value={formData.offeredPrice}
                       onChange={handleInputChange}
-                      placeholder="600"
+                      placeholder="0.00"
                       required
                       min="0"
-                      className={`w-full px-4 py-3 rounded-xl text-xs font-bold outline-none border transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${
+                      className={`w-full px-3 py-2 rounded-xl text-xs sm:text-sm font-medium border outline-none transition-all ${
                         isDarkMode 
-                          ? 'bg-gray-900 border-gray-700 focus:border-primary/50 text-white' 
-                          : 'bg-gray-50 border-gray-100 focus:bg-white focus:border-primary/30 text-gray-800'
+                          ? 'bg-zinc-800/80 border-zinc-700/80 text-zinc-100 placeholder:text-zinc-500 focus:border-primary' 
+                          : 'bg-zinc-50/80 border-zinc-200 text-zinc-800 placeholder:text-zinc-400 focus:bg-white focus:border-primary'
                       }`}
                     />
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  {/* Service Type */}
-                  <div className="space-y-1.5">
-                    <label className="text-sm font-black uppercase tracking-wider text-gray-400">
-                      Service Type *
+                {/* Delivery Mode, Target Audience & Status */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <div>
+                    <label className="block text-xs font-medium text-zinc-700 dark:text-zinc-300 mb-1.5">
+                      Delivery Mode <span className="text-red-500">*</span>
                     </label>
                     <select
                       name="serviceType"
                       value={formData.serviceType}
                       onChange={handleInputChange}
                       required
-                      className={`w-full px-4 py-3 rounded-xl text-xs font-bold outline-none border transition-all cursor-pointer ${
+                      className={`w-full px-3 py-2 rounded-xl text-xs sm:text-sm font-medium border outline-none transition-all cursor-pointer ${
                         isDarkMode 
-                          ? 'bg-gray-900 border-gray-700 focus:border-primary/50 text-white' 
-                          : 'bg-gray-50 border-gray-100 focus:bg-white focus:border-primary/30 text-gray-800'
+                          ? 'bg-zinc-800/80 border-zinc-700/80 text-zinc-100 focus:border-primary' 
+                          : 'bg-zinc-50/80 border-zinc-200 text-zinc-800 focus:bg-white focus:border-primary'
                       }`}
                     >
-                      <option value="BOTH">BOTH (MALE & FEMALE)</option>
-                      <option value="MALE">MALE ONLY</option>
-                      <option value="FEMALE">FEMALE ONLY</option>
+                      <option value="BOTH">Both (Salon & At-Home)</option>
+                      <option value="SALON">Salon Only</option>
+                      <option value="HOME">At-Home Only</option>
                     </select>
                   </div>
 
-                  {/* Service Gender */}
-                  <div className="space-y-1.5">
-                    <label className="text-sm font-black uppercase tracking-wider text-gray-400">
-                      Service Gender *
+                  <div>
+                    <label className="block text-xs font-medium text-zinc-700 dark:text-zinc-300 mb-1.5">
+                      Target Audience <span className="text-red-500">*</span>
                     </label>
                     <select
                       name="serviceGender"
                       value={formData.serviceGender}
                       onChange={handleInputChange}
                       required
-                      className={`w-full px-4 py-3 rounded-xl text-xs font-bold outline-none border transition-all cursor-pointer ${
+                      className={`w-full px-3 py-2 rounded-xl text-xs sm:text-sm font-medium border outline-none transition-all cursor-pointer ${
                         isDarkMode 
-                          ? 'bg-gray-900 border-gray-700 focus:border-primary/50 text-white' 
-                          : 'bg-gray-50 border-gray-100 focus:bg-white focus:border-primary/30 text-gray-800'
+                          ? 'bg-zinc-800/80 border-zinc-700/80 text-zinc-100 focus:border-primary' 
+                          : 'bg-zinc-50/80 border-zinc-200 text-zinc-800 focus:bg-white focus:border-primary'
                       }`}
                     >
-                      <option value="BOTH">BOTH (MEN & WOMEN)</option>
-                      <option value="ONLY_MEN">ONLY MEN</option>
-                      <option value="ONLY_WOMEN">ONLY WOMEN</option>
+                      <option value="BOTH">All Genders (Unisex)</option>
+                      <option value="ONLY_WOMEN">Women Only</option>
+                      <option value="ONLY_MEN">Men Only</option>
                     </select>
                   </div>
 
-                  {/* Status Toggle (only in Edit mode) */}
-                  {editingService ? (
-                    <div className="space-y-1.5">
-                      <label className="text-sm font-black uppercase tracking-wider text-gray-400">
-                        Service Status *
-                      </label>
-                      <div className="flex items-center gap-3">
-                        <button
-                          type="button"
-                          onClick={() => setFormData(prev => ({ ...prev, isActive: !prev.isActive }))}
-                          className={`px-5 py-2.5 rounded-xl text-xs font-bold uppercase transition-all duration-200 cursor-pointer ${
-                            formData.isActive
-                              ? 'bg-green-500/10 text-green-500 border border-green-500/20'
-                              : 'bg-amber-500/10 text-amber-500 border border-amber-500/20'
-                          }`}
-                        >
-                          {formData.isActive ? 'Active' : 'Draft / Inactive'}
-                        </button>
-                      </div>
-                    </div>
-                  ) : (
-                    /* Multiple Images Upload */
-                    <div className="space-y-1.5">
-                      <label className="text-sm font-black uppercase tracking-wider text-gray-400 flex items-center gap-1">
-                        <Upload size={11} /> Service Images
-                      </label>
-                      <div className="relative">
-                        <input
-                          type="file"
-                          multiple
-                          accept="image/*"
-                          onChange={handleFileChange}
-                          className="hidden"
-                          id="image-upload-input"
-                        />
-                        <label
-                          htmlFor="image-upload-input"
-                          className={`w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-dashed text-xs font-bold cursor-pointer transition-all hover:bg-primary/5 hover:border-primary/40 ${
-                            isDarkMode 
-                              ? 'bg-gray-900 border-gray-700 text-gray-300' 
-                              : 'bg-gray-50 border-gray-200 text-gray-600'
-                          }`}
-                        >
-                          <Upload size={14} className="text-primary" />
-                          Choose image files...
-                        </label>
-                      </div>
-                    </div>
-                  )}
+                  <div>
+                    <label className="block text-xs font-medium text-zinc-700 dark:text-zinc-300 mb-1.5">
+                      Status
+                    </label>
+                    <select
+                      name="isActive"
+                      value={formData.isActive ? 'true' : 'false'}
+                      onChange={(e) => setFormData(prev => ({ ...prev, isActive: e.target.value === 'true' }))}
+                      className={`w-full px-3 py-2 rounded-xl text-xs sm:text-sm font-medium border outline-none transition-all cursor-pointer ${
+                        isDarkMode 
+                          ? 'bg-zinc-800/80 border-zinc-700/80 text-zinc-100 focus:border-primary' 
+                          : 'bg-zinc-50/80 border-zinc-200 text-zinc-800 focus:bg-white focus:border-primary'
+                      }`}
+                    >
+                      <option value="true">Active (Visible)</option>
+                      <option value="false">Inactive (Hidden)</option>
+                    </select>
+                  </div>
                 </div>
 
-                {/* Edit Mode: Upload new images option */}
-                {editingService && (
-                  <div className="space-y-1.5">
-                    <label className="text-sm font-black uppercase tracking-wider text-gray-400 flex items-center gap-1">
-                      <Upload size={11} /> Add New Images
+                {/* Images */}
+                <div className="space-y-2 pt-1">
+                  <label className="block text-xs font-medium text-zinc-700 dark:text-zinc-300">
+                    Images
+                  </label>
+                  
+                  <div>
+                    <input
+                      type="file"
+                      multiple
+                      accept="image/*"
+                      onChange={handleFileChange}
+                      className="hidden"
+                      id="image-upload-input"
+                    />
+                    <label
+                      htmlFor="image-upload-input"
+                      className={`w-full flex items-center justify-center gap-2.5 p-3.5 rounded-xl border border-dashed transition-all cursor-pointer group ${
+                        isDarkMode 
+                          ? 'bg-zinc-800/40 border-zinc-700 hover:border-primary/60 hover:bg-zinc-800/70' 
+                          : 'bg-zinc-50 border-zinc-300 hover:border-primary/60 hover:bg-zinc-100/60'
+                      }`}
+                    >
+                      <UploadCloud size={17} className="text-zinc-400 group-hover:text-primary transition-colors" />
+                      <span className="text-xs font-medium text-zinc-600 dark:text-zinc-400">
+                        Choose images or drag & drop (JPG, PNG, WEBP)
+                      </span>
                     </label>
-                    <div className="relative">
-                      <input
-                        type="file"
-                        multiple
-                        accept="image/*"
-                        onChange={handleFileChange}
-                        className="hidden"
-                        id="image-upload-input"
-                      />
-                      <label
-                        htmlFor="image-upload-input"
-                        className={`w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-dashed text-xs font-bold cursor-pointer transition-all hover:bg-primary/5 hover:border-primary/40 ${
-                          isDarkMode 
-                            ? 'bg-gray-900 border-gray-700 text-gray-300' 
-                            : 'bg-gray-50 border-gray-200 text-gray-600'
-                        }`}
-                      >
-                        <Upload size={14} className="text-primary" />
-                        Choose new files to append...
-                      </label>
-                    </div>
                   </div>
-                )}
 
-                {/* Existing Catalogue Images (edit mode only) */}
-                {editingService && existingImages.length > 0 && (
-                  <div className="space-y-2">
-                    <label className="text-[9px] font-black uppercase tracking-widest text-primary">
-                      Existing Catalogue Images ({existingImages.length})
-                    </label>
-                    <div className="grid grid-cols-4 sm:grid-cols-6 gap-3">
+                  {/* Thumbnail Previews */}
+                  {(existingImages.length > 0 || previews.length > 0) && (
+                    <div className="flex flex-wrap gap-2 pt-1">
                       {existingImages.map((img, index) => {
                         const url = img?.url || img;
                         return (
                           <div 
-                            key={index}
-                            className="relative aspect-square rounded-xl border border-gray-150 dark:border-white/5 overflow-hidden group shadow-sm"
+                            key={`existing-${index}`}
+                            className="relative w-14 h-14 rounded-lg border border-zinc-200 dark:border-zinc-700 overflow-hidden bg-zinc-100 dark:bg-zinc-800"
                           >
-                            <img src={url} alt="Catalogue" className="w-full h-full object-cover" />
+                            <img src={url} alt="Service" className="w-full h-full object-cover" />
                           </div>
                         );
                       })}
-                    </div>
-                  </div>
-                )}
-
-                {/* Selected Image Previews (newly uploaded) */}
-                {previews.length > 0 && (
-                  <div className="space-y-2">
-                    <label className="text-[9px] font-black uppercase tracking-widest text-primary">
-                      {editingService ? 'New Uploads to Add' : 'Selected Images'} ({previews.length})
-                    </label>
-                    <div className="grid grid-cols-4 sm:grid-cols-6 gap-3">
                       {previews.map((src, index) => (
                         <div 
-                          key={index}
-                          className="relative aspect-square rounded-xl border border-gray-150 dark:border-white/5 overflow-hidden group shadow-sm"
+                          key={`preview-${index}`}
+                          className="relative w-14 h-14 rounded-lg border border-primary/30 overflow-hidden bg-zinc-100 dark:bg-zinc-800 ring-1 ring-primary/30"
                         >
-                          <img src={src} alt="Preview" className="w-full h-full object-cover" />
+                          <img src={src} alt="Upload" className="w-full h-full object-cover" />
                           <button
                             type="button"
                             onClick={() => removeFile(index)}
-                            className="absolute -top-1 -right-1 p-1 bg-red-500 hover:bg-red-650 text-white rounded-full transition-all shadow-md"
+                            className="absolute top-1 right-1 w-4 h-4 bg-zinc-900/80 hover:bg-red-500 text-white rounded-full flex items-center justify-center transition-colors cursor-pointer"
+                            title="Remove image"
                           >
                             <X size={10} />
                           </button>
                         </div>
                       ))}
                     </div>
-                  </div>
-                )}
+                  )}
+                </div>
 
                 {/* Form Actions */}
-                <div className="flex items-center justify-end gap-3 pt-4 border-t border-gray-100 dark:border-white/5">
+                <div className="flex items-center justify-end gap-2.5 pt-4 border-t border-zinc-100 dark:border-zinc-800">
                   <button
                     type="button"
                     onClick={() => setIsModalOpen(false)}
                     disabled={submitLoading}
-                    className={`px-5 py-3 rounded-xl text-xs font-bold uppercase border transition-all cursor-pointer ${
-                      isDarkMode 
-                        ? 'border-gray-700 text-gray-300 hover:bg-white/5' 
-                        : 'border-gray-200 text-gray-600 hover:bg-gray-50'
-                    }`}
+                    className="px-4 py-2 rounded-xl text-xs font-semibold text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
                     disabled={submitLoading}
-                    className="flex items-center justify-center gap-2 px-6 py-3 bg-primary hover:bg-primary/95 text-white text-xs font-bold uppercase rounded-xl transition-all cursor-pointer shadow-md shadow-primary/20"
+                    className="flex items-center gap-2 px-5 py-2 bg-primary hover:bg-primary/90 text-white text-xs font-semibold rounded-xl shadow-sm transition-all cursor-pointer disabled:opacity-50"
                   >
-                    {submitLoading ? (
-                      <>
-                        <Loader2 size={14} className="animate-spin" />
-                        <span>Saving...</span>
-                      </>
-                    ) : (
-                      <span>{editingService ? 'Save Changes' : 'Publish Service'}</span>
-                    )}
+                    {submitLoading && <Loader2 size={13} className="animate-spin" />}
+                    <span>{editingService ? 'Save Changes' : 'Create Service'}</span>
                   </button>
                 </div>
               </form>
@@ -1064,10 +1014,10 @@ const ServiceProviderServices = ({ isDarkMode, services = [], setServices }) => 
               {/* Header Info */}
               <div className="flex justify-between items-start">
                 <div>
-                  <span className="text-[9px] font-black text-primary uppercase tracking-widest bg-primary/10 px-2.5 py-1 rounded-full">
+                  <span className="text-xs font-bold text-primary uppercase tracking-widest bg-primary/10 px-2.5 py-1 rounded-full">
                     {getCategoryName(viewingService)}
                   </span>
-                  <h3 className={`text-xl font-black uppercase mt-3 ${isDarkMode ? 'text-white' : 'text-gray-850'}`}>
+                  <h3 className={`text-xl font-black uppercase mt-3 ${isDarkMode ? 'text-white' : 'text-zinc-850'}`}>
                     {viewingService.title}
                   </h3>
                 </div>
@@ -1081,17 +1031,17 @@ const ServiceProviderServices = ({ isDarkMode, services = [], setServices }) => 
 
               {/* Grid Specifications */}
               <div className="grid grid-cols-4 gap-4">
-                <div className={`p-4 rounded-2xl border ${isDarkMode ? 'bg-gray-900/50 border-white/5' : 'bg-gray-50 border-gray-100/50'}`}>
-                  <p className="text-[9px] font-black text-gray-400 uppercase mb-1 flex items-center gap-1">
+                <div className={`p-4 rounded-2xl border ${isDarkMode ? 'bg-zinc-900/50 border-zinc-800' : 'bg-zinc-50 border-zinc-200'}`}>
+                  <p className="text-xs font-bold text-zinc-400 uppercase mb-1 flex items-center gap-1">
                     <Clock size={10} /> Duration
                   </p>
-                  <p className={`text-sm font-black ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>
+                  <p className={`text-sm font-black ${isDarkMode ? 'text-white' : 'text-zinc-800'}`}>
                     {viewingService.durationMinutes} Min
                   </p>
                 </div>
                 
-                <div className={`p-4 rounded-2xl border ${isDarkMode ? 'bg-gray-900/50 border-white/5' : 'bg-gray-50 border-gray-100/50'}`}>
-                  <p className="text-[9px] font-black text-gray-400 uppercase mb-1">Type</p>
+                <div className={`p-4 rounded-2xl border ${isDarkMode ? 'bg-zinc-900/50 border-zinc-800' : 'bg-zinc-50 border-zinc-200'}`}>
+                  <p className="text-xs font-bold text-zinc-400 uppercase mb-1">Type</p>
                   <p className={`text-xs font-black uppercase ${
                     viewingService.serviceType === 'BOTH' ? 'text-purple-500' : viewingService.serviceType === 'MALE' ? 'text-blue-500' : 'text-pink-500'
                   }`}>
@@ -1099,8 +1049,8 @@ const ServiceProviderServices = ({ isDarkMode, services = [], setServices }) => 
                   </p>
                 </div>
 
-                <div className={`p-4 rounded-2xl border ${isDarkMode ? 'bg-gray-900/50 border-white/5' : 'bg-gray-50 border-gray-100/50'}`}>
-                  <p className="text-[9px] font-black text-gray-400 uppercase mb-1">Gender</p>
+                <div className={`p-4 rounded-2xl border ${isDarkMode ? 'bg-zinc-900/50 border-zinc-800' : 'bg-zinc-50 border-zinc-200'}`}>
+                  <p className="text-xs font-bold text-zinc-400 uppercase mb-1">Gender</p>
                   <p className={`text-xs font-black uppercase ${
                     viewingService.serviceGender === 'BOTH' ? 'text-purple-500' : viewingService.serviceGender === 'ONLY_MEN' ? 'text-blue-500' : 'text-pink-500'
                   }`}>
@@ -1108,9 +1058,9 @@ const ServiceProviderServices = ({ isDarkMode, services = [], setServices }) => 
                   </p>
                 </div>
 
-                <div className={`p-4 rounded-2xl border ${isDarkMode ? 'bg-gray-900/50 border-white/5' : 'bg-gray-50 border-gray-100/50'}`}>
-                  <p className="text-[9px] font-black text-gray-400 uppercase mb-1">Rating</p>
-                  <p className={`text-sm font-black ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>
+                <div className={`p-4 rounded-2xl border ${isDarkMode ? 'bg-zinc-900/50 border-zinc-800' : 'bg-zinc-50 border-zinc-200'}`}>
+                  <p className="text-xs font-bold text-zinc-400 uppercase mb-1">Rating</p>
+                  <p className={`text-sm font-black ${isDarkMode ? 'text-white' : 'text-zinc-800'}`}>
                     {viewingService.providerId?.rating || 0} ★
                   </p>
                 </div>
@@ -1118,18 +1068,18 @@ const ServiceProviderServices = ({ isDarkMode, services = [], setServices }) => 
 
               {/* Pricing Cards */}
               <div className={`p-5 rounded-3xl border flex items-center justify-between ${
-                isDarkMode ? 'bg-gray-900/30 border-white/5' : 'bg-gray-50 border-gray-100'
+                isDarkMode ? 'bg-zinc-900/30 border-zinc-800' : 'bg-zinc-50 border-zinc-200'
               }`}>
                 <div>
-                  <p className="text-[9px] font-black text-gray-400 uppercase">Cost Price</p>
-                  <p className="text-sm font-bold text-gray-400 line-through">₹{viewingService.costPrice?.toLocaleString('en-IN')}</p>
+                  <p className="text-xs font-bold text-zinc-400 uppercase">Cost Price</p>
+                  <p className="text-sm font-bold text-zinc-400 line-through">₹{viewingService.costPrice?.toLocaleString('en-IN')}</p>
                 </div>
                 <div>
-                  <p className="text-[9px] font-black text-gray-400 uppercase">Selling Price</p>
-                  <p className={`text-sm font-extrabold ${isDarkMode ? 'text-gray-350' : 'text-gray-755'}`}>₹{viewingService.sellingPrice?.toLocaleString('en-IN')}</p>
+                  <p className="text-xs font-bold text-zinc-400 uppercase">Selling Price</p>
+                  <p className={`text-sm font-extrabold ${isDarkMode ? 'text-zinc-350' : 'text-zinc-755'}`}>₹{viewingService.sellingPrice?.toLocaleString('en-IN')}</p>
                 </div>
                 <div className="text-right">
-                  <p className="text-[9px] font-black text-emerald-500 uppercase">Offered Price</p>
+                  <p className="text-xs font-bold text-emerald-500 uppercase">Offered Price</p>
                   <p className="text-xl font-black text-emerald-500 dark:text-emerald-400">₹{viewingService.offeredPrice?.toLocaleString('en-IN')}</p>
                 </div>
               </div>

@@ -59,17 +59,17 @@ const VendorEarnings = ({
 
       {/* Sales Performance API block */}
       <div className={`p-6 md:p-8 rounded-[32px] border text-left transition-all duration-300 ${
-        isDarkMode ? 'bg-gray-900 border-white/5 shadow-xl' : 'bg-white border-gray-100 shadow-sm'
+        isDarkMode ? 'bg-zinc-900 border-zinc-800 shadow-md' : 'bg-white border-zinc-200 shadow-sm'
       }`}>
         <div className="flex justify-between items-center mb-6">
           <div>
-            <span className="text-[9px] font-bold text-primary uppercase block mb-1">Metrics Node</span>
-            <h3 className={`text-base font-extrabold uppercase ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>
+            <span className="text-xs font-bold text-primary uppercase block mb-1">Metrics Node</span>
+            <h3 className={`text-base font-extrabold uppercase ${isDarkMode ? 'text-white' : 'text-zinc-900'}`}>
               Sales Performance Analytics
             </h3>
           </div>
           <span className="px-2.5 py-1 bg-primary/10 text-primary rounded-xl text-xs font-bold uppercase">
-            API GET Status: 200 OK
+            Active Analytics
           </span>
         </div>
 

@@ -235,7 +235,7 @@ const Profile = () => {
                         className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-1 text-white cursor-pointer"
                       >
                         <Camera size={18} />
-                        <span className="text-[8px] font-bold uppercase">Change</span>
+                        <span className="text-xs font-bold uppercase">Change</span>
                       </button>
                       {isUploading && (
                         <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
@@ -251,7 +251,7 @@ const Profile = () => {
                       <h1 className="text-2xl font-extrabold text-gray-900 uppercase leading-none">
                         {profileData?.name}
                       </h1>
-                      <span className="bg-primary/10 text-primary text-[9px] font-bold uppercase  px-2.5 py-1 rounded-full">
+                      <span className="bg-primary/10 text-primary text-xs font-bold uppercase px-3 py-1 rounded-full">
                         {profileData?.role || 'User'}
                       </span>
                     </div>
@@ -353,12 +353,12 @@ const Profile = () => {
                     <p className="text-sm font-bold text-gray-800 mt-0.5">{profileData?.email}</p>
                   </div>
                   {profileData?.isEmailVerified ? (
-                    <span className="flex items-center gap-1 bg-green-50 border border-green-100 text-green-600 px-2 py-1 rounded-full text-[9px] font-bold uppercase self-start mt-5">
-                      <CheckCircle2 size={9} /> Verified
+                    <span className="flex items-center gap-1 bg-green-50 border border-green-100 text-green-600 px-2.5 py-1 rounded-full text-xs font-bold uppercase self-start mt-4">
+                      <CheckCircle2 size={12} /> Verified
                     </span>
                   ) : (
-                    <span className="flex items-center gap-1 bg-amber-50 border border-amber-100 text-amber-600 px-2 py-1 rounded-full text-[9px] font-bold uppercase self-start mt-5">
-                      <AlertTriangle size={9} /> Unverified
+                    <span className="flex items-center gap-1 bg-amber-50 border border-amber-100 text-amber-600 px-2.5 py-1 rounded-full text-xs font-bold uppercase self-start mt-4">
+                      <AlertTriangle size={12} /> Unverified
                     </span>
                   )}
                 </div>
@@ -394,9 +394,9 @@ const Profile = () => {
                     </div>
                     <button 
                       onClick={() => setShowPassModal(true)}
-                      className="flex items-center gap-1.5 text-[9px] font-bold uppercase text-primary border border-primary/20 bg-white hover:bg-primary/5 px-3 py-2 rounded-lg transition-all cursor-pointer shadow-sm"
+                      className="flex items-center gap-1.5 text-xs font-bold uppercase text-primary border border-primary/20 bg-white hover:bg-primary/5 px-3 py-2 rounded-lg transition-all cursor-pointer shadow-sm"
                     >
-                      <Lock size={12} /> Change Password
+                      <Lock size={13} /> Change Password
                     </button>
                   </div>
 
@@ -431,7 +431,7 @@ const Profile = () => {
                     </div>
                     <button 
                       onClick={() => toast.success('Logged out of all other devices.')}
-                      className="text-[9px] font-bold uppercase text-gray-600 bg-white border border-gray-200 hover:bg-gray-50 px-3 py-2 rounded-lg transition-all cursor-pointer shadow-sm"
+                      className="text-xs font-bold uppercase text-gray-600 bg-white border border-gray-200 hover:bg-gray-50 px-3 py-2 rounded-lg transition-all cursor-pointer shadow-sm"
                     >
                       Log Out Others
                     </button>
@@ -454,7 +454,7 @@ const Profile = () => {
                           </div>
                         ), { duration: 6000 });
                       }}
-                      className="text-[9px] font-bold uppercase text-red-500 bg-white border border-red-100 hover:bg-red-50 px-3 py-2 rounded-lg transition-all cursor-pointer shadow-sm"
+                      className="text-xs font-bold uppercase text-red-500 bg-white border border-red-100 hover:bg-red-50 px-3 py-2 rounded-lg transition-all cursor-pointer shadow-sm"
                     >
                       Deactivate
                     </button>
@@ -475,7 +475,7 @@ const Profile = () => {
                 <div className="flex items-center justify-between p-4 bg-gray-50/40 rounded-xl border border-gray-100 text-left">
                   <div className="text-left">
                     <p className="text-xs font-bold text-gray-800 uppercase">Email Promos</p>
-                    <p className="text-[9px] text-gray-400">Coupons & deals</p>
+                    <p className="text-xs text-gray-400">Coupons & deals</p>
                   </div>
                   <button 
                     onClick={() => {
@@ -497,7 +497,7 @@ const Profile = () => {
                 <div className="flex items-center justify-between p-4 bg-gray-50/40 rounded-xl border border-gray-100 text-left">
                   <div className="text-left">
                     <p className="text-xs font-bold text-gray-800 uppercase">SMS Alerts</p>
-                    <p className="text-[9px] text-gray-400">Flash sales texts</p>
+                    <p className="text-xs text-gray-400">Flash sales texts</p>
                   </div>
                   <button 
                     onClick={() => {
@@ -519,7 +519,7 @@ const Profile = () => {
                 <div className="flex items-center justify-between p-4 bg-gray-50/40 rounded-xl border border-gray-100 text-left">
                   <div className="text-left">
                     <p className="text-xs font-bold text-gray-800 uppercase">Order Status</p>
-                    <p className="text-[9px] text-gray-400">Shipped, delivered alerts</p>
+                    <p className="text-xs text-gray-400">Shipped, delivered alerts</p>
                   </div>
                   <button 
                     onClick={() => {

@@ -250,6 +250,26 @@ export const updateInfluencer = async (id, data) => {
     };
   }
 };
+
+/**
+ * Update influencer status (active, rejected, pending, blocked)
+ * @param {string} id - Influencer ID
+ * @param {string} status - New status (active, rejected, pending, blocked)
+ */
+export const updateInfluencerStatus = async (id, status) => {
+  try {
+    const response = await apiClient.put(`/influencers/update-influencer-status/${id}`, { status });
+    return response.data;
+  } catch (error) {
+    console.error('Update influencer status error:', error);
+    return error.response?.data || {
+      success: false,
+      message: 'Failed to update influencer status.',
+      statusCode: 500
+    };
+  }
+};
+
 /**
  * Delete an influencer profile
  * @param {string} id - Influencer ID
@@ -2289,6 +2309,84 @@ export const deleteServiceLeadAdmin = async (id) => {
     };
   }
 };
+
+/**
+ * Admin update custom commission rate for an influencer
+ * Method: PUT
+ * Route: /influencers/:id/commission-rate
+ * @param {string} influencerId
+ * @param {number|null} commissionRate
+ */
+export const updateInfluencerCommissionRate = async (influencerId, commissionRate) => {
+  try {
+    const response = await apiClient.put(`/influencers/${influencerId}/commission-rate`, {
+      commissionRate
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Update influencer commission rate error:', error);
+    return error.response?.data || {
+      success: false,
+      message: 'Failed to update commission rate.',
+      statusCode: 500
+    };
+  }
+};
+
+/**
+ * Get all creator payout requests for admin
+ * GET /payout/influencer-payouts
+ */
+export const getAdminInfluencerPayouts = async (params = {}) => {
+  try {
+    const response = await apiClient.get('/payout/influencer-payouts', { params });
+    return response.data;
+  } catch (error) {
+    console.error('Get admin influencer payouts error:', error);
+    return error.response?.data || {
+      success: false,
+      message: 'Failed to fetch influencer payouts.',
+      statusCode: 500
+    };
+  }
+};
+
+/**
+ * Admin settle creator payout request
+ * POST /payout/influencer-payout/settle
+ */
+export const settleAdminInfluencerPayout = async (payload) => {
+  try {
+    const response = await apiClient.post('/payout/influencer-payout/settle', payload);
+    return response.data;
+  } catch (error) {
+    console.error('Settle influencer payout error:', error);
+    return error.response?.data || {
+      success: false,
+      message: 'Failed to settle payout.',
+      statusCode: 500
+    };
+  }
+};
+
+/**
+ * Admin reject creator payout request
+ * POST /payout/influencer-payout/reject
+ */
+export const rejectAdminInfluencerPayout = async (payload) => {
+  try {
+    const response = await apiClient.post('/payout/influencer-payout/reject', payload);
+    return response.data;
+  } catch (error) {
+    console.error('Reject influencer payout error:', error);
+    return error.response?.data || {
+      success: false,
+      message: 'Failed to reject payout.',
+      statusCode: 500
+    };
+  }
+};
+
 
 
 

@@ -17,6 +17,7 @@ import ServiceProviderAvailability from './components/ServiceProviderAvailabilit
 import ServiceProviderWallet from './components/ServiceProviderWallet';
 import ServiceProviderLeads from './components/ServiceProviderLeads';
 import PayoutBankDetails from '../../components/shared/PayoutBankDetails';
+import ServiceProviderCoupons from './components/ServiceProviderCoupons';
 
 const ServiceProviderPanel = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -181,7 +182,7 @@ const ServiceProviderPanel = () => {
         <main className="p-6 lg:p-10 flex-grow flex items-start justify-center overflow-y-auto">
           <div className="w-full">
             <div className="text-center max-w-md mx-auto mb-8 space-y-2">
-              <span className="text-[9px] font-black text-primary uppercase tracking-widest block">Profile Registration</span>
+              <span className="text-xs font-bold text-primary uppercase tracking-widest block">Profile Registration</span>
               <h2 className="text-xl font-black uppercase">Create Your Service Profile</h2>
               <p className={`text-xs font-medium ${isDarkMode ? 'text-gray-450' : 'text-gray-500'}`}>
                 To list services and receive bookings, please complete your partner registration form first.
@@ -303,9 +304,9 @@ const ServiceProviderPanel = () => {
         <main className="p-6 lg:p-10 flex-grow flex items-start justify-center overflow-y-auto">
           <div className="w-full">
             <div className="text-center max-w-md mx-auto mb-8 space-y-2">
-              <span className="text-[9px] font-black text-rose-500 uppercase tracking-widest block">Update Rejected Profile</span>
+              <span className="text-xs font-bold text-rose-500 uppercase tracking-widest block">Update Rejected Profile</span>
               <h2 className="text-xl font-black uppercase">Resubmit Profile</h2>
-              <p className={`text-xs font-medium ${isDarkMode ? 'text-gray-450' : 'text-gray-500'}`}>
+              <p className={`text-xs font-medium ${isDarkMode ? 'text-zinc-400' : 'text-zinc-500'}`}>
                 Make necessary changes and submit the profile again for admin review.
               </p>
             </div>
@@ -404,22 +405,22 @@ const ServiceProviderPanel = () => {
       >
         
         {/* Header */}
-        <header className={`h-24 flex-shrink-0 flex items-center justify-between px-6 lg:px-10 border-b sticky top-0 z-[1000] ${
+        <header className={`h-20 flex-shrink-0 flex items-center justify-between px-6 lg:px-10 border-b sticky top-0 z-[1000] ${
           isDarkMode 
-            ? 'bg-gray-950/90 backdrop-blur-xl border-white/5' 
-            : 'bg-white/80 backdrop-blur-xl border-gray-100'
+            ? 'bg-zinc-950/90 backdrop-blur-xl border-zinc-800' 
+            : 'bg-white/80 backdrop-blur-xl border-zinc-200'
         }`}>
           <div className="flex items-center gap-4 flex-1">
             <button 
               onClick={() => setIsSidebarOpen(true)} 
-              className={`lg:hidden p-2 rounded-xl transition-colors ${
-                isDarkMode ? 'hover:bg-white/5 text-gray-400' : 'hover:bg-gray-100 text-gray-650'
+              className={`lg:hidden p-2 rounded-xl transition-colors cursor-pointer ${
+                isDarkMode ? 'hover:bg-zinc-800 text-zinc-400' : 'hover:bg-zinc-100 text-zinc-600'
               }`}
             >
               <Menu size={20} />
             </button>
-            <span className={`text-xs font-black uppercase tracking-wider hidden sm:inline-block ${
-              isDarkMode ? 'text-gray-400' : 'text-gray-500'
+            <span className={`text-xs font-bold uppercase tracking-wider hidden sm:inline-block ${
+              isDarkMode ? 'text-zinc-400' : 'text-zinc-500'
             }`}>
               FASHIONFEVER PARTNER CONSOLE
             </span>
@@ -497,6 +498,15 @@ const ServiceProviderPanel = () => {
                 isDarkMode={isDarkMode} 
                 role="service_provider"
                 ownerId={profileData?._id}
+              />
+            )}
+
+            {activeTab === 'coupons' && (
+              <ServiceProviderCoupons 
+                isDarkMode={isDarkMode}
+                services={services}
+                servicesLoading={servicesLoading}
+                profileData={profileData}
               />
             )}
 

@@ -254,26 +254,26 @@ const ServiceProviders = ({ isDarkMode }) => {
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <span className="text-[9px] font-black text-primary uppercase tracking-widest block mb-1">
+          <span className="text-xs font-bold text-primary uppercase tracking-widest block mb-1">
             People
           </span>
-          <h2 className={`text-2xl lg:text-3xl font-black uppercase ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>
+          <h2 className={`text-2xl lg:text-3xl font-black uppercase ${isDarkMode ? 'text-white' : 'text-zinc-900'}`}>
             Service Providers
           </h2>
-          <p className={`text-xs font-semibold mt-1 ${isDarkMode ? 'text-gray-500' : 'text-gray-400'}`}>
+          <p className={`text-xs font-semibold mt-1 ${isDarkMode ? 'text-zinc-400' : 'text-zinc-500'}`}>
             Manage and verify registered individual and salon professionals
           </p>
         </div>
         
         <div className="flex items-center gap-3">
-          <div className={`px-5 py-3 rounded-2xl border ${isDarkMode ? 'bg-gray-900 border-white/5' : 'bg-white border-gray-100'} shadow-sm`}>
-            <p className="text-[9px] font-black uppercase text-gray-400 mb-0.5">Total Providers</p>
-            <p className={`text-2xl font-black ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>{providers.length}</p>
+          <div className={`px-5 py-3 rounded-2xl border ${isDarkMode ? 'bg-zinc-900 border-zinc-800' : 'bg-white border-zinc-200'} shadow-sm`}>
+            <p className="text-xs font-bold uppercase text-zinc-400 mb-0.5">Total Providers</p>
+            <p className={`text-2xl font-black ${isDarkMode ? 'text-white' : 'text-zinc-900'}`}>{providers.length}</p>
           </div>
           <button
             onClick={fetchProviders}
             disabled={loading}
-            className={`p-3 rounded-2xl border transition-all ${isDarkMode ? 'bg-gray-900 border-white/5 text-gray-400 hover:text-white hover:bg-white/5' : 'bg-white border-gray-100 text-gray-500 hover:bg-gray-50'}`}
+            className={`p-3 rounded-2xl border transition-all ${isDarkMode ? 'bg-zinc-900 border-zinc-800 text-zinc-400 hover:text-white hover:bg-zinc-800' : 'bg-white border-zinc-200 text-zinc-600 hover:bg-zinc-50'}`}
             title="Refresh"
           >
             <RefreshCw size={16} className={loading ? 'animate-spin' : ''} />
@@ -284,18 +284,18 @@ const ServiceProviders = ({ isDarkMode }) => {
       {/* Stats Summary cards */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {[
-          { label: 'Approved', value: providers.filter(p => p.verificationStatus === 'APPROVED').length, color: 'text-emerald-500', bg: isDarkMode ? 'bg-emerald-500/5' : 'bg-emerald-50', icon: <CheckCircle2 size={15} /> },
-          { label: 'Pending Request', value: providers.filter(p => p.verificationStatus === 'PENDING').length, color: 'text-amber-500', bg: isDarkMode ? 'bg-amber-500/5' : 'bg-amber-50', icon: <Clock size={15} /> },
-          { label: 'Individual', value: providers.filter(p => p.providerType === 'INDIVIDUAL').length, color: 'text-blue-500', bg: isDarkMode ? 'bg-blue-500/5' : 'bg-blue-50', icon: <Briefcase size={15} /> },
-          { label: 'Salon Business', value: providers.filter(p => p.providerType === 'SALON').length, color: 'text-purple-500', bg: isDarkMode ? 'bg-purple-500/5' : 'bg-purple-50', icon: <MapPin size={15} /> },
+          { label: 'Approved', value: providers.filter(p => p.verificationStatus === 'APPROVED').length, color: 'text-emerald-500', bg: isDarkMode ? 'bg-emerald-500/10' : 'bg-emerald-50', icon: <CheckCircle2 size={16} /> },
+          { label: 'Pending Request', value: providers.filter(p => p.verificationStatus === 'PENDING').length, color: 'text-amber-500', bg: isDarkMode ? 'bg-amber-500/10' : 'bg-amber-50', icon: <Clock size={16} /> },
+          { label: 'Individual', value: providers.filter(p => p.providerType === 'INDIVIDUAL').length, color: 'text-blue-500', bg: isDarkMode ? 'bg-blue-500/10' : 'bg-blue-50', icon: <Briefcase size={16} /> },
+          { label: 'Salon Business', value: providers.filter(p => p.providerType === 'SALON').length, color: 'text-purple-500', bg: isDarkMode ? 'bg-purple-500/10' : 'bg-purple-50', icon: <MapPin size={16} /> },
         ].map((s, i) => (
-          <div key={i} className={`px-4 py-4 rounded-2xl border flex items-center gap-3 ${isDarkMode ? 'bg-gray-900 border-white/5' : 'bg-white border-gray-100'} shadow-sm`}>
-            <div className={`w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 ${s.bg} ${s.color}`}>
+          <div key={i} className={`px-4 py-4 rounded-2xl border flex items-center gap-3 ${isDarkMode ? 'bg-zinc-900 border-zinc-800' : 'bg-white border-zinc-200'} shadow-sm`}>
+            <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${s.bg} ${s.color}`}>
               {s.icon}
             </div>
             <div>
-              <p className={`text-lg font-black ${s.color}`}>{s.value}</p>
-              <p className={`text-[9px] font-black uppercase tracking-wider ${isDarkMode ? 'text-gray-600' : 'text-gray-400'}`}>{s.label}</p>
+              <p className={`text-xl font-black ${s.color}`}>{s.value}</p>
+              <p className={`text-xs font-bold uppercase tracking-wider ${isDarkMode ? 'text-zinc-400' : 'text-zinc-500'}`}>{s.label}</p>
             </div>
           </div>
         ))}

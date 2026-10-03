@@ -37,7 +37,7 @@ const VendorRiderMetricsModal = ({
             <p className="text-xs font-mono font-bold text-slate-500 flex items-center gap-1">
               <Phone size={12} /> {viewingRider.phone}
             </p>
-            <span className={`inline-block mt-1 text-[8px] font-black uppercase px-2 py-0.5 rounded-md border ${
+            <span className={`inline-block mt-1 text-xs font-bold uppercase px-2.5 py-0.5 rounded-md border ${
               viewingRider.status === 'AVAILABLE'
                 ? 'bg-emerald-50 text-emerald-600 border-emerald-100'
                 : viewingRider.status === 'ON_DELIVERY'
@@ -54,11 +54,11 @@ const VendorRiderMetricsModal = ({
         {/* Performance Stats Grid */}
         <div className="grid grid-cols-2 gap-3 mb-4">
           <div className="bg-slate-50 border border-slate-100 p-4 rounded-2xl">
-            <span className="text-[9px] font-black text-slate-400 uppercase tracking-wider block mb-1">Delivered Orders</span>
+            <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-1">Delivered Orders</span>
             <span className="text-xl font-black text-slate-800">{viewingRider.totalDeliveredOrders || 0}</span>
           </div>
           <div className="bg-slate-50 border border-slate-100 p-4 rounded-2xl">
-            <span className="text-[9px] font-black text-slate-400 uppercase tracking-wider block mb-1">Avg Delivery Time</span>
+            <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-1">Avg Delivery Time</span>
             <span className="text-xl font-black text-primary">{viewingRider.avgDeliveryTimeInMinutes || 0} <span className="text-xs font-bold text-slate-500">Mins</span></span>
           </div>
         </div>
@@ -66,19 +66,19 @@ const VendorRiderMetricsModal = ({
         {/* Rider Credentials & Details */}
         <div className="bg-slate-50/70 border border-slate-100 rounded-2xl p-4 space-y-2.5 text-xs font-semibold text-slate-600">
           <div className="flex justify-between">
-            <span className="text-slate-400 font-bold uppercase text-[10px]">Email</span>
+            <span className="text-slate-400 font-bold uppercase text-xs">Email</span>
             <span className="font-mono font-bold text-slate-800">{viewingRider.userId?.email || viewingRider.email || 'N/A'}</span>
           </div>
           <div className="flex justify-between">
-            <span className="text-slate-400 font-bold uppercase text-[10px]">Vehicle</span>
+            <span className="text-slate-400 font-bold uppercase text-xs">Vehicle</span>
             <span className="font-bold text-slate-800 capitalize">{viewingRider.vehicleType || 'motorcycle'} ({viewingRider.vehicleNumber || 'N/A'})</span>
           </div>
           <div className="flex justify-between">
-            <span className="text-slate-400 font-bold uppercase text-[10px]">Aadhar No</span>
+            <span className="text-slate-400 font-bold uppercase text-xs">Aadhar No</span>
             <span className="font-mono font-bold text-slate-800">{viewingRider.aadharNumber || 'N/A'}</span>
           </div>
           <div className="flex justify-between">
-            <span className="text-slate-400 font-bold uppercase text-[10px]">Joined Date</span>
+            <span className="text-slate-400 font-bold uppercase text-xs">Joined Date</span>
             <span className="font-bold text-slate-800">{formatDate(viewingRider.createdAt)}</span>
           </div>
         </div>

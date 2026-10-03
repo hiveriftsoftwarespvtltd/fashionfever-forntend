@@ -142,26 +142,26 @@ const EducatorOnboard = () => {
           <h2 className="text-2xl font-black uppercase text-gray-800 tracking-tight">Onboarding Pending</h2>
           <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mt-1">Status: Awaiting Verification</p>
           
-          <div className="p-4 bg-gray-50 rounded-2xl border border-gray-150/60 text-left space-y-3">
-            <p className="text-[11px] font-black uppercase text-gray-500">Submitted Specifications</p>
+          <div className="p-4 bg-zinc-50 rounded-2xl border border-zinc-200 text-left space-y-3">
+            <p className="text-xs font-bold uppercase text-zinc-500">Submitted Specifications</p>
             <div className="flex items-start gap-2 text-xs">
               <User size={14} className="text-primary mt-0.5 flex-shrink-0" />
-              <p className="text-gray-700 font-bold leading-normal truncate">{user?.name || 'Educator'}</p>
+              <p className="text-zinc-800 font-bold leading-normal truncate">{user?.name || 'Educator'}</p>
             </div>
             <div className="flex items-start gap-2 text-xs">
               <FileText size={14} className="text-primary mt-0.5 flex-shrink-0" />
-              <p className="text-gray-600 font-bold leading-relaxed line-clamp-3">{profile.bio}</p>
+              <p className="text-zinc-600 font-medium leading-relaxed line-clamp-3">{profile.bio}</p>
             </div>
             <div className="flex flex-wrap gap-1.5 pt-1">
               {profile.expertise?.map((exp, i) => (
-                <span key={i} className="px-2 py-0.5 bg-primary/10 text-primary border border-primary/25 rounded-full text-[9px] font-black uppercase">
+                <span key={i} className="px-2.5 py-1 bg-primary/10 text-primary border border-primary/25 rounded-full text-xs font-bold uppercase">
                   {exp}
                 </span>
               ))}
             </div>
           </div>
 
-          <p className="text-xs font-bold text-gray-500 leading-normal">
+          <p className="text-xs font-medium text-zinc-500 leading-normal">
             Thank you for applying! Our admin team is reviewing your profile. You will gain access to your Educator Dashboard once approved.
           </p>
         </div>
@@ -170,16 +170,16 @@ const EducatorOnboard = () => {
   }
 
   return (
-    <div className="min-h-[90vh] flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8 font-outfit">
-      <div className="max-w-xl w-full space-y-8 bg-white p-10 rounded-3xl shadow-2xl border border-gray-100 transition-all duration-500">
+    <div className="min-h-[90vh] flex items-center justify-center bg-zinc-50 py-12 px-4 sm:px-6 lg:px-8 font-outfit">
+      <div className="max-w-xl w-full space-y-8 bg-white p-10 rounded-3xl shadow-xl border border-zinc-200 transition-all duration-500">
         
         {/* Header */}
         <div className="text-center">
           <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-2xl bg-primary/10 text-primary mb-4">
             <BookOpen size={30} />
           </div>
-          <h2 className="text-2xl md:text-3xl font-black text-gray-900 uppercase tracking-tight">Educator Onboarding</h2>
-          <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mt-1">Submit your profile details for admin approval</p>
+          <h2 className="text-2xl md:text-3xl font-black text-zinc-900 uppercase tracking-tight">Educator Onboarding</h2>
+          <p className="text-xs font-bold text-zinc-400 uppercase tracking-wider mt-1">Submit your profile details for admin approval</p>
         </div>
 
         {/* Form */}
@@ -187,19 +187,19 @@ const EducatorOnboard = () => {
           
           {/* Profile Picture Upload */}
           <div className="space-y-2">
-            <label className="text-sm font-black uppercase tracking-wider text-gray-450 block">Professional Profile Photo *</label>
+            <label className="text-xs font-bold uppercase tracking-wider text-zinc-500 block">Professional Profile Photo *</label>
             <div className="flex items-center gap-4">
-              <div className="w-20 h-20 rounded-2xl border-2 border-dashed border-gray-200 flex items-center justify-center overflow-hidden bg-gray-50 relative flex-shrink-0">
+              <div className="w-20 h-20 rounded-2xl border-2 border-dashed border-zinc-200 flex items-center justify-center overflow-hidden bg-zinc-50 relative flex-shrink-0">
                 {imagePreview ? (
                   <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
                 ) : (
-                  <User size={28} className="text-gray-450" />
+                  <User size={28} className="text-zinc-400" />
                 )}
               </div>
               <div className="flex-grow">
                 <label 
                   htmlFor="avatar-upload-input"
-                  className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-gray-200 text-xs font-bold uppercase cursor-pointer hover:bg-primary/5 hover:border-primary/40 transition-all bg-white text-gray-700 shadow-sm"
+                  className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-zinc-200 text-xs font-bold uppercase cursor-pointer hover:bg-primary/5 hover:border-primary/40 transition-all bg-white text-zinc-700 shadow-sm"
                 >
                   <Upload size={14} className="text-primary" />
                   Upload Image
@@ -212,32 +212,32 @@ const EducatorOnboard = () => {
                     required
                   />
                 </label>
-                <p className="text-[9px] text-gray-400 font-bold uppercase mt-1">Recommended: Square format, PNG/JPG</p>
+                <p className="text-xs text-zinc-400 font-semibold uppercase mt-1">Recommended: Square format, PNG/JPG</p>
               </div>
             </div>
           </div>
 
           {/* Bio */}
           <div className="space-y-2">
-            <label className="text-sm font-black uppercase tracking-wider text-gray-450 block">Short Bio *</label>
+            <label className="text-xs font-bold uppercase tracking-wider text-zinc-500 block">Short Bio *</label>
             <textarea
               value={bio}
               onChange={(e) => setBio(e.target.value)}
               placeholder="Tell us about your teaching experience, philosophy, or specialized background..."
               rows={4}
               required
-              className="block w-full px-4 py-3 border border-gray-200 rounded-xl leading-normal bg-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-xs font-bold transition-all resize-none"
+              className="block w-full px-4 py-3 border border-zinc-200 rounded-xl leading-normal bg-white placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-xs font-semibold transition-all resize-none text-zinc-800"
             />
           </div>
 
           {/* Areas of Expertise */}
           <div className="space-y-2">
             <div className="flex justify-between items-center">
-              <label className="text-sm font-black uppercase tracking-wider text-gray-450 block">Areas of Expertise *</label>
+              <label className="text-xs font-bold uppercase tracking-wider text-zinc-500 block">Areas of Expertise *</label>
               <button
                 type="button"
                 onClick={handleAddExpertise}
-                className="text-[9px] font-black text-primary hover:underline uppercase"
+                className="text-xs font-bold text-primary hover:underline uppercase cursor-pointer"
               >
                 + Add Tag
               </button>

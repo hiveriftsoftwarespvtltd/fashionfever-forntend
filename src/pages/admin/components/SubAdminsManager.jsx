@@ -378,17 +378,17 @@ const SubAdminsManager = ({ isDarkMode }) => {
                   <th className={`px-6 py-4 text-xs font-bold uppercase tracking-wider text-right ${isDarkMode ? 'text-gray-500' : 'text-gray-400'}`}>Actions</th>
                 </tr>
               </thead>
-              <tbody className={`divide-y ${isDarkMode ? 'divide-white/5 bg-gray-955' : 'divide-gray-100 bg-white'}`}>
+              <tbody className={`divide-y ${isDarkMode ? 'divide-zinc-800 bg-zinc-900' : 'divide-zinc-200 bg-white'}`}>
                 {filteredSubAdmins.map((admin) => (
-                  <tr key={admin._id} className={isDarkMode ? 'hover:bg-white/5 transition-colors' : 'hover:bg-gray-55/50 transition-colors'}>
+                  <tr key={admin._id} className={isDarkMode ? 'hover:bg-zinc-800/50 transition-colors' : 'hover:bg-zinc-50 transition-colors'}>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex flex-col text-left">
-                        <span className="text-xs font-bold text-gray-850 dark:text-white">{admin.userId?.name || admin.name || 'N/A'}</span>
-                        <span className="text-xs text-gray-400 mt-0.5">{admin.userId?.email || admin.email || 'N/A'}</span>
+                        <span className="text-xs font-bold text-zinc-800 dark:text-zinc-100">{admin.userId?.name || admin.name || 'N/A'}</span>
+                        <span className="text-xs text-zinc-400 mt-0.5">{admin.userId?.email || admin.email || 'N/A'}</span>
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="inline-flex px-2 py-0.5 rounded text-xs font-bold bg-primary/5 text-primary border border-primary/10">
+                      <span className="inline-flex px-2 py-0.5 rounded text-xs font-bold bg-primary/10 text-primary border border-primary/20">
                         {admin.roleTitle}
                       </span>
                     </td>
@@ -397,7 +397,7 @@ const SubAdminsManager = ({ isDarkMode }) => {
                         {admin.moduleAccess?.map((item, idx) => (
                           <span 
                             key={idx}
-                            className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-350 border border-transparent"
+                            className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded text-xs font-bold bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700"
                           >
                             {item.module} ({item.access?.join(', ')})
                           </span>
@@ -556,14 +556,14 @@ const SubAdminsManager = ({ isDarkMode }) => {
                       <button
                         type="button"
                         onClick={() => handleSelectAll('READ')}
-                        className="text-[9px] font-black uppercase tracking-wider text-primary hover:underline cursor-pointer"
+                        className="text-xs font-bold uppercase tracking-wider text-primary hover:underline cursor-pointer"
                       >
                         All Read
                       </button>
                       <button
                         type="button"
                         onClick={() => handleSelectAll('WRITE')}
-                        className="text-[9px] font-black uppercase tracking-wider text-primary hover:underline cursor-pointer"
+                        className="text-xs font-bold uppercase tracking-wider text-primary hover:underline cursor-pointer"
                       >
                         All Write
                       </button>
@@ -579,13 +579,13 @@ const SubAdminsManager = ({ isDarkMode }) => {
                           key={mod.id}
                           className={`flex items-center justify-between p-3.5 rounded-xl border transition-all ${
                             isDarkMode 
-                              ? 'bg-gray-900/40 border-white/5 hover:bg-gray-900/60' 
-                              : 'bg-gray-50/50 border-gray-100 hover:bg-gray-50'
+                              ? 'bg-zinc-900/60 border-zinc-800 hover:bg-zinc-900' 
+                              : 'bg-zinc-50 border-zinc-200 hover:bg-zinc-100'
                           }`}
                         >
                           <div className="flex flex-col text-left">
-                            <span className="text-[11px] font-extrabold text-gray-700 dark:text-gray-600 uppercase">{mod.name}</span>
-                            <span className="text-[9px] font-bold text-gray-400 uppercase mt-0.5">{mod.id}</span>
+                            <span className="text-xs font-extrabold text-zinc-800 dark:text-zinc-200 uppercase">{mod.name}</span>
+                            <span className="text-xs font-bold text-zinc-400 uppercase mt-0.5">{mod.id}</span>
                           </div>
 
                           <div className="flex items-center gap-3 select-none">

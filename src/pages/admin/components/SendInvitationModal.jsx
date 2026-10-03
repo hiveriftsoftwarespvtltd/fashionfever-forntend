@@ -46,11 +46,11 @@ const SendInvitationModal = ({ isOpen, onClose, isDarkMode }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-[3000] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-      <div className={`w-full max-w-md rounded-3xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200 ${
+    <div className="fixed inset-0 z-[3000] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm overflow-y-auto">
+      <div className={`w-full max-w-md rounded-3xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200 my-auto ${
         isDarkMode ? 'bg-gray-800 border border-gray-700 text-white' : 'bg-white text-gray-800'
       }`}>
-        <div className="p-6 md:p-8">
+        <div className="p-6 md:p-8 max-h-[90vh] overflow-y-auto">
           {/* Header */}
           <div className="flex justify-between items-start mb-8">
             <div>

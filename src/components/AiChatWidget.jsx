@@ -94,7 +94,7 @@ const AiChatWidget = () => {
   };
 
   return (
-    <div className="fixed bottom-8 right-8 z-[500] font-outfit">
+    <div className="fixed bottom-24 right-4 sm:bottom-8 sm:right-8 z-[500] font-outfit">
       {/* Chat Window Popup */}
       {isOpen && (
         <div className="absolute bottom-20 right-0 w-[380px] h-[500px] max-w-[calc(100vw-2rem)] rounded-2xl bg-white shadow-[0_20px_60px_rgba(0,0,0,0.15)] border border-gray-150 flex flex-col overflow-hidden animate-in slide-in-from-bottom-5 duration-300">

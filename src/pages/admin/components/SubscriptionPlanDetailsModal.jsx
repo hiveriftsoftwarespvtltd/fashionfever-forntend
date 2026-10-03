@@ -112,26 +112,26 @@ const SubscriptionPlanDetailsModal = ({ planId, onClose }) => {
 
             {/* Limits & Commission */}
             <div className="space-y-4 mb-6">
-              <h3 className={`text-sm font-black uppercase tracking-wider ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>Tiers & Limitations</h3>
+              <h3 className={`text-xs font-extrabold uppercase tracking-wider ${isDarkMode ? 'text-zinc-400' : 'text-zinc-500'}`}>Tiers & Limitations</h3>
               
               <div className="grid grid-cols-2 gap-4">
-                <div className={`p-4 rounded-xl border ${isDarkMode ? 'bg-gray-900/20 border-white/5 text-gray-300' : 'bg-white border-gray-100 text-gray-600'}`}>
-                  <span className="text-[9px] font-bold text-gray-400 uppercase block mb-1">Max Services</span>
-                  <span className={`text-sm font-bold ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>{plan.maxServices ?? '—'}</span>
+                <div className={`p-4 rounded-xl border ${isDarkMode ? 'bg-zinc-900 border-zinc-800 text-zinc-300' : 'bg-white border-zinc-200 text-zinc-600'}`}>
+                  <span className="text-xs font-bold text-zinc-400 uppercase block mb-1">Max Services</span>
+                  <span className={`text-base font-bold ${isDarkMode ? 'text-white' : 'text-zinc-800'}`}>{plan.maxServices ?? '—'}</span>
                 </div>
-                <div className={`p-4 rounded-xl border ${isDarkMode ? 'bg-gray-900/20 border-white/5 text-gray-300' : 'bg-white border-gray-100 text-gray-600'}`}>
-                  <span className="text-[9px] font-bold text-gray-400 uppercase block mb-1">Max Staff</span>
-                  <span className={`text-sm font-bold ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>{plan.maxStaff ?? '—'}</span>
+                <div className={`p-4 rounded-xl border ${isDarkMode ? 'bg-zinc-900 border-zinc-800 text-zinc-300' : 'bg-white border-zinc-200 text-zinc-600'}`}>
+                  <span className="text-xs font-bold text-zinc-400 uppercase block mb-1">Max Staff</span>
+                  <span className={`text-base font-bold ${isDarkMode ? 'text-white' : 'text-zinc-800'}`}>{plan.maxStaff ?? '—'}</span>
                 </div>
-                <div className={`p-4 rounded-xl border ${isDarkMode ? 'bg-gray-900/20 border-white/5 text-gray-300' : 'bg-white border-gray-100 text-gray-600'}`}>
-                  <span className="text-[9px] font-bold text-gray-400 uppercase block mb-1">Monthly Lead Limit</span>
-                  <span className={`text-sm font-bold ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>{plan.monthlyLeadLimit ?? '—'}</span>
+                <div className={`p-4 rounded-xl border ${isDarkMode ? 'bg-zinc-900 border-zinc-800 text-zinc-300' : 'bg-white border-zinc-200 text-zinc-600'}`}>
+                  <span className="text-xs font-bold text-zinc-400 uppercase block mb-1">Monthly Lead Limit</span>
+                  <span className={`text-base font-bold ${isDarkMode ? 'text-white' : 'text-zinc-800'}`}>{plan.monthlyLeadLimit ?? '—'}</span>
                 </div>
-                <div className={`p-4 rounded-xl border ${isDarkMode ? 'bg-gray-900/20 border-white/5 text-gray-300' : 'bg-white border-gray-100 text-gray-600'}`}>
-                  <span className="text-[9px] font-bold text-gray-400 uppercase block mb-1">Commission</span>
-                  <span className="text-sm font-bold text-primary flex items-center">
+                <div className={`p-4 rounded-xl border ${isDarkMode ? 'bg-zinc-900 border-zinc-800 text-zinc-300' : 'bg-white border-zinc-200 text-zinc-600'}`}>
+                  <span className="text-xs font-bold text-zinc-400 uppercase block mb-1">Commission</span>
+                  <span className="text-base font-bold text-primary flex items-center">
                     {plan.commissionPercentage ?? 0}
-                    <Percent size={12} className="ml-0.5" />
+                    <Percent size={14} className="ml-0.5" />
                   </span>
                 </div>
               </div>
@@ -139,8 +139,8 @@ const SubscriptionPlanDetailsModal = ({ planId, onClose }) => {
 
             {/* Feature Flags */}
             <div className="mb-6">
-              <h3 className={`text-sm font-black uppercase tracking-wider mb-2.5 ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>Feature Inclusions</h3>
-              <div className={`px-4 rounded-2xl border ${isDarkMode ? 'bg-gray-900/10 border-white/5' : 'bg-gray-50/50 border-gray-100'}`}>
+              <h3 className={`text-xs font-extrabold uppercase tracking-wider mb-2.5 ${isDarkMode ? 'text-zinc-400' : 'text-zinc-500'}`}>Feature Inclusions</h3>
+              <div className={`px-4 rounded-2xl border ${isDarkMode ? 'bg-zinc-900 border-zinc-800' : 'bg-zinc-50 border-zinc-200'}`}>
                 <FeatureRow label="Featured Listing" value={plan.featuredListing} />
                 <FeatureRow label="Priority Support" value={plan.prioritySupport} />
                 <FeatureRow label="Analytics Access" value={plan.analyticsAccess} />
@@ -148,36 +148,36 @@ const SubscriptionPlanDetailsModal = ({ planId, onClose }) => {
             </div>
 
             {/* Timestamps & ID */}
-            <div className={`p-4 rounded-2xl border space-y-3 ${isDarkMode ? 'bg-gray-900/20 border-white/5 text-gray-400' : 'bg-gray-50 border-gray-100 text-gray-500'}`}>
+            <div className={`p-4 rounded-2xl border space-y-3 ${isDarkMode ? 'bg-zinc-900 border-zinc-800 text-zinc-400' : 'bg-zinc-50 border-zinc-200 text-zinc-600'}`}>
               <div className="flex justify-between items-center text-xs">
-                <span className="flex items-center gap-1.5 font-bold uppercase text-[9px] text-gray-400">
-                  <Layers size={12} /> Plan ID
+                <span className="flex items-center gap-1.5 font-bold uppercase text-xs text-zinc-400">
+                  <Layers size={14} /> Plan ID
                 </span>
-                <span className="font-bold font-mono text-sm">
+                <span className="font-bold font-mono text-xs text-zinc-300">
                   {plan._id}
                 </span>
               </div>
               <div className="flex justify-between items-center text-xs">
-                <span className="flex items-center gap-1.5 font-bold uppercase text-[9px] text-gray-400">
+                <span className="flex items-center gap-1.5 font-bold uppercase text-xs text-zinc-400">
                   Status & Rank
                 </span>
                 <span className="font-bold">
                   {plan.isActive ? 'Active' : 'Inactive'} • Rank #{plan.priorityRank ?? '—'}
                 </span>
               </div>
-              <div className="flex justify-between items-center text-xs border-t border-gray-100/50 dark:border-white/5 pt-2.5">
-                <span className="flex items-center gap-1 text-[9px] font-bold uppercase text-gray-400">
-                  <Clock size={12} /> Created At
+              <div className="flex justify-between items-center text-xs border-t border-zinc-200 dark:border-zinc-800 pt-2.5">
+                <span className="flex items-center gap-1 text-xs font-bold uppercase text-zinc-400">
+                  <Clock size={14} /> Created At
                 </span>
-                <span className="font-bold text-gray-700 dark:text-gray-500">
+                <span className="font-bold text-zinc-700 dark:text-zinc-400">
                   {new Date(plan.createdAt).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' })}
                 </span>
               </div>
               <div className="flex justify-between items-center text-xs">
-                <span className="flex items-center gap-1 text-[9px] font-bold uppercase text-gray-400">
-                  <Clock size={12} /> Last Updated
+                <span className="flex items-center gap-1 text-xs font-bold uppercase text-zinc-400">
+                  <Clock size={14} /> Last Updated
                 </span>
-                <span className="font-bold text-gray-700 dark:text-gray-500">
+                <span className="font-bold text-zinc-700 dark:text-zinc-400">
                   {new Date(plan.updatedAt).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' })}
                 </span>
               </div>

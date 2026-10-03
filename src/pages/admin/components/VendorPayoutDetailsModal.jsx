@@ -279,25 +279,25 @@ export const VendorPayoutDetailsModal = ({ vendorId, onClose, initialMonth, init
           {/* Quick Info Bar */}
           {details?.vendor && (
             <div className={`p-4 rounded-2xl border grid grid-cols-2 gap-4 text-left ${
-              isDarkMode ? 'bg-gray-900/50 border-white/5' : 'bg-gray-50 border-gray-100'
+              isDarkMode ? 'bg-zinc-900 border-zinc-800' : 'bg-zinc-50 border-zinc-200'
             }`}>
               <div>
-                <p className="text-[8px] font-black text-gray-400 uppercase">Brand Shop</p>
+                <p className="text-xs font-bold text-zinc-400 uppercase">Brand Shop</p>
                 <p className="text-sm font-bold text-primary">{details.vendor.businessName}</p>
               </div>
               <div>
-                <p className="text-[8px] font-black text-gray-400 uppercase">Vendor Reference ID</p>
-                <p className="text-xs font-mono font-bold text-gray-500 dark:text-gray-300">{details.vendor._id}</p>
+                <p className="text-xs font-bold text-zinc-400 uppercase">Vendor Reference ID</p>
+                <p className="text-xs font-mono font-bold text-zinc-500 dark:text-zinc-300">{details.vendor._id}</p>
               </div>
             </div>
           )}
 
           {/* Interactive Filters Bar */}
           <div className={`p-4 rounded-2xl border text-left space-y-3 ${
-            isDarkMode ? 'bg-gray-900/30 border-white/5' : 'bg-gray-50/50 border-gray-100'
+            isDarkMode ? 'bg-zinc-900 border-zinc-800' : 'bg-zinc-50 border-zinc-200'
           }`}>
-            <span className="text-sm font-black text-gray-400 uppercase tracking-wider flex items-center gap-1.5">
-              <SlidersHorizontal size={12} className="text-primary" /> Filter vendor payments and orders list
+            <span className="text-xs font-black text-zinc-400 uppercase tracking-wider flex items-center gap-1.5">
+              <SlidersHorizontal size={14} className="text-primary" /> Filter vendor payments and orders list
             </span>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <select
@@ -305,7 +305,7 @@ export const VendorPayoutDetailsModal = ({ vendorId, onClose, initialMonth, init
                 value={filters.month}
                 onChange={handleFilterChange}
                 className={`w-full px-4 py-2.5 rounded-xl text-xs font-bold outline-none border transition-all cursor-pointer ${
-                  isDarkMode ? 'bg-gray-800 border-gray-700 text-white' : 'bg-white border-gray-100 text-gray-800'
+                  isDarkMode ? 'bg-zinc-800 border-zinc-700 text-white' : 'bg-white border-zinc-200 text-zinc-800'
                 }`}
               >
                 {months.map(m => (
@@ -317,7 +317,7 @@ export const VendorPayoutDetailsModal = ({ vendorId, onClose, initialMonth, init
                 value={filters.year}
                 onChange={handleFilterChange}
                 className={`w-full px-4 py-2.5 rounded-xl text-xs font-bold outline-none border transition-all cursor-pointer ${
-                  isDarkMode ? 'bg-gray-800 border-gray-700 text-white' : 'bg-white border-gray-100 text-gray-800'
+                  isDarkMode ? 'bg-zinc-800 border-zinc-700 text-white' : 'bg-white border-zinc-200 text-zinc-800'
                 }`}
               >
                 {years.map(y => (
@@ -329,7 +329,7 @@ export const VendorPayoutDetailsModal = ({ vendorId, onClose, initialMonth, init
                 value={filters.status}
                 onChange={handleFilterChange}
                 className={`w-full px-4 py-2.5 rounded-xl text-xs font-bold outline-none border transition-all cursor-pointer ${
-                  isDarkMode ? 'bg-gray-800 border-gray-700 text-white' : 'bg-white border-gray-100 text-gray-800'
+                  isDarkMode ? 'bg-zinc-800 border-zinc-700 text-white' : 'bg-white border-zinc-200 text-zinc-800'
                 }`}
               >
                 <option value="all">All Payout Orders</option>
@@ -342,7 +342,7 @@ export const VendorPayoutDetailsModal = ({ vendorId, onClose, initialMonth, init
           {loading ? (
             <div className="py-16 flex flex-col items-center justify-center">
               <Loader2 className="animate-spin text-primary mb-3" size={32} />
-              <span className="text-xs font-bold text-gray-400 uppercase tracking-widest animate-pulse">Calculating payout audits...</span>
+              <span className="text-xs font-bold text-zinc-400 uppercase tracking-widest animate-pulse">Calculating payout audits...</span>
             </div>
           ) : details ? (
             <div className="space-y-6">
@@ -350,21 +350,21 @@ export const VendorPayoutDetailsModal = ({ vendorId, onClose, initialMonth, init
               {/* Summary Metrics Grid */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {[
-                  { label: 'Total Orders', value: details.summary?.totalOrders ?? 0, icon: <ShoppingBag size={14} className="text-blue-500" /> },
-                  { label: 'Gross Sales', value: `₹${(details.summary?.totalSales ?? 0).toLocaleString('en-IN')}`, icon: <TrendingUp size={14} className="text-emerald-500" /> },
-                  { label: 'Platform Profit', value: `₹${(details.summary?.platformCommission ?? 0).toLocaleString('en-IN')}`, icon: <Percent size={14} className="text-purple-500" /> },
-                  { label: 'Net Vendor Payout', value: `₹${(details.summary?.netPayout ?? 0).toLocaleString('en-IN')}`, icon: <IndianRupee size={14} className="text-rose-500" />, highlight: true }
+                  { label: 'Total Orders', value: details.summary?.totalOrders ?? 0, icon: <ShoppingBag size={15} className="text-blue-500" /> },
+                  { label: 'Gross Sales', value: `₹${(details.summary?.totalSales ?? 0).toLocaleString('en-IN')}`, icon: <TrendingUp size={15} className="text-emerald-500" /> },
+                  { label: 'Platform Profit', value: `₹${(details.summary?.platformCommission ?? 0).toLocaleString('en-IN')}`, icon: <Percent size={15} className="text-purple-500" /> },
+                  { label: 'Net Vendor Payout', value: `₹${(details.summary?.netPayout ?? 0).toLocaleString('en-IN')}`, icon: <IndianRupee size={15} className="text-rose-500" />, highlight: true }
                 ].map((stat, i) => (
                   <div key={i} className={`p-4 rounded-2xl border text-left flex flex-col justify-between ${
                     stat.highlight 
                       ? isDarkMode ? 'bg-primary/10 border-primary/20' : 'bg-primary/[0.02] border-primary/10'
-                      : isDarkMode ? 'bg-gray-900/30 border-white/5' : 'bg-gray-50 border-gray-100'
+                      : isDarkMode ? 'bg-zinc-900 border-zinc-800' : 'bg-zinc-50 border-zinc-200'
                   }`}>
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-[8px] font-black text-gray-400 uppercase tracking-wider">{stat.label}</span>
+                      <span className="text-xs font-bold text-zinc-400 uppercase tracking-wider">{stat.label}</span>
                       {stat.icon}
                     </div>
-                    <p className={`text-base font-black ${stat.highlight ? 'text-primary' : isDarkMode ? 'text-white' : 'text-gray-800'}`}>
+                    <p className={`text-base font-black ${stat.highlight ? 'text-primary' : isDarkMode ? 'text-white' : 'text-zinc-800'}`}>
                       {stat.value}
                     </p>
                   </div>
@@ -373,15 +373,15 @@ export const VendorPayoutDetailsModal = ({ vendorId, onClose, initialMonth, init
 
               {/* Contributed Orders List */}
               <div className="space-y-3">
-                <span className="text-sm font-black text-gray-400 uppercase tracking-wider flex items-center gap-1.5 text-left">
-                  <ShoppingBag size={12} className="text-primary" /> Vendor Orders List
+                <span className="text-xs font-extrabold text-zinc-400 uppercase tracking-wider flex items-center gap-1.5 text-left">
+                  <ShoppingBag size={14} className="text-primary" /> Vendor Orders List
                 </span>
                 {details.orders && details.orders.length > 0 ? (
-                  <div className="overflow-x-auto rounded-2xl border border-gray-100 dark:border-white/5">
+                  <div className="overflow-x-auto rounded-2xl border border-zinc-200 dark:border-zinc-800">
                     <table className="w-full text-left border-collapse">
                       <thead>
-                        <tr className={`text-[9px] font-black uppercase tracking-wider border-b ${
-                          isDarkMode ? 'bg-gray-900/50 border-white/5 text-gray-400' : 'bg-gray-50 border-gray-100 text-gray-500'
+                        <tr className={`text-xs font-bold uppercase tracking-wider border-b ${
+                          isDarkMode ? 'bg-zinc-900 border-zinc-800 text-zinc-300' : 'bg-zinc-50 border-zinc-200 text-zinc-600'
                         }`}>
                           <th className="py-3 px-4">Order ID</th>
                           <th className="py-3 px-4 text-right">Order Sales</th>
@@ -390,15 +390,15 @@ export const VendorPayoutDetailsModal = ({ vendorId, onClose, initialMonth, init
                           <th className="py-3 px-4 text-center">Status</th>
                         </tr>
                       </thead>
-                      <tbody className="divide-y divide-gray-100 dark:divide-white/5 text-xs font-medium">
+                      <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800 text-xs font-medium">
                         {details.orders.map((ord, idx) => (
-                          <tr key={idx} className={isDarkMode ? 'hover:bg-white/[0.01]' : 'hover:bg-gray-50/50'}>
-                            <td className="py-3 px-4 font-mono text-sm text-gray-400">{ord.orderId || 'N/A'}</td>
-                            <td className="py-3 px-4 text-right">₹{(ord.salesAmount || 0).toLocaleString()}</td>
+                          <tr key={idx} className={isDarkMode ? 'hover:bg-zinc-900/50' : 'hover:bg-zinc-50'}>
+                            <td className="py-3 px-4 font-mono text-xs font-bold text-zinc-400">{ord.orderId || 'N/A'}</td>
+                            <td className="py-3 px-4 text-right font-bold text-zinc-700 dark:text-zinc-200">₹{(ord.salesAmount || 0).toLocaleString()}</td>
                             <td className="py-3 px-4 text-right text-primary font-bold">₹{(ord.platformCommission || 0).toLocaleString()}</td>
                             <td className="py-3 px-4 text-right text-emerald-500 font-bold">₹{(ord.netPayout || 0).toLocaleString()}</td>
-                            <td className="py-3 px-4 text-center uppercase text-[9px] font-black">
-                              <span className={ord.isVendorSettled ? 'text-green-500' : 'text-amber-500'}>
+                            <td className="py-3 px-4 text-center uppercase text-xs font-bold">
+                              <span className={ord.isVendorSettled ? 'text-emerald-500' : 'text-amber-500'}>
                                 {ord.isVendorSettled ? 'Settled' : 'Pending'}
                               </span>
                             </td>

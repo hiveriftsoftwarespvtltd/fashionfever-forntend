@@ -55,26 +55,26 @@ const VendorOrders = ({
         )}
       </div>
 
-      <div className={`rounded-2xl shadow-sm border overflow-hidden transition-all duration-300 ${isDarkMode ? 'bg-gray-900 border-white/5 shadow-[0_4px_30px_rgba(0,0,0,0.2)]' : 'bg-white border-gray-100'}`}>
+      <div className={`rounded-2xl shadow-sm border overflow-hidden transition-all duration-300 ${isDarkMode ? 'bg-zinc-900 border-zinc-800 shadow-md' : 'bg-white border-zinc-200'}`}>
         <div className="overflow-x-auto">
           <table className="w-full text-left">
-            <thead className={`${isDarkMode ? 'bg-gray-950/40 border-b border-white/5' : 'bg-gray-50 border-b border-gray-100'}`}>
+            <thead className={`${isDarkMode ? 'bg-zinc-950 border-b border-zinc-800' : 'bg-zinc-50 border-b border-zinc-200'}`}>
               <tr>
-                <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase">Order Number</th>
-                <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase">Customer</th>
-                <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase">Date</th>
-                <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase">Items</th>
-                <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase">Grand Total</th>
-                <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase">Payout Amount</th>
-                <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase">Status</th>
-                <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase text-right">Actions</th>
+                <th className="px-6 py-4 text-xs font-bold text-zinc-400 uppercase">Order Number</th>
+                <th className="px-6 py-4 text-xs font-bold text-zinc-400 uppercase">Customer</th>
+                <th className="px-6 py-4 text-xs font-bold text-zinc-400 uppercase">Date</th>
+                <th className="px-6 py-4 text-xs font-bold text-zinc-400 uppercase">Items</th>
+                <th className="px-6 py-4 text-xs font-bold text-zinc-400 uppercase">Grand Total</th>
+                <th className="px-6 py-4 text-xs font-bold text-zinc-400 uppercase">Payout Amount</th>
+                <th className="px-6 py-4 text-xs font-bold text-zinc-400 uppercase">Status</th>
+                <th className="px-6 py-4 text-xs font-bold text-zinc-400 uppercase text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className={`divide-y ${isDarkMode ? 'divide-white/5' : 'divide-gray-50'}`}>
+            <tbody className={`divide-y ${isDarkMode ? 'divide-zinc-800' : 'divide-zinc-100'}`}>
               {ordersLoading ? (
-                <tr><td colSpan="8" className="p-10 text-center font-bold text-gray-400">Loading orders...</td></tr>
+                <tr><td colSpan="8" className="p-10 text-center font-bold text-zinc-400">Loading orders...</td></tr>
               ) : filteredOrders.length === 0 ? (
-                <tr><td colSpan="8" className="p-10 text-center font-bold text-gray-400">No orders found matching the selected filter.</td></tr>
+                <tr><td colSpan="8" className="p-10 text-center font-bold text-zinc-400">No orders found matching the selected filter.</td></tr>
               ) : filteredOrders.map((order) => {
                 const itemsCount = order.items?.reduce((sum, item) => sum + (item.quantity || 0), 0) || 0;
                 const orderDate = order.createdAt ? new Date(order.createdAt) : null;
@@ -85,16 +85,16 @@ const VendorOrders = ({
                 else if (order.orderStatus === 'cancelled') statusColor = isDarkMode ? 'bg-red-500/10 text-red-400' : 'bg-red-50 text-red-655';
 
                 return (
-                  <tr key={order._id} className={`${isDarkMode ? 'hover:bg-white/5' : 'hover:bg-gray-50/50'} transition-colors`}>
+                  <tr key={order._id} className={`${isDarkMode ? 'hover:bg-zinc-800/50' : 'hover:bg-zinc-50/50'} transition-colors`}>
                     <td className="px-6 py-4">
                       <div className="flex flex-col gap-1">
-                        <span className={`font-bold text-sm ${isDarkMode ? 'text-gray-250' : 'text-gray-800'}`}>{order.orderNumber}</span>
+                        <span className={`font-bold text-sm ${isDarkMode ? 'text-zinc-200' : 'text-zinc-800'}`}>{order.orderNumber}</span>
                         {(order.isQuickDelivery || order.orderType === 'QUICK' || order.isQuickCommerce) ? (
-                          <span className="inline-flex items-center gap-1 w-max px-2 py-0.5 rounded-full text-[10px] font-black uppercase bg-amber-500/20 text-amber-500 border border-amber-500/30 animate-pulse">
+                          <span className="inline-flex items-center gap-1 w-max px-2.5 py-0.5 rounded-full text-xs font-black uppercase bg-amber-500/20 text-amber-500 border border-amber-500/30 animate-pulse">
                             ⚡ 10-MIN EXPRESS
                           </span>
                         ) : (
-                          <span className="inline-flex items-center gap-1 w-max px-2 py-0.5 rounded-full text-[10px] font-bold uppercase bg-gray-500/10 text-gray-500 border border-gray-200/50">
+                          <span className="inline-flex items-center gap-1 w-max px-2.5 py-0.5 rounded-full text-xs font-bold uppercase bg-zinc-500/10 text-zinc-400 border border-zinc-700/50">
                             📦 STANDARD
                           </span>
                         )}

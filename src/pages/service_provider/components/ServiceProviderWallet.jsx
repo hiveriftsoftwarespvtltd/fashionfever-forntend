@@ -59,10 +59,10 @@ const ServiceProviderWallet = ({ isDarkMode }) => {
       key: 'description',
       render: (row) => (
         <div className="flex flex-col text-left">
-          <span className={`text-xs font-bold ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>
+          <span className={`text-xs font-bold ${isDarkMode ? 'text-zinc-200' : 'text-zinc-800'}`}>
             {row.description || row.message || 'Lounge Booking Earning'}
           </span>
-          <span className="text-[9px] font-bold text-gray-400 uppercase">
+          <span className="text-xs font-semibold text-zinc-500 uppercase mt-0.5">
             TXID: {row.transactionId || row._id || '—'}
           </span>
         </div>
@@ -75,7 +75,7 @@ const ServiceProviderWallet = ({ isDarkMode }) => {
         const type = row.type?.toUpperCase() || 'CREDIT';
         const isCredit = type === 'CREDIT' || type === 'EARNING' || type === 'DEPOSIT';
         return (
-          <span className={`px-2 py-0.5 rounded-lg text-[9px] font-bold uppercase tracking-wider ${
+          <span className={`px-2.5 py-1 rounded-lg text-xs font-bold uppercase tracking-wider ${
             isCredit
               ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20'
               : 'bg-rose-500/10 text-rose-500 border border-rose-500/20'
@@ -92,7 +92,7 @@ const ServiceProviderWallet = ({ isDarkMode }) => {
         const type = row.type?.toUpperCase() || 'CREDIT';
         const isCredit = type === 'CREDIT' || type === 'EARNING' || type === 'DEPOSIT';
         return (
-          <span className={`text-xs font-black flex items-center gap-0.5 ${
+          <span className={`text-sm font-black flex items-center gap-0.5 ${
             isCredit ? 'text-emerald-500' : 'text-rose-500'
           }`}>
             {isCredit ? '+' : '-'} ₹{row.amount?.toLocaleString('en-IN') || 0}
@@ -106,7 +106,7 @@ const ServiceProviderWallet = ({ isDarkMode }) => {
       render: (row) => {
         const status = row.status?.toUpperCase() || 'COMPLETED';
         return (
-          <span className={`px-2 py-0.5 rounded-lg text-[9px] font-bold uppercase tracking-wider ${
+          <span className={`px-2.5 py-1 rounded-lg text-xs font-bold uppercase tracking-wider ${
             status === 'COMPLETED' || status === 'SUCCESS'
               ? 'bg-emerald-500/10 text-emerald-500'
               : status === 'PENDING'
@@ -168,12 +168,12 @@ const ServiceProviderWallet = ({ isDarkMode }) => {
             {/* Available Balance */}
             <div className={`p-6 rounded-3xl border flex items-center justify-between text-left ${
               isDarkMode 
-                ? 'bg-gray-900 border-white/5 shadow-xl shadow-primary/5' 
-                : 'bg-white border-gray-150 shadow-sm'
+                ? 'bg-zinc-900 border-zinc-800 shadow-xl shadow-primary/5' 
+                : 'bg-white border-zinc-200 shadow-sm'
             }`}>
               <div className="space-y-1">
-                <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest block">Available Balance</span>
-                <span className={`text-2xl font-black block ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                <span className="text-xs font-bold text-zinc-400 uppercase tracking-widest block">Available Balance</span>
+                <span className={`text-2xl font-black block ${isDarkMode ? 'text-white' : 'text-zinc-900'}`}>
                   ₹{walletBalance.balance?.toLocaleString('en-IN') || 0}
                 </span>
               </div>
@@ -185,12 +185,12 @@ const ServiceProviderWallet = ({ isDarkMode }) => {
             {/* Pending Balance */}
             <div className={`p-6 rounded-3xl border flex items-center justify-between text-left ${
               isDarkMode 
-                ? 'bg-gray-900 border-white/5 shadow-xl shadow-primary/5' 
-                : 'bg-white border-gray-150 shadow-sm'
+                ? 'bg-zinc-900 border-zinc-800 shadow-xl shadow-primary/5' 
+                : 'bg-white border-zinc-200 shadow-sm'
             }`}>
               <div className="space-y-1">
-                <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest block">Hold Balance</span>
-                <span className={`text-2xl font-black block ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                <span className="text-xs font-bold text-zinc-400 uppercase tracking-widest block">Hold Balance</span>
+                <span className={`text-2xl font-black block ${isDarkMode ? 'text-white' : 'text-zinc-900'}`}>
                   ₹{walletBalance.pendingBalance?.toLocaleString('en-IN') || 0}
                 </span>
               </div>
@@ -202,12 +202,12 @@ const ServiceProviderWallet = ({ isDarkMode }) => {
             {/* Total Earnings */}
             <div className={`p-6 rounded-3xl border flex items-center justify-between text-left ${
               isDarkMode 
-                ? 'bg-gray-900 border-white/5 shadow-xl shadow-primary/5' 
-                : 'bg-white border-gray-150 shadow-sm'
+                ? 'bg-zinc-900 border-zinc-800 shadow-xl shadow-primary/5' 
+                : 'bg-white border-zinc-200 shadow-sm'
             }`}>
               <div className="space-y-1">
-                <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest block">Lifetime Earnings</span>
-                <span className={`text-2xl font-black block ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                <span className="text-xs font-bold text-zinc-400 uppercase tracking-widest block">Lifetime Earnings</span>
+                <span className={`text-2xl font-black block ${isDarkMode ? 'text-white' : 'text-zinc-900'}`}>
                   ₹{walletBalance.totalEarnings?.toLocaleString('en-IN') || 0}
                 </span>
               </div>
@@ -219,17 +219,17 @@ const ServiceProviderWallet = ({ isDarkMode }) => {
 
           {/* Transactions Log Section */}
           <div className={`p-6 rounded-3xl border text-left ${
-            isDarkMode ? 'bg-gray-900 border-white/5 shadow-xl' : 'bg-white border-gray-100 shadow-sm'
+            isDarkMode ? 'bg-zinc-900 border-zinc-800 shadow-xl' : 'bg-white border-zinc-200 shadow-sm'
           }`}>
-            <h3 className={`text-sm font-black uppercase tracking-wider mb-4 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+            <h3 className={`text-sm font-black uppercase tracking-wider mb-4 ${isDarkMode ? 'text-white' : 'text-zinc-900'}`}>
               Transactions Pipeline
             </h3>
 
             {walletTransactions.length === 0 ? (
-              <div className="py-16 text-center text-gray-400 flex flex-col items-center justify-center">
-                <Wallet size={36} className="text-gray-300 mb-3" />
+              <div className="py-16 text-center text-zinc-400 flex flex-col items-center justify-center">
+                <Wallet size={36} className="text-zinc-400 mb-3" />
                 <p className="text-xs font-black uppercase tracking-wider">No transaction logs available</p>
-                <p className="text-[10px] text-gray-500 font-bold uppercase mt-1">Earnings and booking credits will show here.</p>
+                <p className="text-xs text-zinc-400 font-medium mt-1">Earnings and booking credits will show here.</p>
               </div>
             ) : (
               <DataTable

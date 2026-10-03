@@ -194,32 +194,32 @@ const ManageSectionsModal = ({ isOpen, onClose, course, isDarkMode }) => {
             
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div className="sm:col-span-2 space-y-1">
-                <label className="text-[9px] font-black uppercase text-gray-400 tracking-wider">Section Title</label>
+                <label className="text-xs font-bold uppercase text-zinc-400 tracking-wider">Section Title</label>
                 <input 
                   type="text"
                   placeholder="e.g. Overview, Advanced Techniques"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                  className={`w-full text-xs font-bold px-3 py-2.5 rounded-xl border outline-none transition-all ${
+                  className={`w-full text-xs font-semibold px-3 py-2.5 rounded-xl border outline-none transition-all ${
                     isDarkMode 
-                      ? 'bg-gray-950 border-white/5 focus:border-primary/50 text-white' 
-                      : 'bg-white border-gray-200 focus:border-primary/50 text-gray-800'
+                      ? 'bg-zinc-950 border-zinc-800 focus:border-primary/50 text-white' 
+                      : 'bg-white border-zinc-200 focus:border-primary/50 text-zinc-800'
                   }`}
                 />
               </div>
 
               <div className="space-y-1">
-                <label className="text-[9px] font-black uppercase text-gray-400 tracking-wider">Display Order</label>
+                <label className="text-xs font-bold uppercase text-zinc-400 tracking-wider">Display Order</label>
                 <input 
                   type="number"
                   min="1"
                   placeholder="1"
                   value={order}
                   onChange={(e) => setOrder(e.target.value)}
-                  className={`w-full text-xs font-bold px-3 py-2.5 rounded-xl border outline-none transition-all ${
+                  className={`w-full text-xs font-semibold px-3 py-2.5 rounded-xl border outline-none transition-all ${
                     isDarkMode 
-                      ? 'bg-gray-950 border-white/5 focus:border-primary/50 text-white' 
-                      : 'bg-white border-gray-200 focus:border-primary/50 text-gray-800'
+                      ? 'bg-zinc-950 border-zinc-800 focus:border-primary/50 text-white' 
+                      : 'bg-white border-zinc-200 focus:border-primary/50 text-zinc-800'
                   }`}
                 />
               </div>
@@ -229,7 +229,7 @@ const ManageSectionsModal = ({ isOpen, onClose, course, isDarkMode }) => {
               <button 
                 type="submit"
                 disabled={submitLoading}
-                className="flex items-center gap-1.5 px-4 py-2 bg-primary hover:bg-primary/95 text-white text-sm font-black uppercase rounded-xl transition-all cursor-pointer shadow-md shadow-primary/20 active:scale-95 disabled:opacity-50"
+                className="flex items-center gap-1.5 px-4 py-2 bg-primary hover:bg-primary/95 text-white text-xs font-bold uppercase rounded-xl transition-all cursor-pointer shadow-md shadow-primary/20 active:scale-95 disabled:opacity-50"
               >
                 {submitLoading ? (
                   <Loader2 size={12} className="animate-spin" />
@@ -245,7 +245,7 @@ const ManageSectionsModal = ({ isOpen, onClose, course, isDarkMode }) => {
 
           {/* Current Sections List */}
           <div className="space-y-3">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-gray-400">Current Sections List</h4>
+            <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-400">Current Sections List</h4>
             
             <div className="max-h-[200px] overflow-y-auto pr-1 space-y-2 no-scrollbar">
               {loading ? (
@@ -257,7 +257,7 @@ const ManageSectionsModal = ({ isOpen, onClose, course, isDarkMode }) => {
                   <div 
                     key={section._id} 
                     className={`flex items-center justify-between p-4 rounded-xl border text-xs transition-all ${
-                      isDarkMode ? 'bg-gray-950/40 border-white/5' : 'bg-white border-gray-100 hover:border-gray-200'
+                      isDarkMode ? 'bg-zinc-950 border-zinc-800' : 'bg-white border-zinc-200 hover:border-zinc-300'
                     }`}
                   >
                     <div className="flex items-center gap-3">
@@ -265,8 +265,8 @@ const ManageSectionsModal = ({ isOpen, onClose, course, isDarkMode }) => {
                         #{section.order || (idx + 1)}
                       </span>
                       <div>
-                        <p className={`font-bold text-xs ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>{section.title}</p>
-                        <p className="text-[9px] text-gray-400 font-semibold uppercase mt-0.5">
+                        <p className={`font-bold text-xs ${isDarkMode ? 'text-white' : 'text-zinc-800'}`}>{section.title}</p>
+                        <p className="text-xs text-zinc-400 font-semibold uppercase mt-0.5">
                           {section.totalVideos || 0} Videos • {section.totalAttachments || 0} Attachments
                         </p>
                       </div>

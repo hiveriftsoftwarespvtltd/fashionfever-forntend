@@ -53,7 +53,7 @@ const VendorOrdersPipeline = ({
             <button
               key={tab.code}
               onClick={() => { setActiveOrderTab(tab.code); setCurrentPage(1); }}
-              className={`px-3 py-1.5 rounded-xl font-bold text-[10px] uppercase tracking-wider transition-all duration-300 cursor-pointer ${
+              className={`px-3 py-1.5 rounded-xl font-bold text-xs uppercase tracking-wider transition-all duration-300 cursor-pointer ${
                 activeOrderTab === tab.code
                   ? 'bg-slate-900 text-white shadow-sm'
                   : 'bg-slate-50 text-slate-500 hover:bg-slate-100 hover:text-slate-800'
@@ -66,7 +66,7 @@ const VendorOrdersPipeline = ({
         <button
           onClick={handleRefresh}
           title="Refresh orders"
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-primary/10 hover:bg-primary text-primary hover:text-white font-bold text-[10px] uppercase tracking-wider transition-all cursor-pointer"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-primary/10 hover:bg-primary text-primary hover:text-white font-bold text-xs uppercase tracking-wider transition-all cursor-pointer"
         >
           <RefreshCw size={11} className={loading ? 'animate-spin' : ''} />
           Refresh
@@ -112,7 +112,7 @@ const VendorOrdersPipeline = ({
       {loading ? (
         <div className="py-12 flex flex-col items-center justify-center gap-2">
           <RefreshCw className="animate-spin text-primary" size={24} />
-          <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Refreshing pipeline...</span>
+          <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">Refreshing pipeline...</span>
         </div>
       ) : paginatedOrders.length === 0 ? (
         <div className="text-center py-16 bg-slate-50/50 rounded-3xl border border-dashed border-slate-200">
@@ -126,7 +126,7 @@ const VendorOrdersPipeline = ({
         <div className="overflow-x-auto rounded-2xl border border-slate-100 shadow-sm bg-white">
           <table className="w-full text-left border-collapse min-w-[780px]">
             <thead>
-              <tr className="bg-slate-50/90 border-b border-slate-100 text-[10px] font-black text-slate-500 uppercase tracking-wider">
+              <tr className="bg-slate-50/90 border-b border-slate-100 text-xs font-bold text-slate-500 uppercase tracking-wider">
                 <th className="py-3.5 px-4">Order ID & Date</th>
                 <th className="py-3.5 px-4">Customer</th>
                 <th className="py-3.5 px-4">Items</th>
@@ -144,8 +144,8 @@ const VendorOrdersPipeline = ({
                     <span className="font-mono font-black text-slate-800 block text-xs">
                       #{ord._id?.substring(0, 8)}
                     </span>
-                    <span className="text-[10px] font-semibold text-slate-400 block mt-0.5 flex items-center gap-1">
-                      <Calendar size={10} className="inline text-slate-400" />
+                    <span className="text-xs font-medium text-slate-400 block mt-0.5 flex items-center gap-1">
+                      <Calendar size={11} className="inline text-slate-400" />
                       {formatDate(ord.createdAt || ord.quickOrderId?.createdAt)}
                     </span>
                   </td>
@@ -156,13 +156,13 @@ const VendorOrdersPipeline = ({
                       {ord.quickOrderId?.customerId?.name || 'Customer'}
                     </span>
                     {ord.quickOrderId?.shippingAddress?.phone && (
-                      <span className="text-[10px] text-slate-500 block font-medium flex items-center gap-1">
-                        <Phone size={10} /> {ord.quickOrderId.shippingAddress.phone}
+                      <span className="text-xs text-slate-500 block font-medium flex items-center gap-1">
+                        <Phone size={11} /> {ord.quickOrderId.shippingAddress.phone}
                       </span>
                     )}
                     {ord.quickOrderId?.shippingAddress?.pincode && (
-                      <span className="text-[10px] text-slate-400 block flex items-center gap-1">
-                        <MapPin size={10} /> Pincode: {ord.quickOrderId.shippingAddress.pincode}
+                      <span className="text-xs text-slate-400 block flex items-center gap-1">
+                        <MapPin size={11} /> Pincode: {ord.quickOrderId.shippingAddress.pincode}
                       </span>
                     )}
                   </td>
@@ -187,7 +187,7 @@ const VendorOrdersPipeline = ({
                             {ord.items[0]?.quantity}x {ord.items[0]?.productName}
                           </span>
                           {ord.items.length > 1 && (
-                            <span className="text-[10px] font-bold text-rose-500 block">
+                            <span className="text-xs font-bold text-rose-500 block">
                               +{ord.items.length - 1} more items
                             </span>
                           )}
@@ -200,10 +200,10 @@ const VendorOrdersPipeline = ({
 
                   {/* Payment */}
                   <td className="py-3.5 px-4">
-                    <span className="inline-block bg-slate-100 text-slate-700 font-extrabold text-[9px] px-2 py-0.5 rounded-md uppercase tracking-wider mb-0.5">
+                    <span className="inline-block bg-slate-100 text-slate-700 font-extrabold text-xs px-2.5 py-0.5 rounded-md uppercase tracking-wider mb-0.5">
                       {ord.quickOrderId?.paymentMethod?.replace(/_/g, ' ') || 'COD'}
                     </span>
-                    <span className={`block text-[9px] font-black uppercase ${
+                    <span className={`block text-xs font-bold uppercase ${
                       ord.paymentStatus === 'PAID' ? 'text-emerald-600' : 'text-amber-600'
                     }`}>
                       {ord.paymentStatus || 'PENDING'}
@@ -217,7 +217,7 @@ const VendorOrdersPipeline = ({
 
                   {/* Status */}
                   <td className="py-3.5 px-4">
-                    <span className={`inline-block px-2.5 py-1 rounded-full text-[9px] font-black uppercase tracking-wider ${
+                    <span className={`inline-block px-2.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${
                       ord.status === 'PREPARING' || ord.status === 'PLACED'
                         ? 'bg-amber-50 text-amber-600 border border-amber-200'
                         : ord.status === 'WAITING_FOR_DELIVERY_BOY'
@@ -248,7 +248,7 @@ const VendorOrdersPipeline = ({
                         <button
                           onClick={() => handleUpdateOrderStatus(ord._id, 'WAITING_FOR_DELIVERY_BOY')}
                           title="Mark Ready for Rider"
-                          className="px-2.5 py-1.5 bg-primary hover:bg-primary/90 text-white rounded-xl text-[9px] font-black uppercase transition-colors cursor-pointer shadow-sm"
+                          className="px-2.5 py-1.5 bg-primary hover:bg-primary/90 text-white rounded-xl text-xs font-bold uppercase transition-colors cursor-pointer shadow-sm"
                         >
                           Ready 📦
                         </button>
@@ -258,7 +258,7 @@ const VendorOrdersPipeline = ({
                         <button
                           onClick={() => setAssigningOrderId(ord._id)}
                           title="Assign Dispatch Rider"
-                          className="px-2.5 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-[9px] font-black uppercase transition-colors cursor-pointer shadow-sm flex items-center gap-1"
+                          className="px-2.5 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold uppercase transition-colors cursor-pointer shadow-sm flex items-center gap-1"
                         >
                           <Truck size={12} />
                           <span>{ord.deliveryPersonId ? 'Re-Assign' : 'Assign Rider'}</span>

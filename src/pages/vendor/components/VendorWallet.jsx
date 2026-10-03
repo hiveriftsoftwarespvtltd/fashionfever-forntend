@@ -31,7 +31,7 @@ const VendorWallet = ({
       html: `
         <div class="text-left font-outfit uppercase">
           <p class="text-xs font-bold text-gray-400 mb-2">Usable Balance: <span class="text-emerald-500 font-extrabold">${formatCurrency(balance)}</span></p>
-          <p class="text-[9px] text-gray-400 leading-relaxed">Please enter the amount you wish to withdraw to your linked bank account. Processing takes 2-3 business days.</p>
+          <p class="text-xs text-gray-400 leading-relaxed">Please enter the amount you wish to withdraw to your linked bank account. Processing takes 2-3 business days.</p>
         </div>
       `,
       input: 'number',
@@ -76,14 +76,14 @@ const VendorWallet = ({
       {/* Wallet Summary Header Banner */}
       <div className={`p-6 lg:p-8 rounded-[32px] border transition-all duration-500 relative overflow-hidden backdrop-blur-xl ${
         isDarkMode 
-          ? 'bg-gray-900/40 border-white/10 shadow-[0_4px_30px_rgba(0,0,0,0.2)]' 
-          : 'bg-white/60 border-gray-100/80 shadow-[0_8px_30px_rgba(0,0,0,0.02)]'
+          ? 'bg-zinc-900 border-zinc-800 shadow-md' 
+          : 'bg-white border-zinc-200 shadow-sm'
       }`}>
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 relative z-10">
           <div>
-            <span className="text-[9px] font-bold text-primary uppercase block mb-1">Financial Node</span>
-            <h2 className="text-xl font-extrabold uppercase text-gray-800 dark:text-white">Merchant Wallet</h2>
-            <p className="text-xs text-gray-400 font-bold uppercase mt-1">Manage your store funds, earnings, and withdrawal requests</p>
+            <span className="text-xs font-bold text-primary uppercase block mb-1">Financial Node</span>
+            <h2 className="text-xl font-extrabold uppercase text-zinc-900 dark:text-zinc-100">Merchant Wallet</h2>
+            <p className="text-xs text-zinc-400 font-bold uppercase mt-1">Manage your store funds, earnings, and withdrawal requests</p>
           </div>
           <button 
             onClick={handleWithdrawalRequest}

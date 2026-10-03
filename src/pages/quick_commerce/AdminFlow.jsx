@@ -51,16 +51,16 @@ const AdminFlow = () => {
           <div className="absolute top-4 right-4 bg-white/10 p-2 rounded-xl">
             <DollarSign size={20} />
           </div>
-          <p className="text-white/70 font-semibold text-[10px] uppercase tracking-wider mb-2">Global Gross Volume</p>
+          <p className="text-white/70 font-semibold text-xs uppercase tracking-wider mb-2">Global Gross Volume</p>
           <h2 className="text-2xl font-black">₹{(stats?.totalSales || 0).toFixed(2)}</h2>
-          <span className="text-[9px] font-bold bg-white/20 px-2 py-0.5 rounded-full mt-2 inline-block">
+          <span className="text-xs font-bold bg-white/20 px-2.5 py-0.5 rounded-full mt-2 inline-block">
             All Express Orders
           </span>
         </div>
 
         <div className="bg-white border border-slate-100 rounded-3xl p-6 shadow-sm">
           <div className="flex justify-between items-start mb-4">
-            <span className="text-slate-400 font-bold text-[10px] uppercase tracking-wider">Platform Earnings</span>
+            <span className="text-slate-400 font-bold text-xs uppercase tracking-wider">Platform Earnings</span>
             <div className="bg-emerald-50 text-emerald-500 p-2 rounded-xl">
               <TrendingUp size={16} />
             </div>
@@ -68,12 +68,12 @@ const AdminFlow = () => {
           <h2 className="text-2xl font-black text-slate-800">
             ₹{(stats?.platformCommission || 0).toFixed(2)}
           </h2>
-          <p className="text-[10px] font-semibold text-slate-400 mt-2">Commission collected on profits</p>
+          <p className="text-xs font-semibold text-slate-400 mt-2">Commission collected on profits</p>
         </div>
 
         <div className="bg-white border border-slate-100 rounded-3xl p-6 shadow-sm">
           <div className="flex justify-between items-start mb-4">
-            <span className="text-slate-400 font-bold text-[10px] uppercase tracking-wider">Vendor Settlements</span>
+            <span className="text-slate-400 font-bold text-xs uppercase tracking-wider">Vendor Settlements</span>
             <div className="bg-indigo-50 text-indigo-500 p-2 rounded-xl">
               <Store size={16} />
             </div>
@@ -81,12 +81,12 @@ const AdminFlow = () => {
           <h2 className="text-2xl font-black text-slate-800">
             ₹{(stats?.vendorPayoutAmount || 0).toFixed(2)}
           </h2>
-          <p className="text-[10px] font-semibold text-slate-400 mt-2">Payout settlements generated</p>
+          <p className="text-xs font-semibold text-slate-400 mt-2">Payout settlements generated</p>
         </div>
 
         <div className="bg-white border border-slate-100 rounded-3xl p-6 shadow-sm">
           <div className="flex justify-between items-start mb-4">
-            <span className="text-slate-400 font-bold text-[10px] uppercase tracking-wider">Net Express Orders</span>
+            <span className="text-slate-400 font-bold text-xs uppercase tracking-wider">Net Express Orders</span>
             <div className="bg-rose-50 text-rose-500 p-2 rounded-xl">
               <ShoppingBag size={16} />
             </div>
@@ -94,7 +94,7 @@ const AdminFlow = () => {
           <h2 className="text-2xl font-black text-slate-800">
             {stats?.totalOrders || 0}
           </h2>
-          <p className="text-[10px] font-semibold text-slate-400 mt-2">Placed quick delivery counts</p>
+          <p className="text-xs font-semibold text-slate-400 mt-2">Placed quick delivery counts</p>
         </div>
       </div>
 
@@ -110,7 +110,7 @@ const AdminFlow = () => {
               fetchAdminDashboard();
               fetchAdminVendors();
             }}
-            className="text-[10px] font-black uppercase tracking-wider text-primary hover:underline cursor-pointer"
+            className="text-xs font-bold uppercase tracking-wider text-primary hover:underline cursor-pointer"
           >
             Refresh List
           </button>
@@ -119,7 +119,7 @@ const AdminFlow = () => {
         {loading ? (
           <div className="py-12 flex flex-col items-center justify-center gap-2">
             <RefreshCw className="animate-spin text-primary" size={24} />
-            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Fetching directory...</span>
+            <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">Fetching directory...</span>
           </div>
         ) : vendors.length === 0 ? (
           <div className="text-center py-20 bg-slate-50/50 rounded-3xl border border-dashed border-slate-200">
@@ -133,7 +133,7 @@ const AdminFlow = () => {
           <div className="overflow-x-auto border border-slate-100 rounded-3xl shadow-sm">
             <table className="w-full border-collapse text-left text-slate-600">
               <thead>
-                <tr className="bg-slate-55 border-b border-slate-150 text-[10px] font-black uppercase tracking-wider text-slate-400">
+                <tr className="bg-slate-55 border-b border-slate-150 text-xs font-bold uppercase tracking-wider text-slate-500">
                   <th className="py-4 px-6">Vendor Info</th>
                   <th className="py-4 px-6 text-center">Service Status</th>
                   <th className="py-4 px-6 text-center">Accepting Orders</th>
@@ -155,13 +155,13 @@ const AdminFlow = () => {
                           <p className="font-extrabold text-slate-800 uppercase truncate">
                             {vendor.businessName || vendor.name || 'Store Merchant'}
                           </p>
-                          <p className="text-[10px] text-slate-400 truncate">
+                          <p className="text-xs text-slate-400 truncate">
                             {vendor.email}
                           </p>
                         </div>
                       </td>
                       <td className="py-4 px-6 text-center">
-                        <span className={`inline-block text-[9px] font-black uppercase px-2.5 py-0.5 rounded-full border ${
+                        <span className={`inline-block text-xs font-bold uppercase px-2.5 py-1 rounded-full border ${
                           qc.enabled 
                             ? 'bg-emerald-50 text-emerald-600 border-emerald-100' 
                             : 'bg-red-50 text-red-500 border-red-100'
@@ -170,7 +170,7 @@ const AdminFlow = () => {
                         </span>
                       </td>
                       <td className="py-4 px-6 text-center">
-                        <span className={`inline-block text-[9px] font-black uppercase px-2.5 py-0.5 rounded-full border ${
+                        <span className={`inline-block text-xs font-bold uppercase px-2.5 py-1 rounded-full border ${
                           qc.acceptingOrders 
                             ? 'bg-emerald-50 text-emerald-600 border-emerald-100' 
                             : 'bg-slate-50 text-slate-400 border-slate-100'

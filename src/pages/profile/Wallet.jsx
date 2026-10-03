@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { 
-  Wallet as WalletIcon, 
-  Clock, 
-  ArrowUpRight, 
-  ArrowDownLeft, 
-  AlertCircle, 
+import {
+  Wallet as WalletIcon,
+  Clock,
+  ArrowUpRight,
+  ArrowDownLeft,
+  AlertCircle,
   History,
   Gift,
   ChevronRight,
@@ -59,12 +59,12 @@ const Wallet = () => {
       preConfirm: () => {
         const amountVal = document.getElementById('swal-amount-input').value;
         const descVal = document.getElementById('swal-desc-input').value;
-        
+
         if (!amountVal || parseFloat(amountVal) <= 0) {
           Swal.showValidationMessage('Please enter a valid positive amount.');
           return false;
         }
-        
+
         return {
           amount: parseFloat(amountVal),
           description: descVal || 'Wallet Top-up',
@@ -89,7 +89,7 @@ const Wallet = () => {
             popup: 'rounded-3xl font-outfit p-8',
           }
         });
-        
+
         try {
           const res = await addWalletBalance(result.value);
           if (res?.success) {
@@ -103,7 +103,7 @@ const Wallet = () => {
                 confirmButton: 'rounded-xl font-black uppercase text-xs px-6 py-3.5',
               }
             });
-            
+
             // Refresh wallet balance and transactions
             await refreshWalletBalance();
             const txRes = await getWalletTransactions();
@@ -170,7 +170,7 @@ const Wallet = () => {
   return (
     <div className="bg-[#f3f3f3] min-h-screen py-10 font-outfit text-left">
       <div className="container mx-auto px-4 max-w-7xl">
-        
+
         {/* Breadcrumb */}
         <div className="flex items-center gap-2 text-xs font-bold text-gray-500 uppercase mb-8">
           <Link to="/" className="hover:text-primary transition-colors">Home</Link>
@@ -180,7 +180,7 @@ const Wallet = () => {
 
         <div className="flex flex-col lg:flex-row gap-8">
           <UserSidebar />
-          
+
           <div className="flex-grow space-y-6">
             <h1 className="text-3xl font-extrabold text-gray-900 uppercase">My Wallet</h1>
 
@@ -203,19 +203,19 @@ const Wallet = () => {
                   </div>
                 </div>
 
-                <button 
+                <button
                   onClick={handleAddMoneyPrompt}
                   className="bg-primary hover:bg-primary/95 text-white font-extrabold text-xs uppercase px-5 py-3 rounded-2xl shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-2 cursor-pointer self-start sm:self-auto"
                 >
                   <Plus size={14} className="stroke-[3]" /> Add Money
                 </button>
               </div>
-              
+
               <div className="flex gap-8 border-t sm:border-t-0 sm:border-l border-gray-100 pt-6 sm:pt-0 sm:pl-8">
                 <div className="text-left">
                   <div className="flex items-center gap-1.5 text-green-500 mb-1">
                     <TrendingUp size={14} />
-                    <span className="text-[9px] font-bold uppercase text-gray-400">Total Credits</span>
+                    <span className="text-xs font-bold uppercase text-gray-400">Total Credits</span>
                   </div>
                   {balanceLoading ? (
                     <Loader2 className="animate-spin text-gray-400" size={14} />
@@ -228,7 +228,7 @@ const Wallet = () => {
                 <div className="text-left">
                   <div className="flex items-center gap-1.5 text-orange-500 mb-1">
                     <TrendingDown size={14} />
-                    <span className="text-[9px] font-bold uppercase text-gray-400">Total Debits</span>
+                    <span className="text-xs font-bold uppercase text-gray-400">Total Debits</span>
                   </div>
                   {balanceLoading ? (
                     <Loader2 className="animate-spin text-gray-400" size={14} />
@@ -248,10 +248,10 @@ const Wallet = () => {
                   <div className="p-2.5 bg-gray-50 rounded-xl"><History size={20} className="text-gray-400" /></div>
                   <h2 className="text-base font-extrabold text-gray-900 uppercase">Transactions</h2>
                 </div>
-                <select 
-                  value={filterType} 
-                  onChange={(e) => setFilterType(e.target.value)} 
-                  className="bg-gray-50 border-none text-[9px] font-bold uppercase py-2 px-3 rounded-lg outline-none cursor-pointer text-gray-650 hover:bg-gray-100 transition-colors"
+                <select
+                  value={filterType}
+                  onChange={(e) => setFilterType(e.target.value)}
+                  className="bg-gray-50 border-none text-xs font-bold uppercase py-2 px-3 rounded-lg outline-none cursor-pointer text-gray-650 hover:bg-gray-100 transition-colors"
                 >
                   <option value="ALL">All Transactions</option>
                   <option value="CREDIT">Credits Only</option>
@@ -280,7 +280,7 @@ const Wallet = () => {
                           </div>
                           <div className="flex flex-col text-left">
                             <span className="text-xs font-bold text-gray-800">{tx.description || tx.reason?.replace(/_/g, ' ') || 'Wallet Transaction'}</span>
-                            <span className="text-[9px] font-bold text-gray-400 uppercase">
+                            <span className="text-xs font-bold text-gray-400 uppercase">
                               {tx.reason?.replace(/_/g, ' ') || 'Transaction'} • {tx.createdAt ? new Date(tx.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : ''}
                             </span>
                           </div>

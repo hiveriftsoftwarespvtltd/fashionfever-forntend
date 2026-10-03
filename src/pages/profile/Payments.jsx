@@ -313,11 +313,11 @@ const Payments = () => {
                           {/* Holder & Expiry details */}
                           <div className="flex justify-between items-end">
                             <div>
-                              <p className="text-[8px] uppercase tracking-wider text-white/60 font-bold">Card Holder</p>
+                              <p className="text-xs uppercase tracking-wider text-white/70 font-semibold">Card Holder</p>
                               <p className="text-xs font-bold font-mono tracking-wide mt-0.5 uppercase">{card.holder}</p>
                             </div>
                             <div className="text-right">
-                              <p className="text-[8px] uppercase tracking-wider text-white/60 font-bold">Expires</p>
+                              <p className="text-xs uppercase tracking-wider text-white/70 font-semibold">Expires</p>
                               <p className="text-xs font-bold font-mono tracking-wide mt-0.5">{card.expiry}</p>
                             </div>
                           </div>
@@ -357,13 +357,13 @@ const Payments = () => {
                             </div>
                             <div>
                               <p className="text-xs font-bold text-gray-900">{upi.provider}</p>
-                              <code onClick={() => handleCopyUPI(upi.handle)} className="text-[11px] font-bold text-gray-500 cursor-pointer hover:text-primary transition-colors mt-0.5 block">{upi.handle}</code>
+                              <code onClick={() => handleCopyUPI(upi.handle)} className="text-xs font-bold text-gray-500 cursor-pointer hover:text-primary transition-colors mt-0.5 block">{upi.handle}</code>
                             </div>
                           </div>
 
                           <div className="flex items-center gap-2">
                             {upi.primary && (
-                              <span className="text-[8px] font-bold uppercase text-green-700 bg-green-50 border border-green-100/50 px-2 py-0.5 rounded">Primary</span>
+                              <span className="text-xs font-bold uppercase text-green-700 bg-green-50 border border-green-100/50 px-2.5 py-1 rounded-md">Primary</span>
                             )}
                             <button 
                               onClick={() => handleDeleteUPI(upi.id)}

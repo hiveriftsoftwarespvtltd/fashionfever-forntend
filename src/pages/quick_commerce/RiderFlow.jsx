@@ -374,10 +374,10 @@ const RiderFlow = () => {
             ⚡
           </div>
           <div className="min-w-0">
-            <h2 className="text-xs sm:text-sm font-black uppercase text-slate-900 m-0 tracking-wider truncate">
+            <h2 className="text-sm sm:text-base font-black uppercase text-slate-900 m-0 tracking-wider truncate">
               FashionFever • Rider Dashboard
             </h2>
-            <p className="text-[10px] text-slate-400 font-bold m-0 truncate">10-Min Flash Delivery Partner Console</p>
+            <p className="text-xs text-slate-400 font-bold m-0 truncate">10-Min Flash Delivery Partner Console</p>
           </div>
         </div>
 
@@ -386,7 +386,7 @@ const RiderFlow = () => {
             localStorage.removeItem('user_session');
             window.location.href = '/auth';
           }}
-          className="bg-slate-100 hover:bg-rose-50 hover:text-rose-600 text-slate-700 font-extrabold text-[10px] uppercase px-3 py-1.5 rounded-xl transition-all cursor-pointer shadow-xs shrink-0 ml-2"
+          className="bg-slate-100 hover:bg-rose-50 hover:text-rose-600 text-slate-700 font-extrabold text-xs uppercase px-3 py-2 rounded-xl transition-all cursor-pointer shadow-xs shrink-0 ml-2"
         >
           Logout / Exit 🚪
         </button>
@@ -423,10 +423,10 @@ const RiderFlow = () => {
 
                 <div className="min-w-0">
                   <div className="flex items-center gap-1.5 flex-wrap mb-0.5">
-                    <span className="bg-rose-50 text-primary text-[9px] font-black uppercase px-2 py-0.5 rounded-md flex items-center gap-1 shadow-2xs">
-                      <Zap size={10} className="fill-primary" /> Express Partner
+                    <span className="bg-rose-50 text-primary text-xs font-black uppercase px-2.5 py-1 rounded-md flex items-center gap-1 shadow-2xs">
+                      <Zap size={11} className="fill-primary" /> Express Partner
                     </span>
-                    <span className={`text-[9px] font-black uppercase px-2 py-0.5 rounded-md shadow-2xs ${status === 'AVAILABLE' ? 'bg-emerald-50 text-emerald-700' :
+                    <span className={`text-xs font-black uppercase px-2.5 py-1 rounded-md shadow-2xs ${status === 'AVAILABLE' ? 'bg-emerald-50 text-emerald-700' :
                         status === 'ON_DELIVERY' ? 'bg-amber-50 text-amber-700' :
                           status === 'BREAK' ? 'bg-blue-50 text-blue-700' : 'bg-slate-100 text-slate-600'
                       }`}>
@@ -438,7 +438,7 @@ const RiderFlow = () => {
                     {riderProfile?.name || user?.name || 'Express Rider'}
                   </h1>
 
-                  <div className="flex flex-wrap items-center gap-x-3 gap-y-0.5 text-[11px] text-slate-500 font-semibold mt-0.5">
+                  <div className="flex flex-wrap items-center gap-x-3 gap-y-0.5 text-xs text-slate-500 font-semibold mt-0.5">
                     <span className="flex items-center gap-1">
                       <Phone size={12} className="text-slate-400" />
                       {riderProfile?.phone || user?.phone || 'N/A'}
@@ -465,14 +465,14 @@ const RiderFlow = () => {
           {/* Performance Metrics Row */}
           <div className="grid grid-cols-2 gap-3 pt-3 border-t border-slate-100">
             <div className="bg-slate-50/80 rounded-xl p-3 text-left shadow-xs">
-              <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest block">Total Delivered</span>
+              <span className="text-xs font-bold text-slate-400 uppercase tracking-widest block">Total Delivered</span>
               <span className="text-base font-black font-mono text-slate-800">
                 {riderProfile?.totalDeliveredOrders || 0} Orders
               </span>
             </div>
 
             <div className="bg-slate-50/80 rounded-xl p-3 text-left shadow-xs">
-              <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest block">Avg Turnaround</span>
+              <span className="text-xs font-bold text-slate-400 uppercase tracking-widest block">Avg Turnaround</span>
               <span className="text-base font-black font-mono text-primary flex items-center gap-1">
                 <Clock size={14} /> {riderProfile?.avgDeliveryTimeInMinutes || 10} Mins
               </span>
@@ -487,7 +487,7 @@ const RiderFlow = () => {
           </div>
 
           <div>
-            <span className="text-[9px] font-black uppercase tracking-widest text-rose-100 block mb-0.5">
+            <span className="text-xs font-bold uppercase tracking-widest text-rose-100 block mb-0.5">
               Duty Telemetry Console
             </span>
             <h2 className="text-sm sm:text-base font-black text-white truncate mb-3 flex items-center gap-2">
@@ -498,7 +498,7 @@ const RiderFlow = () => {
             <div className="space-y-3 text-xs font-semibold">
               {/* Status Select */}
               <div className="flex flex-col gap-1">
-                <label className="text-rose-100 uppercase text-[9px] tracking-wider font-bold">Duty Status Switcher</label>
+                <label className="text-rose-100 uppercase text-xs tracking-wider font-bold">Duty Status Switcher</label>
                 <select
                   value={status}
                   onChange={(e) => setStatus(e.target.value)}
@@ -514,7 +514,7 @@ const RiderFlow = () => {
               {/* Coordinates */}
               <div className="grid grid-cols-2 gap-2">
                 <div className="flex flex-col gap-0.5">
-                  <label className="text-rose-100 uppercase text-[8px] tracking-wider font-bold">Longitude (X)</label>
+                  <label className="text-rose-100 uppercase text-xs tracking-wider font-bold">Longitude (X)</label>
                   <input
                     type="text"
                     value={longitude}
@@ -523,7 +523,7 @@ const RiderFlow = () => {
                   />
                 </div>
                 <div className="flex flex-col gap-0.5">
-                  <label className="text-rose-100 uppercase text-[8px] tracking-wider font-bold">Latitude (Y)</label>
+                  <label className="text-rose-100 uppercase text-xs tracking-wider font-bold">Latitude (Y)</label>
                   <input
                     type="text"
                     value={latitude}
@@ -539,7 +539,7 @@ const RiderFlow = () => {
             <button
               onClick={handleDetectGPS}
               disabled={detectingLocation}
-              className="w-full bg-white/20 hover:bg-white/30 backdrop-blur-md text-white py-2.5 rounded-xl text-[10px] font-black uppercase tracking-wider cursor-pointer flex items-center justify-center gap-1.5 transition-all shadow-xs border-0"
+              className="w-full bg-white/20 hover:bg-white/30 backdrop-blur-md text-white py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider cursor-pointer flex items-center justify-center gap-1.5 transition-all shadow-xs border-0"
             >
               <MapPin size={13} />
               <span>{detectingLocation ? 'Locating...' : 'Detect GPS'}</span>
@@ -547,7 +547,7 @@ const RiderFlow = () => {
 
             <button
               onClick={handleUpdateStatusAndGPS}
-              className="w-full bg-white hover:bg-rose-50 text-primary py-2.5 rounded-xl font-black uppercase text-[10px] tracking-wider cursor-pointer flex items-center justify-center gap-1.5 transition-all shadow-md border-0"
+              className="w-full bg-white hover:bg-rose-50 text-primary py-2.5 rounded-xl font-bold uppercase text-xs tracking-wider cursor-pointer flex items-center justify-center gap-1.5 transition-all shadow-md border-0"
             >
               <Navigation size={13} className="fill-primary" />
               <span>Sync Duty</span>
@@ -578,21 +578,21 @@ const RiderFlow = () => {
             <div className="flex items-center gap-1 bg-slate-100/90 p-1 rounded-2xl shadow-2xs">
               <button
                 onClick={() => handleTabChange('ALL')}
-                className={`px-3 py-1.5 rounded-xl text-[10px] font-black uppercase transition-all cursor-pointer ${queueTab === 'ALL' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-800'
+                className={`px-3 py-1.5 rounded-xl text-xs font-bold uppercase transition-all cursor-pointer ${queueTab === 'ALL' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-800'
                   }`}
               >
                 All ({assignedOrders.length})
               </button>
               <button
                 onClick={() => handleTabChange('PENDING')}
-                className={`px-3 py-1.5 rounded-xl text-[10px] font-black uppercase transition-all cursor-pointer ${queueTab === 'PENDING' ? 'bg-white text-rose-600 shadow-sm' : 'text-slate-500 hover:text-slate-800'
+                className={`px-3 py-1.5 rounded-xl text-xs font-bold uppercase transition-all cursor-pointer ${queueTab === 'PENDING' ? 'bg-white text-rose-600 shadow-sm' : 'text-slate-500 hover:text-slate-800'
                   }`}
               >
                 Active ({assignedOrders.filter(o => o.status !== 'DELIVERED' && o.orderStatus !== 'delivered').length})
               </button>
               <button
                 onClick={() => handleTabChange('DELIVERED')}
-                className={`px-3 py-1.5 rounded-xl text-[10px] font-black uppercase transition-all cursor-pointer ${queueTab === 'DELIVERED' ? 'bg-white text-emerald-600 shadow-sm' : 'text-slate-500 hover:text-slate-800'
+                className={`px-3 py-1.5 rounded-xl text-xs font-bold uppercase transition-all cursor-pointer ${queueTab === 'DELIVERED' ? 'bg-white text-emerald-600 shadow-sm' : 'text-slate-500 hover:text-slate-800'
                   }`}
               >
                 Delivered ({assignedOrders.filter(o => o.status === 'DELIVERED' || o.orderStatus === 'delivered').length})
@@ -603,20 +603,20 @@ const RiderFlow = () => {
             <div className="flex items-center gap-1 bg-slate-200/60 p-1 rounded-2xl shadow-2xs">
               <button
                 onClick={() => setViewMode('TABLE')}
-                className={`p-1.5 px-2.5 rounded-xl text-[10px] font-black uppercase transition-all cursor-pointer flex items-center gap-1 ${viewMode === 'TABLE' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600 hover:text-slate-900'
+                className={`p-1.5 px-2.5 rounded-xl text-xs font-bold uppercase transition-all cursor-pointer flex items-center gap-1 ${viewMode === 'TABLE' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600 hover:text-slate-900'
                   }`}
                 title="Table View"
               >
-                <LayoutList size={13} />
+                <LayoutList size={14} />
                 <span>Table</span>
               </button>
               <button
                 onClick={() => setViewMode('CARDS')}
-                className={`p-1.5 px-2.5 rounded-xl text-[10px] font-black uppercase transition-all cursor-pointer flex items-center gap-1 ${viewMode === 'CARDS' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600 hover:text-slate-900'
+                className={`p-1.5 px-2.5 rounded-xl text-xs font-bold uppercase transition-all cursor-pointer flex items-center gap-1 ${viewMode === 'CARDS' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600 hover:text-slate-900'
                   }`}
                 title="Cards View"
               >
-                <LayoutGrid size={13} />
+                <LayoutGrid size={14} />
                 <span>Cards</span>
               </button>
             </div>
@@ -649,13 +649,13 @@ const RiderFlow = () => {
         ) : viewMode === 'TABLE' ? (
           /* TABLE VIEW */
           <div>
-            <div className="md:hidden flex items-center justify-between text-[10px] font-bold text-rose-600 bg-rose-50/80 rounded-xl px-3 py-1.5 mb-2.5 shadow-2xs">
+            <div className="md:hidden flex items-center justify-between text-xs font-bold text-rose-600 bg-rose-50/80 rounded-xl px-3 py-1.5 mb-2.5 shadow-2xs">
               <span>📱 Mobile Touch View</span>
               <span>👈 Swipe table horizontally 👉</span>
             </div>
             <div className="overflow-x-auto rounded-2xl shadow-md bg-white border-0">
               <table className="w-full text-left text-xs border-collapse">
-                <thead className="bg-slate-50 text-[10px] font-black text-slate-500 uppercase tracking-widest border-b border-slate-200">
+                <thead className="bg-slate-50 text-xs font-bold text-slate-500 uppercase tracking-wider border-b border-slate-200">
                   <tr>
                     <th className="p-3.5 pl-5">Order ID & Date</th>
                     <th className="p-3.5">Pickup Store</th>
@@ -682,16 +682,16 @@ const RiderFlow = () => {
                         {/* 1. Order ID & Date */}
                         <td className="p-3.5 pl-5 align-top">
                           {isStandardOrder ? (
-                            <span className="bg-blue-50 text-blue-700 border border-blue-100 text-[9px] font-black uppercase px-2 py-0.5 rounded-md inline-flex items-center gap-1 mb-1">
+                            <span className="bg-blue-50 text-blue-700 border border-blue-100 text-xs font-bold uppercase px-2.5 py-0.5 rounded-md inline-flex items-center gap-1 mb-1">
                               📦 Standard
                             </span>
                           ) : (
-                            <span className="bg-rose-50 text-primary border border-rose-100 text-[9px] font-black uppercase px-2 py-0.5 rounded-md inline-flex items-center gap-1 mb-1">
-                              <Zap size={10} className="fill-primary" /> Express
+                            <span className="bg-rose-50 text-primary border border-rose-100 text-xs font-bold uppercase px-2.5 py-0.5 rounded-md inline-flex items-center gap-1 mb-1">
+                              <Zap size={11} className="fill-primary" /> Express
                             </span>
                           )}
                           <p className="font-mono font-black text-slate-900 text-xs">#{ord.orderNumber || ord._id?.substring(0, 8)}</p>
-                          <p className="text-[10px] font-medium text-slate-400 mt-0.5">
+                          <p className="text-xs font-medium text-slate-400 mt-0.5">
                             📅 {new Date(ord.createdAt || ord.quickOrderId?.createdAt).toLocaleString()}
                           </p>
                           {isStandardOrder && (
@@ -705,8 +705,8 @@ const RiderFlow = () => {
                         <td className="p-3.5 align-top min-w-[130px]">
                           <p className="font-extrabold text-slate-900 text-xs uppercase">{vendorName}</p>
                           {ord.vendorId?.phone && (
-                            <a href={`tel:${ord.vendorId.phone}`} className="text-[11px] text-slate-600 font-semibold flex items-center gap-1 hover:text-primary transition-colors mt-1">
-                              <Phone size={11} className="text-slate-400" /> {ord.vendorId.phone}
+                            <a href={`tel:${ord.vendorId.phone}`} className="text-xs text-slate-600 font-semibold flex items-center gap-1 hover:text-primary transition-colors mt-1">
+                              <Phone size={12} className="text-slate-400" /> {ord.vendorId.phone}
                             </a>
                           )}
                         </td>
@@ -718,15 +718,15 @@ const RiderFlow = () => {
                               {customer?.name || shipping?.fullName || 'Express Buyer'}
                             </p>
                             {customerPhone && (
-                              <a href={`tel:${customerPhone}`} className="bg-emerald-500 hover:bg-emerald-600 text-white text-[9px] font-black uppercase px-2 py-0.5 rounded-md shrink-0 flex items-center gap-1 shadow-xs">
-                                <Phone size={10} /> Call Buyer
+                              <a href={`tel:${customerPhone}`} className="bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold uppercase px-2 py-0.5 rounded-md shrink-0 flex items-center gap-1 shadow-xs">
+                                <Phone size={11} /> Call Buyer
                               </a>
                             )}
                           </div>
-                          <p className="text-[11px] text-slate-600 font-medium leading-tight">
+                          <p className="text-xs text-slate-600 font-medium leading-tight">
                             📍 {getFullShippingAddress(shipping, ord.quickOrderId?.addressId || ord.addressId)}
                           </p>
-                          <p className="text-[10px] font-black text-primary mt-1">
+                          <p className="text-xs font-black text-primary mt-1">
                             Pincode: {shipping?.pincode || '110039'}
                           </p>
                         </td>
@@ -749,7 +749,7 @@ const RiderFlow = () => {
                               </div>
                             ))}
                             {itemsList.length > 2 && (
-                              <span className="text-[9px] font-bold text-slate-400 uppercase block">
+                              <span className="text-xs font-semibold text-slate-400 uppercase block">
                                 + {itemsList.length - 2} more item{itemsList.length - 2 === 1 ? '' : 's'}
                               </span>
                             )}
@@ -763,14 +763,14 @@ const RiderFlow = () => {
                               ? '₹0.00'
                               : `₹${grandTotal.toFixed(2)}`}
                           </p>
-                          <span className="text-[9px] font-bold text-slate-400 block uppercase mt-0.5">
+                          <span className="text-xs font-bold text-slate-400 block uppercase mt-0.5">
                             {ord.quickOrderId?.paymentMethod === 'WALLET' || ord.paymentMethod === 'WALLET' ? 'ONLINE/WALLET' : 'COLLECT CASH'}
                           </span>
                         </td>
 
                         {/* 6. Status */}
                         <td className="p-3.5 align-top text-center min-w-[110px]">
-                          <span className={`text-[10px] font-black uppercase px-2.5 py-1 rounded-full border inline-block whitespace-nowrap ${isDelivered
+                          <span className={`text-xs font-bold uppercase px-2.5 py-1 rounded-full border inline-block whitespace-nowrap ${isDelivered
                               ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
                               : 'bg-amber-50 text-amber-700 border-amber-200'
                             }`}>
@@ -790,23 +790,23 @@ const RiderFlow = () => {
                             </button>
 
                             {isDelivered ? (
-                              <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-1.5 rounded-xl whitespace-nowrap">
+                              <span className="text-xs font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-1.5 rounded-xl whitespace-nowrap">
                                 Finished ✅
                               </span>
                             ) : activeDeliveryId === ord._id ? (
                               <form onSubmit={handleDeliverSubmit} className="flex items-center gap-1">
-                                <label className="bg-rose-50 hover:bg-rose-100 border border-rose-200 p-1.5 rounded-lg cursor-pointer text-[10px] font-bold text-primary transition-colors" title="Attach Proof">
+                                <label className="bg-rose-50 hover:bg-rose-100 border border-rose-200 p-1.5 rounded-lg cursor-pointer text-xs font-bold text-primary transition-colors" title="Attach Proof">
                                   <Upload size={13} />
                                   <input type="file" accept="image/*" onChange={(e) => setProofFile(e.target.files[0])} className="hidden" />
                                 </label>
-                                <button type="submit" disabled={submittingProof} className="bg-emerald-600 hover:bg-emerald-700 text-white font-black text-[9px] uppercase px-2 py-1.5 rounded-lg transition-all">
+                                <button type="submit" disabled={submittingProof} className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs uppercase px-2 py-1.5 rounded-lg transition-all">
                                   {submittingProof ? '...' : 'OK'}
                                 </button>
                               </form>
                             ) : (
                               <button
                                 onClick={() => setActiveDeliveryId(ord._id)}
-                                className="bg-gradient-to-r from-primary via-rose-600 to-[#b50157] hover:opacity-95 text-white font-black uppercase text-[10px] px-3 py-2 rounded-xl tracking-wider cursor-pointer shadow-xs transition-all flex items-center gap-1 whitespace-nowrap"
+                                className="bg-gradient-to-r from-primary via-rose-600 to-[#b50157] hover:opacity-95 text-white font-bold uppercase text-xs px-3 py-2 rounded-xl tracking-wider cursor-pointer shadow-xs transition-all flex items-center gap-1 whitespace-nowrap"
                               >
                                 <CheckCircle2 size={13} /> Deliver ⚡
                               </button>
@@ -854,7 +854,7 @@ const RiderFlow = () => {
                           #{ord.orderNumber || ord._id?.substring(0, 8)}
                         </span>
                       </div>
-                      <span className="text-[10px] font-semibold text-slate-400 block mt-1">
+                      <span className="text-xs font-medium text-slate-400 block mt-1">
                         📅 {new Date(ord.createdAt || ord.quickOrderId?.createdAt).toLocaleString()}
                       </span>
                       {isStandardOrder && (
@@ -865,7 +865,7 @@ const RiderFlow = () => {
                     </div>
 
                     <div className="flex items-center gap-2">
-                      <span className={`text-[10px] font-black uppercase px-3 py-1 rounded-full shadow-2xs ${isDelivered
+                      <span className={`text-xs font-bold uppercase px-3 py-1 rounded-full shadow-2xs ${isDelivered
                           ? 'bg-emerald-50 text-emerald-700'
                           : 'bg-amber-50 text-amber-700'
                         }`}>
@@ -885,20 +885,20 @@ const RiderFlow = () => {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {/* Vendor Store */}
                     <div className="bg-slate-50/80 border-0 p-4 rounded-2xl space-y-1.5 shadow-2xs">
-                      <span className="text-[9px] font-black text-primary uppercase tracking-widest block flex items-center gap-1">
+                      <span className="text-xs font-bold text-primary uppercase tracking-wider block flex items-center gap-1">
                         <Store size={13} /> PICKUP FROM STORE
                       </span>
                       <p className="font-extrabold text-slate-900 text-xs uppercase">{vendorName}</p>
                       {ord.vendorId?.phone && (
                         <a
                           href={`tel:${ord.vendorId.phone}`}
-                          className="text-[11px] text-slate-600 font-semibold flex items-center gap-1 hover:text-primary transition-colors"
+                          className="text-xs text-slate-600 font-semibold flex items-center gap-1 hover:text-primary transition-colors"
                         >
                           <Phone size={12} className="text-slate-400" /> Phone: {ord.vendorId.phone}
                         </a>
                       )}
                       {ord.vendorId?.email && (
-                        <p className="text-[10px] text-slate-400 font-medium flex items-center gap-1">
+                        <p className="text-xs text-slate-400 font-medium flex items-center gap-1">
                           <Mail size={11} className="text-slate-400" /> {ord.vendorId.email}
                         </p>
                       )}
@@ -907,13 +907,13 @@ const RiderFlow = () => {
                     {/* Customer Destination */}
                     <div className="bg-rose-50/40 border-0 p-4 rounded-2xl space-y-1.5 shadow-2xs">
                       <div className="flex items-center justify-between">
-                        <span className="text-[9px] font-black text-primary uppercase tracking-widest block flex items-center gap-1">
+                        <span className="text-xs font-bold text-primary uppercase tracking-wider block flex items-center gap-1">
                           <MapPin size={13} /> DELIVER TO BUYER
                         </span>
                         {customerPhone && (
                           <a
                             href={`tel:${customerPhone}`}
-                            className="bg-emerald-500 hover:bg-emerald-600 text-white text-[10px] font-black uppercase px-2.5 py-1 rounded-lg flex items-center gap-1 transition-all shadow-xs"
+                            className="bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold uppercase px-2.5 py-1 rounded-lg flex items-center gap-1 transition-all shadow-xs"
                           >
                             <Phone size={11} /> Call Buyer
                           </a>
@@ -923,18 +923,18 @@ const RiderFlow = () => {
                       <p className="font-extrabold text-slate-900 text-xs uppercase">
                         {customer?.name || shipping?.fullName || 'Express Buyer'}
                       </p>
-                      <p className="text-[11px] text-slate-600 font-medium leading-tight">
+                      <p className="text-xs text-slate-600 font-medium leading-tight">
                         📍 {getFullShippingAddress(shipping, ord.quickOrderId?.addressId || ord.addressId)}
                       </p>
-                      <p className="text-[11px] font-black text-primary flex items-center gap-1">
-                        <MapPin size={11} /> Pincode: {shipping?.pincode || '110039'}
+                      <p className="text-xs font-bold text-primary flex items-center gap-1">
+                        <MapPin size={12} /> Pincode: {shipping?.pincode || '110039'}
                       </p>
                     </div>
                   </div>
 
                   {/* Product Checklist */}
                   <div className="bg-slate-50/60 p-3.5 rounded-2xl border-0 shadow-2xs">
-                    <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest block mb-2">
+                    <span className="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-2">
                       📦 Items to Deliver ({itemsList.length})
                     </span>
                     <div className="flex flex-col gap-2">
@@ -968,7 +968,7 @@ const RiderFlow = () => {
                   <div className="border-t border-slate-100 pt-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
                     <div className="flex items-center gap-4">
                       <div>
-                        <span className="text-[9px] font-black text-slate-400 uppercase tracking-wider block">Collect Cash</span>
+                        <span className="text-xs font-bold text-slate-400 uppercase tracking-wider block">Collect Cash</span>
                         <span className="text-base font-black font-mono text-slate-900">
                           {ord.quickOrderId?.paymentMethod === 'WALLET' || ord.paymentMethod === 'WALLET'
                             ? '₹0.00 (Paid Online/Wallet)'
@@ -976,7 +976,7 @@ const RiderFlow = () => {
                         </span>
                       </div>
                       <div className="border-l border-slate-200 pl-4">
-                        <span className="text-[9px] font-black text-slate-400 tracking-wider uppercase block">Target Time</span>
+                        <span className="text-xs font-bold text-slate-400 tracking-wider uppercase block">Target Time</span>
                         <span className="text-xs font-bold text-primary flex items-center gap-1">
                           <Clock size={13} /> ⚡ Within 10 Mins
                         </span>
@@ -1100,7 +1100,7 @@ const RiderFlow = () => {
                 </div>
                 <div>
                   <h3 className="text-base font-black uppercase tracking-tight text-white m-0">Edit Rider Profile</h3>
-                  <p className="text-[11px] text-rose-100 font-medium m-0">Update your partner details & vehicle credentials</p>
+                  <p className="text-xs text-rose-100 font-medium m-0">Update your partner details & vehicle credentials</p>
                 </div>
               </div>
               <button
@@ -1117,7 +1117,7 @@ const RiderFlow = () => {
               {/* Full Name & Phone */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-1.5">Full Name*</label>
+                  <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider block mb-1.5">Full Name*</label>
                   <input
                     type="text"
                     required
@@ -1127,7 +1127,7 @@ const RiderFlow = () => {
                   />
                 </div>
                 <div>
-                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-1.5">Phone Number*</label>
+                  <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider block mb-1.5">Phone Number*</label>
                   <input
                     type="text"
                     required
@@ -1141,7 +1141,7 @@ const RiderFlow = () => {
               {/* Vehicle Type & Vehicle Number */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-1.5">Vehicle Type*</label>
+                  <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider block mb-1.5">Vehicle Type*</label>
                   <select
                     value={editVehicleType}
                     onChange={(e) => setEditVehicleType(e.target.value)}
@@ -1154,7 +1154,7 @@ const RiderFlow = () => {
                   </select>
                 </div>
                 <div>
-                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-1.5">Vehicle Number*</label>
+                  <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider block mb-1.5">Vehicle Number*</label>
                   <input
                     type="text"
                     value={editVehicleNumber}
@@ -1167,7 +1167,7 @@ const RiderFlow = () => {
 
               {/* Update Password */}
               <div>
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-1.5">New Password (Optional)</label>
+                <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider block mb-1.5">New Password (Optional)</label>
                 <input
                   type="password"
                   value={editPassword}
@@ -1179,7 +1179,7 @@ const RiderFlow = () => {
 
               {/* Profile Photo Attachment */}
               <div>
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-1.5">Profile Photo</label>
+                <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider block mb-1.5">Profile Photo</label>
                 <div className="flex items-center gap-3">
                   <label className="bg-slate-100 hover:bg-slate-200 border border-slate-200 px-4 py-2.5 rounded-2xl text-xs font-bold text-slate-700 cursor-pointer transition-colors flex items-center gap-2">
                     <Upload size={15} />
@@ -1228,16 +1228,16 @@ const RiderFlow = () => {
             {/* Modal Header */}
             <div className="bg-gradient-to-r from-primary via-rose-600 to-[#b50157] text-white p-4 sm:p-5 flex items-start sm:items-center justify-between gap-3">
               <div className="min-w-0 flex-1">
-                <span className="text-[10px] font-black uppercase text-rose-100 tracking-wider block">Express Delivery Order Details</span>
+                <span className="text-xs font-bold uppercase text-rose-100 tracking-wider block">Express Delivery Order Details</span>
                 <h3 className="text-xs sm:text-base font-black font-mono truncate text-white max-w-[180px] sm:max-w-none">
                   #{selectedRiderOrderModal._id}
                 </h3>
-                <span className="text-[10px] text-rose-100 font-semibold block mt-0.5">
+                <span className="text-xs text-rose-100 font-semibold block mt-0.5">
                   📅 Placed: {new Date(selectedRiderOrderModal.createdAt || selectedRiderOrderModal.quickOrderId?.createdAt).toLocaleString()}
                 </span>
               </div>
               <div className="flex items-center gap-2 flex-shrink-0">
-                <span className="bg-white/20 text-white border border-white/30 text-[9px] font-black uppercase px-3 py-1 rounded-full whitespace-nowrap">
+                <span className="bg-white/20 text-white border border-white/30 text-xs font-bold uppercase px-3 py-1 rounded-full whitespace-nowrap">
                   {selectedRiderOrderModal.status || 'OUT_FOR_DELIVERY'}
                 </span>
                 <button
@@ -1308,7 +1308,7 @@ const RiderFlow = () => {
                 </h4>
                 <div className="overflow-x-auto rounded-2xl border border-slate-200">
                   <table className="w-full text-left text-xs">
-                    <thead className="bg-slate-100 text-[9px] font-black text-slate-500 uppercase">
+                    <thead className="bg-slate-100 text-xs font-bold text-slate-500 uppercase">
                       <tr>
                         <th className="p-3">Product</th>
                         <th className="p-3 text-center">Qty</th>
@@ -1334,7 +1334,7 @@ const RiderFlow = () => {
                               )}
                               <div>
                                 <p className="font-bold text-slate-800 uppercase text-xs">{item.productName}</p>
-                                {item.sku && <p className="text-[9px] font-mono text-slate-400 uppercase">SKU: {item.sku}</p>}
+                                {item.sku && <p className="text-xs font-mono text-slate-400 uppercase">SKU: {item.sku}</p>}
                               </div>
                             </div>
                           </td>
@@ -1351,7 +1351,7 @@ const RiderFlow = () => {
               {/* Total Payout Summary */}
               <div className="bg-gradient-to-r from-primary via-rose-600 to-[#b50157] text-white p-4 rounded-2xl flex justify-between items-center shadow-md">
                 <div>
-                  <span className="text-[10px] font-bold text-rose-100 uppercase tracking-widest block">Total Cash Amount</span>
+                  <span className="text-xs font-semibold text-rose-100 uppercase tracking-widest block">Total Cash Amount</span>
                   <span className="text-xl font-black font-mono">
                     ₹{(selectedRiderOrderModal.total || selectedRiderOrderModal.grandTotal || 0).toFixed(2)}
                   </span>

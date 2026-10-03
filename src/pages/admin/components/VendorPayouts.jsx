@@ -142,33 +142,33 @@ const VendorPayouts = ({ isDarkMode }) => {
       {/* Title */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className={`text-lg lg:text-3xl font-bold uppercase transition-colors duration-300 ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>
+          <h2 className={`text-xl lg:text-2xl font-black uppercase tracking-tight ${isDarkMode ? 'text-zinc-100' : 'text-zinc-900'}`}>
             Vendor Payouts
           </h2>
-          <p className="text-sm font-semibold uppercase text-gray-400 mt-1">
+          <p className="text-xs font-semibold uppercase text-zinc-400 tracking-wider mt-0.5">
             Oversee vendor performance, platform commissions, and cash payouts audit history
           </p>
         </div>
       </div>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {summaryCards.map((card, i) => (
           <div 
             key={i} 
-            className={`p-6 rounded-3xl border transition-all duration-300 shadow-sm ${
-              isDarkMode ? 'bg-gray-800 border-white/5' : 'bg-white border-gray-100'
+            className={`p-5 rounded-2xl border transition-all ${
+              isDarkMode ? 'bg-zinc-900/90 border-zinc-800' : 'bg-white border-zinc-200 shadow-sm'
             }`}
           >
-            <div className="flex items-center justify-between mb-4">
-              <span className="text-sm font-black uppercase text-gray-400 tracking-wider">
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-xs font-bold uppercase text-zinc-400 tracking-wider">
                 {card.label}
               </span>
-              <div className={`p-3 rounded-2xl ${card.color.split(' ')[1]} ${card.color.split(' ')[0]}`}>
+              <div className={`p-2.5 rounded-xl ${card.color.split(' ')[1]} ${card.color.split(' ')[0]}`}>
                 {card.icon}
               </div>
             </div>
-            <p className={`text-xl lg:text-2xl font-black ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>
+            <p className={`text-xl lg:text-2xl font-black tracking-tight ${isDarkMode ? 'text-zinc-100' : 'text-zinc-900'}`}>
               {card.value}
             </p>
           </div>
@@ -176,28 +176,28 @@ const VendorPayouts = ({ isDarkMode }) => {
       </div>
 
       {/* Filter Options */}
-      <div className={`p-6 rounded-3xl border transition-all duration-300 ${
-        isDarkMode ? 'bg-gray-800 border-white/5' : 'bg-white border-gray-100 shadow-sm'
+      <div className={`p-5 rounded-2xl border transition-all ${
+        isDarkMode ? 'bg-zinc-900/90 border-zinc-800' : 'bg-white border-zinc-200 shadow-sm'
       }`}>
-        <div className="flex items-center gap-2 mb-6 text-left">
-          <SlidersHorizontal size={16} className="text-primary" />
-          <span className="text-xs font-black uppercase tracking-wider">Filters & Controls</span>
+        <div className="flex items-center gap-2 mb-4 text-left">
+          <SlidersHorizontal size={14} className="text-primary" />
+          <span className="text-xs font-black uppercase tracking-wider text-zinc-400">Filters & Controls</span>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
           {/* Month Filter */}
-          <div className="space-y-2 text-left">
-            <label className="text-sm font-black uppercase tracking-wider text-gray-400 flex items-center gap-1.5">
-              <Calendar size={11} className="text-primary" /> Select Month
+          <div className="space-y-1.5 text-left">
+            <label className="text-xs font-bold uppercase tracking-wider text-zinc-400 flex items-center gap-1.5">
+              <Calendar size={12} className="text-primary" /> Select Month
             </label>
             <select
               name="month"
               value={filters.month}
               onChange={handleFilterChange}
-              className={`w-full px-4 py-3 rounded-xl text-xs font-bold outline-none border transition-all cursor-pointer ${
+              className={`w-full px-3.5 py-2.5 rounded-xl text-xs font-bold outline-none border transition-all cursor-pointer ${
                 isDarkMode 
-                  ? 'bg-gray-900 border-gray-700 focus:border-primary/50 text-white' 
-                  : 'bg-gray-50 border-gray-100 focus:bg-white focus:border-primary/30 text-gray-800'
+                  ? 'bg-zinc-900 border-zinc-700 text-zinc-100 focus:border-primary' 
+                  : 'bg-zinc-50 border-zinc-200 text-zinc-900 focus:border-primary'
               }`}
             >
               {months.map(m => (
@@ -207,18 +207,18 @@ const VendorPayouts = ({ isDarkMode }) => {
           </div>
 
           {/* Year Filter */}
-          <div className="space-y-2 text-left">
-            <label className="text-sm font-black uppercase tracking-wider text-gray-400 flex items-center gap-1.5">
-              <Calendar size={11} className="text-primary" /> Select Year
+          <div className="space-y-1.5 text-left">
+            <label className="text-xs font-bold uppercase tracking-wider text-zinc-400 flex items-center gap-1.5">
+              <Calendar size={12} className="text-primary" /> Select Year
             </label>
             <select
               name="year"
               value={filters.year}
               onChange={handleFilterChange}
-              className={`w-full px-4 py-3 rounded-xl text-xs font-bold outline-none border transition-all cursor-pointer ${
+              className={`w-full px-3.5 py-2.5 rounded-xl text-xs font-bold outline-none border transition-all cursor-pointer ${
                 isDarkMode 
-                  ? 'bg-gray-900 border-gray-700 focus:border-primary/50 text-white' 
-                  : 'bg-gray-50 border-gray-100 focus:bg-white focus:border-primary/30 text-gray-800'
+                  ? 'bg-zinc-900 border-zinc-700 text-zinc-100 focus:border-primary' 
+                  : 'bg-zinc-50 border-zinc-200 text-zinc-900 focus:border-primary'
               }`}
             >
               {years.map(y => (
@@ -228,18 +228,18 @@ const VendorPayouts = ({ isDarkMode }) => {
           </div>
 
           {/* Status Filter */}
-          <div className="space-y-2 text-left">
-            <label className="text-sm font-black uppercase tracking-wider text-gray-400 flex items-center gap-1.5">
-              <Clock size={11} className="text-primary" /> Settlement Status
+          <div className="space-y-1.5 text-left">
+            <label className="text-xs font-bold uppercase tracking-wider text-zinc-400 flex items-center gap-1.5">
+              <Clock size={12} className="text-primary" /> Settlement Status
             </label>
             <select
               name="status"
               value={filters.status}
               onChange={handleFilterChange}
-              className={`w-full px-4 py-3 rounded-xl text-xs font-bold outline-none border transition-all cursor-pointer ${
+              className={`w-full px-3.5 py-2.5 rounded-xl text-xs font-bold outline-none border transition-all cursor-pointer ${
                 isDarkMode 
-                  ? 'bg-gray-900 border-gray-700 focus:border-primary/50 text-white' 
-                  : 'bg-gray-50 border-gray-100 focus:bg-white focus:border-primary/30 text-gray-800'
+                  ? 'bg-zinc-900 border-zinc-700 text-zinc-100 focus:border-primary' 
+                  : 'bg-zinc-50 border-zinc-200 text-zinc-900 focus:border-primary'
               }`}
             >
               <option value="all">All Payouts</option>
@@ -249,18 +249,18 @@ const VendorPayouts = ({ isDarkMode }) => {
           </div>
 
           {/* Page Limit */}
-          <div className="space-y-2 text-left">
-            <label className="text-sm font-black uppercase tracking-wider text-gray-400 flex items-center gap-1.5">
-              <SlidersHorizontal size={11} className="text-primary" /> Payouts per page
+          <div className="space-y-1.5 text-left">
+            <label className="text-xs font-bold uppercase tracking-wider text-zinc-400 flex items-center gap-1.5">
+              <SlidersHorizontal size={12} className="text-primary" /> Payouts per page
             </label>
             <select
               name="limit"
               value={filters.limit}
               onChange={handleFilterChange}
-              className={`w-full px-4 py-3 rounded-xl text-xs font-bold outline-none border transition-all cursor-pointer ${
+              className={`w-full px-3.5 py-2.5 rounded-xl text-xs font-bold outline-none border transition-all cursor-pointer ${
                 isDarkMode 
-                  ? 'bg-gray-900 border-gray-700 focus:border-primary/50 text-white' 
-                  : 'bg-gray-50 border-gray-100 focus:bg-white focus:border-primary/30 text-gray-800'
+                  ? 'bg-zinc-900 border-zinc-700 text-zinc-100 focus:border-primary' 
+                  : 'bg-zinc-50 border-zinc-200 text-zinc-900 focus:border-primary'
               }`}
             >
               <option value="5">5 Records</option>
@@ -273,55 +273,55 @@ const VendorPayouts = ({ isDarkMode }) => {
       </div>
 
       {/* Payouts Table Card */}
-      <div className={`rounded-3xl border overflow-hidden transition-all duration-300 ${
-        isDarkMode ? 'bg-gray-800 border-white/5' : 'bg-white border-gray-100 shadow-sm'
+      <div className={`rounded-2xl border overflow-hidden transition-all duration-300 ${
+        isDarkMode ? 'bg-zinc-900/90 border-zinc-800' : 'bg-white border-zinc-200 shadow-sm'
       }`}>
         {loading ? (
           <div className="py-24 flex flex-col items-center justify-center">
             <Loader2 className="animate-spin text-primary mb-3" size={32} />
-            <span className="text-xs font-bold text-gray-400 uppercase tracking-widest animate-pulse">Calculating Vendor margins...</span>
+            <span className="text-xs font-bold text-zinc-400 uppercase tracking-widest animate-pulse">Calculating vendor margins...</span>
           </div>
         ) : payouts.length === 0 ? (
-          <div className="py-24 flex flex-col items-center justify-center text-center">
-            <ShoppingBag size={48} className="text-gray-300 dark:text-gray-600 mb-4" />
-            <p className={`text-sm font-black uppercase ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>No Vendor Payouts Found</p>
-            <p className="text-sm text-gray-400 font-bold uppercase mt-1">No sales exist for this month/year range</p>
+          <div className="py-20 flex flex-col items-center justify-center text-center">
+            <ShoppingBag size={42} className="text-zinc-400 mb-3" />
+            <p className={`text-sm font-black uppercase ${isDarkMode ? 'text-zinc-200' : 'text-zinc-700'}`}>No Vendor Payouts Found</p>
+            <p className="text-xs text-zinc-400 font-bold uppercase mt-1">No sales exist for this month/year range</p>
           </div>
         ) : (
           <div className="overflow-x-auto w-full">
             <table className="w-full border-collapse">
               <thead>
-                <tr className={`border-b text-left text-sm font-black uppercase tracking-wider ${
-                  isDarkMode ? 'bg-gray-900/30 border-white/5 text-gray-400' : 'bg-gray-50/50 border-gray-100 text-gray-500'
+                <tr className={`border-b text-left text-[11px] font-black uppercase tracking-wider ${
+                  isDarkMode ? 'bg-zinc-950/60 border-zinc-800 text-zinc-400' : 'bg-zinc-50/80 border-zinc-200 text-zinc-500'
                 }`}>
-                  <th className="py-5 px-6">Brand / Vendor</th>
-                  <th className="py-5 px-6">Orders</th>
-                  <th className="py-5 px-6 text-right">Total Sales</th>
-                  <th className="py-5 px-6 text-right">Platform Commission</th>
-                  <th className="py-5 px-6 text-right">Net Vendor Payout</th>
-                  <th className="py-5 px-6 text-center">Status</th>
-                  <th className="py-5 px-6 text-center">Actions</th>
+                  <th className="py-4 px-6">Brand / Vendor</th>
+                  <th className="py-4 px-6">Orders</th>
+                  <th className="py-4 px-6 text-right">Total Sales</th>
+                  <th className="py-4 px-6 text-right">Platform Commission</th>
+                  <th className="py-4 px-6 text-right">Net Vendor Payout</th>
+                  <th className="py-4 px-6 text-center">Status</th>
+                  <th className="py-4 px-6 text-center">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100 dark:divide-white/5">
+              <tbody className={`divide-y ${isDarkMode ? 'divide-zinc-800/60' : 'divide-zinc-100'}`}>
                 {payouts.map((item, i) => (
                   <tr 
                     key={i} 
-                    className={`transition-colors text-left hover:bg-gray-50/50 dark:hover:bg-white/[0.01]`}
+                    className={`transition-colors text-left ${isDarkMode ? 'hover:bg-zinc-800/40 text-zinc-200' : 'hover:bg-zinc-50/80 text-zinc-800'}`}
                   >
                     {/* Vendor Business Name & Profile */}
-                    <td className="py-4 px-6">
+                    <td className="py-3.5 px-6">
                       <div className="flex items-center gap-3">
-                        <div className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center font-bold text-xs ${
-                          isDarkMode ? 'bg-gray-700 text-gray-300' : 'bg-gray-100 text-gray-500'
+                        <div className={`w-9 h-9 rounded-xl flex items-center justify-center font-bold text-xs border ${
+                          isDarkMode ? 'bg-zinc-800 border-zinc-700 text-zinc-200' : 'bg-zinc-100 border-zinc-200 text-zinc-700'
                         }`}>
                           {item.businessName?.charAt(0).toUpperCase() || 'V'}
                         </div>
                         <div className="flex flex-col">
-                          <span className={`text-sm font-bold ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>
+                          <span className={`text-sm font-extrabold ${isDarkMode ? 'text-zinc-100' : 'text-zinc-900'}`}>
                             {item.businessName || 'Vendor Brand'}
                           </span>
-                          <span className="text-[9px] font-bold text-gray-400 uppercase">
+                          <span className="text-xs font-mono font-bold text-zinc-400 lowercase">
                             /{item.slug || 'unknown'}
                           </span>
                         </div>
@@ -329,54 +329,57 @@ const VendorPayouts = ({ isDarkMode }) => {
                     </td>
 
                     {/* Total Orders */}
-                    <td className="py-4 px-6">
-                      <span className={`text-sm font-bold ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>
+                    <td className="py-3.5 px-6">
+                      <span className={`text-xs font-bold ${isDarkMode ? 'text-zinc-200' : 'text-zinc-800'}`}>
                         {item.totalOrders || 0}
                       </span>
                     </td>
 
                     {/* Total Sales */}
-                    <td className="py-4 px-6 text-right">
-                      <span className={`text-sm font-bold ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>
+                    <td className="py-3.5 px-6 text-right">
+                      <span className={`text-sm font-black ${isDarkMode ? 'text-zinc-100' : 'text-zinc-900'}`}>
                         ₹{item.totalSales?.toLocaleString('en-IN') || 0}
                       </span>
                     </td>
 
                     {/* Platform Commission */}
-                    <td className="py-4 px-6 text-right">
-                      <span className="text-sm font-bold text-primary">
+                    <td className="py-3.5 px-6 text-right">
+                      <span className="text-sm font-black text-primary">
                         ₹{(item.platformCommission ?? item.totalPlatformCommission ?? item.platformCommissionAmount ?? item.commissionAmount ?? 0).toLocaleString('en-IN')}
                       </span>
                     </td>
 
                     {/* Net Vendor Payout */}
-                    <td className="py-4 px-6 text-right">
-                      <span className="text-sm font-black text-emerald-500 dark:text-emerald-400">
+                    <td className="py-3.5 px-6 text-right">
+                      <span className="text-sm font-black text-emerald-500">
                         ₹{(item.netPayout ?? item.totalVendorPayout ?? item.payoutAmount ?? item.netPayoutAmount ?? 0).toLocaleString('en-IN')}
                       </span>
                     </td>
 
                     {/* Payout Status Badge */}
-                    <td className="py-4 px-6">
-                      <div className="flex items-center justify-center gap-1.5">
-                        <div className={`w-1.5 h-1.5 rounded-full ${
-                          (item.status === 'settled' || item.status === 'paid' || item.status === 'approved' || item.status === 'completed' || item.payoutStatus === 'settled' || item.payoutStatus === 'paid' || item.isVendorSettled === true || item.isVendorSettled === 'true')
-                            ? 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.5)]'
-                            : 'bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.5)]'
-                        }`} />
-                        <span className="text-sm font-black uppercase text-gray-400 tracking-wider">
-                          {(item.status === 'settled' || item.payoutStatus === 'settled' || item.isVendorSettled === true || item.isVendorSettled === 'true') ? 'settled' : (item.status || item.payoutStatus || 'pending')}
-                        </span>
-                      </div>
+                    <td className="py-3.5 px-6 text-center">
+                      {(() => {
+                        const isSettled = (item.status === 'settled' || item.status === 'paid' || item.status === 'approved' || item.status === 'completed' || item.payoutStatus === 'settled' || item.payoutStatus === 'paid' || item.isVendorSettled === true || item.isVendorSettled === 'true');
+                        return (
+                          <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-black uppercase tracking-wide border ${
+                            isSettled 
+                              ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20' 
+                              : 'bg-amber-500/10 text-amber-500 border-amber-500/20'
+                          }`}>
+                            <span className={`w-1.5 h-1.5 rounded-full ${isSettled ? 'bg-emerald-500' : 'bg-amber-500'}`} />
+                            {isSettled ? 'Settled' : 'Pending'}
+                          </span>
+                        );
+                      })()}
                     </td>
 
                     {/* Actions */}
-                    <td className="py-4 px-6 text-center">
+                    <td className="py-3.5 px-6 text-center">
                       <button
                         title="View Details"
                         onClick={() => setSelectedVendorId(item.vendorId || item._id)}
-                        className={`p-2 rounded-xl transition-all cursor-pointer ${
-                          isDarkMode ? 'bg-white/5 text-gray-400 hover:text-primary' : 'bg-gray-50 text-gray-400 hover:text-primary'
+                        className={`p-2 rounded-xl border transition-all cursor-pointer ${
+                          isDarkMode ? 'bg-zinc-800 border-zinc-700 text-zinc-300 hover:text-primary' : 'bg-zinc-100 border-zinc-200 text-zinc-600 hover:text-primary'
                         }`}
                       >
                         <Eye size={16} />
@@ -392,31 +395,31 @@ const VendorPayouts = ({ isDarkMode }) => {
 
       {/* Pagination Controls */}
       {pagination.totalPages > 1 && !loading && (
-        <div className="flex justify-center gap-3">
+        <div className="flex justify-center items-center gap-2 pt-2">
           <button 
             onClick={() => setFilters(p => ({ ...p, page: p.page - 1 }))} 
             disabled={filters.page === 1} 
-            className={`p-4 rounded-2xl disabled:opacity-30 shadow-sm transition-all cursor-pointer ${
+            className={`w-11 h-11 flex items-center justify-center rounded-xl border transition-all disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer ${
               isDarkMode 
-                ? 'bg-gray-800 text-white hover:bg-primary' 
-                : 'bg-white text-gray-600 hover:bg-primary hover:text-white border border-gray-100'
+                ? 'bg-zinc-900 border-zinc-800 text-zinc-300 hover:border-zinc-700 hover:text-white' 
+                : 'bg-white border-zinc-200 text-zinc-700 hover:bg-zinc-100'
             }`}
           >
-            <ChevronLeft size={20} />
+            <ChevronLeft size={18} />
           </button>
-          <div className="w-14 h-14 flex items-center justify-center bg-primary text-white rounded-2xl font-bold shadow-2xl shadow-primary/30 ring-4 ring-primary/10">
+          <div className="w-11 h-11 flex items-center justify-center bg-primary text-white rounded-xl font-black text-sm shadow-md shadow-primary/20">
             {filters.page}
           </div>
           <button 
             onClick={() => setFilters(p => ({ ...p, page: p.page + 1 }))} 
             disabled={filters.page >= pagination.totalPages} 
-            className={`p-4 rounded-2xl disabled:opacity-30 shadow-sm transition-all cursor-pointer ${
+            className={`w-11 h-11 flex items-center justify-center rounded-xl border transition-all disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer ${
               isDarkMode 
-                ? 'bg-gray-800 text-white hover:bg-primary' 
-                : 'bg-white text-gray-600 hover:bg-primary hover:text-white border border-gray-100'
+                ? 'bg-zinc-900 border-zinc-800 text-zinc-300 hover:border-zinc-700 hover:text-white' 
+                : 'bg-white border-zinc-200 text-zinc-700 hover:bg-zinc-100'
             }`}
           >
-            <ChevronRight size={20} />
+            <ChevronRight size={18} />
           </button>
         </div>
       )}

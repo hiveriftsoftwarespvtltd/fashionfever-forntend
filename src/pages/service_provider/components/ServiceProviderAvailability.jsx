@@ -221,7 +221,7 @@ const ServiceProviderAvailability = ({ isDarkMode, user, profileData }) => {
                 {day.isActive ? (
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 flex-grow">
                     <div className="space-y-1">
-                      <label className="text-[9px] font-black uppercase text-gray-400">Start Time</label>
+                      <label className="text-xs font-semibold uppercase text-gray-500">Start Time</label>
                       <input 
                         type="time" 
                         value={day.startTime}
@@ -234,7 +234,7 @@ const ServiceProviderAvailability = ({ isDarkMode, user, profileData }) => {
                       />
                     </div>
                     <div className="space-y-1">
-                      <label className="text-[9px] font-black uppercase text-gray-400">End Time</label>
+                      <label className="text-xs font-semibold uppercase text-gray-500">End Time</label>
                       <input 
                         type="time" 
                         value={day.endTime}
@@ -247,7 +247,7 @@ const ServiceProviderAvailability = ({ isDarkMode, user, profileData }) => {
                       />
                     </div>
                     <div className="space-y-1">
-                      <label className="text-[9px] font-black uppercase text-gray-400">Break Start</label>
+                      <label className="text-xs font-semibold uppercase text-gray-500">Break Start</label>
                       <input 
                         type="time" 
                         value={day.breakStart}
@@ -260,7 +260,7 @@ const ServiceProviderAvailability = ({ isDarkMode, user, profileData }) => {
                       />
                     </div>
                     <div className="space-y-1">
-                      <label className="text-[9px] font-black uppercase text-gray-400">Break End</label>
+                      <label className="text-xs font-semibold uppercase text-gray-500">Break End</label>
                       <input 
                         type="time" 
                         value={day.breakEnd}

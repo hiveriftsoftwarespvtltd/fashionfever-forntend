@@ -49,6 +49,7 @@ import { WishlistProvider } from './context/WishlistContext';
 import { WalletProvider } from './context/WalletContext';
 import { RoleGuard } from './components/AuthGuards';
 import AiChatWidget from './components/AiChatWidget';
+import { captureReferralFromUrl } from './utils/referralTracking';
 
 // Scroll to top on route change
 const ScrollToTop = () => {
@@ -61,6 +62,13 @@ const ScrollToTop = () => {
 
 const App = () => {
   const location = useLocation();
+
+  useEffect(() => {
+    if (location.search) {
+      captureReferralFromUrl(location.search);
+    }
+  }, [location.search]);
+
   const isDashboard = location.pathname.startsWith('/admin') ||
     location.pathname.startsWith('/vendor') ||
     location.pathname.startsWith('/influencer') ||

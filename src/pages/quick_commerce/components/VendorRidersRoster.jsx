@@ -39,7 +39,7 @@ const VendorRidersRoster = ({
         <div className="flex items-center gap-2">
           <Truck size={16} className="text-primary" />
           <h3 className="text-xs font-black uppercase tracking-wider text-slate-800">Riders Roster</h3>
-          <span className="text-[10px] font-black bg-slate-200 text-slate-600 px-2 py-0.5 rounded-full">
+          <span className="text-xs font-bold bg-slate-200 text-slate-600 px-2.5 py-0.5 rounded-full">
             {riders.length}
           </span>
         </div>
@@ -47,31 +47,40 @@ const VendorRidersRoster = ({
           onClick={() => {
             if (onNavigateToRiders) {
               onNavigateToRiders();
+            } else if (showRiderForm) {
+              resetRiderForm();
             } else {
-              localStorage.setItem('vendorActiveTab', 'riders');
-              window.location.reload();
+              handleOpenAddRider();
             }
           }}
           className="bg-primary hover:bg-primary/95 text-white px-2.5 py-1 rounded-xl shadow-md cursor-pointer inline-flex items-center gap-1 text-[10px] font-black uppercase tracking-wider transition-all hover:scale-[1.02]"
         >
-          <Plus size={13} /> Onboard / Manage Riders
+          {showRiderForm ? (
+            <>
+              <X size={13} /> Cancel
+            </>
+          ) : (
+            <>
+              <Plus size={13} /> Onboard / Manage Riders
+            </>
+          )}
         </button>
       </div>
 
       {showRiderForm ? (
         <form onSubmit={handleSaveRiderSubmit} className="space-y-3.5 text-xs font-semibold text-slate-600 text-left">
           <div className="flex justify-between items-center mb-1">
-            <h4 className="text-[10px] font-black uppercase tracking-widest text-primary">
+            <h4 className="text-xs font-black uppercase tracking-widest text-primary">
               {editingRider ? 'Edit Express Rider' : 'Register Express Rider'}
             </h4>
             {editingRider && (
-              <span className="text-[9px] font-extrabold uppercase bg-amber-50 text-amber-600 px-2 py-0.5 rounded border border-amber-100">
+              <span className="text-xs font-bold uppercase bg-amber-50 text-amber-600 px-2 py-0.5 rounded border border-amber-100">
                 Editing Mode
               </span>
             )}
           </div>
           <div>
-            <label className="text-[9px] font-bold uppercase text-slate-400 block mb-1">Full Name *</label>
+            <label className="text-xs font-semibold uppercase text-slate-500 block mb-1">Full Name *</label>
             <input
               type="text"
               placeholder="RIDER NAME"
@@ -82,7 +91,7 @@ const VendorRidersRoster = ({
             />
           </div>
           <div>
-            <label className="text-[9px] font-bold uppercase text-slate-400 block mb-1">Phone Number *</label>
+            <label className="text-xs font-semibold uppercase text-slate-500 block mb-1">Phone Number *</label>
             <input
               type="tel"
               placeholder="PHONE NUMBER"
@@ -93,7 +102,7 @@ const VendorRidersRoster = ({
             />
           </div>
           <div>
-            <label className="text-[9px] font-bold uppercase text-slate-400 block mb-1">Email Address {editingRider ? '' : '*'}</label>
+            <label className="text-xs font-semibold uppercase text-slate-500 block mb-1">Email Address {editingRider ? '' : '*'}</label>
             <input
               type="email"
               placeholder="EMAIL ADDRESS"
@@ -104,7 +113,7 @@ const VendorRidersRoster = ({
             />
           </div>
           <div>
-            <label className="text-[9px] font-bold uppercase text-slate-400 block mb-1">
+            <label className="text-xs font-semibold uppercase text-slate-500 block mb-1">
               Password {editingRider ? '(Leave blank to keep existing)' : '*'}
             </label>
             <div className="relative">
@@ -127,7 +136,7 @@ const VendorRidersRoster = ({
             </div>
           </div>
           <div>
-            <label className="text-[9px] font-bold uppercase text-slate-400 block mb-1">Aadhar Card No {editingRider ? '' : '*'}</label>
+            <label className="text-xs font-semibold uppercase text-slate-500 block mb-1">Aadhar Card No {editingRider ? '' : '*'}</label>
             <input
               type="text"
               placeholder="AADHAR CARD NO"
@@ -140,7 +149,7 @@ const VendorRidersRoster = ({
 
           {editingRider && (
             <div>
-              <label className="text-[9px] font-bold uppercase text-slate-400 block mb-1">Duty Status</label>
+              <label className="text-xs font-semibold uppercase text-slate-500 block mb-1">Duty Status</label>
               <select
                 value={riderStatus}
                 onChange={(e) => setRiderStatus(e.target.value)}
@@ -156,7 +165,7 @@ const VendorRidersRoster = ({
 
           <div className="flex gap-2">
             <div className="w-2/3">
-              <label className="text-[9px] font-bold uppercase text-slate-400 block mb-1">Vehicle No</label>
+              <label className="text-xs font-semibold uppercase text-slate-500 block mb-1">Vehicle No</label>
               <input
                 type="text"
                 placeholder="BIKE NO (OPTIONAL)"
@@ -166,7 +175,7 @@ const VendorRidersRoster = ({
               />
             </div>
             <div className="w-1/3">
-              <label className="text-[9px] font-bold uppercase text-slate-400 block mb-1">Type</label>
+              <label className="text-xs font-semibold uppercase text-slate-500 block mb-1">Type</label>
               <select
                 value={riderVehicleType}
                 onChange={(e) => setRiderVehicleType(e.target.value)}
@@ -180,7 +189,7 @@ const VendorRidersRoster = ({
           </div>
 
           <div className="flex items-center gap-3 pt-1">
-            <span className="text-[10px] font-bold text-slate-400 uppercase">Profile Pic:</span>
+            <span className="text-xs font-semibold text-slate-500 uppercase">Profile Pic:</span>
             <label className="bg-white border border-slate-200 rounded-xl px-3.5 py-1.5 flex items-center gap-1.5 cursor-pointer text-slate-500 hover:text-slate-800 text-xs">
               <Upload size={12} />
               <span>{editingRider ? 'Change Photo' : 'Upload'}</span>
@@ -191,7 +200,7 @@ const VendorRidersRoster = ({
                 className="hidden"
               />
             </label>
-            {riderPhoto && <span className="text-[10px] text-emerald-600 font-bold truncate max-w-[100px]">{riderPhoto.name}</span>}
+            {riderPhoto && <span className="text-xs text-emerald-600 font-bold truncate max-w-[100px]">{riderPhoto.name}</span>}
           </div>
 
           <div className="flex gap-2 pt-3 border-t border-slate-200/60">
@@ -213,10 +222,10 @@ const VendorRidersRoster = ({
       ) : riders.length === 0 ? (
         <div className="text-center py-8">
           <Truck className="mx-auto mb-2 text-slate-350 stroke-[1.5]" size={28} />
-          <p className="text-[10px] font-bold uppercase text-slate-450">No delivery riders registered</p>
+          <p className="text-xs font-bold uppercase text-slate-500">No delivery riders registered</p>
           <button
             onClick={handleOpenAddRider}
-            className="mt-2 text-[10px] font-black uppercase text-primary hover:underline cursor-pointer"
+            className="mt-2 text-xs font-bold uppercase text-primary hover:underline cursor-pointer"
           >
             + Onboard a rider
           </button>
@@ -242,12 +251,12 @@ const VendorRidersRoster = ({
                     <h4 className="text-xs font-black text-slate-800 uppercase flex items-center gap-1.5">
                       {r.name}
                     </h4>
-                    <span className="text-[9px] font-semibold text-slate-400 block mt-0.5 capitalize font-mono">
+                    <span className="text-xs font-medium text-slate-500 block mt-0.5 capitalize font-mono">
                       {r.vehicleType} • {r.phone}
                     </span>
                   </div>
                 </div>
-                <span className={`text-[8px] font-black uppercase px-2 py-0.5 rounded-md border ${
+                <span className={`text-xs font-bold uppercase px-2.5 py-0.5 rounded-md border ${
                   r.status === 'AVAILABLE'
                     ? 'bg-emerald-50 text-emerald-600 border-emerald-100'
                     : r.status === 'ON_DELIVERY'
@@ -261,20 +270,20 @@ const VendorRidersRoster = ({
               </div>
 
               {/* Action buttons bar */}
-              <div className="flex items-center justify-end gap-1.5 pt-2 border-t border-slate-100 text-[9px] font-bold">
+              <div className="flex items-center justify-end gap-1.5 pt-2 border-t border-slate-100 text-xs font-semibold">
                 <button
                   onClick={() => handleViewRiderDetails(r._id)}
                   className="px-2 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center gap-1 transition-colors cursor-pointer"
                   title="View Rider Performance Stats"
                 >
-                  <Eye size={11} /> Metrics
+                  <Eye size={12} /> Metrics
                 </button>
                 <button
                   onClick={() => handleOpenEditRider(r)}
                   className="px-2 py-1 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-600 flex items-center gap-1 transition-colors cursor-pointer"
                   title="Edit Rider Details"
                 >
-                  <Sliders size={11} /> Edit
+                  <Sliders size={12} /> Edit
                 </button>
                 <button
                   onClick={() => handleDeleteRider(r)}

@@ -81,17 +81,17 @@ export const UserDetailsModal = ({ userId, onClose }) => {
                   { label: 'Registration', value: new Date(user.createdAt).toLocaleDateString() },
                   { label: 'System ID', value: user._id, isMono: true }
                 ].map((item, i) => (
-                  <div key={i} className={`flex flex-col justify-center p-4 rounded-2xl text-left ${isDarkMode ? 'bg-gray-900/50' : 'bg-gray-50'}`}>
-                    <span className="text-[8px] font-black text-gray-400 uppercase tracking-wider mb-1">{item.label}</span>
+                  <div key={i} className={`flex flex-col justify-center p-4 rounded-2xl text-left ${isDarkMode ? 'bg-zinc-900 border border-zinc-800' : 'bg-zinc-50 border border-zinc-200'}`}>
+                    <span className="text-xs font-bold text-zinc-400 uppercase tracking-wider mb-1">{item.label}</span>
                     {item.isTag ? (
                       <span className="inline-block w-fit px-2.5 py-0.5 rounded-lg bg-primary/10 text-primary text-sm font-bold uppercase">{item.value}</span>
                     ) : item.isStatus ? (
                       <div className="flex items-center gap-1.5">
                         <div className={`w-1.5 h-1.5 rounded-full ${user.isActive ? 'bg-green-500 shadow-[0_0_6px_rgba(34,197,94,0.4)]' : 'bg-red-500 shadow-[0_0_6px_rgba(239,68,68,0.4)]'}`}></div>
-                        <span className={`text-sm font-bold uppercase ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>{item.value}</span>
+                        <span className={`text-sm font-bold uppercase ${isDarkMode ? 'text-zinc-200' : 'text-zinc-700'}`}>{item.value}</span>
                       </div>
                     ) : (
-                      <span className={`text-sm font-bold ${isDarkMode ? 'text-gray-300' : 'text-gray-600'} ${item.isMono ? 'font-mono opacity-50' : 'uppercase'}`}>
+                      <span className={`text-sm font-bold ${isDarkMode ? 'text-zinc-200' : 'text-zinc-700'} ${item.isMono ? 'font-mono opacity-60 text-xs' : 'uppercase'}`}>
                         {item.value}
                       </span>
                     )}
@@ -102,13 +102,13 @@ export const UserDetailsModal = ({ userId, onClose }) => {
               {/* Wallet Summary Card */}
               {wallet && (
                 <div className={`p-5 rounded-2xl border text-left transition-colors duration-300 ${
-                  isDarkMode ? 'bg-gray-900/40 border-white/5' : 'bg-emerald-50/10 border-emerald-100/50'
+                  isDarkMode ? 'bg-zinc-900 border-zinc-800' : 'bg-emerald-50/20 border-emerald-200/60'
                 }`}>
                   <div className="flex items-center justify-between mb-4">
-                    <span className="text-sm font-black uppercase text-gray-400 tracking-wider">
+                    <span className="text-xs font-extrabold uppercase text-zinc-400 tracking-wider">
                       Customer Wallet Balance
                     </span>
-                    <span className={`px-2 py-0.5 rounded-full text-[9px] font-bold uppercase ${
+                    <span className={`px-2.5 py-0.5 rounded-full text-xs font-bold uppercase ${
                       isDarkMode ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-emerald-100 text-emerald-800'
                     }`}>
                       Liquid
@@ -117,20 +117,20 @@ export const UserDetailsModal = ({ userId, onClose }) => {
                   
                   <div className="grid grid-cols-3 gap-2">
                     <div className="flex flex-col">
-                      <span className="text-[8px] font-black text-gray-400 uppercase">Available</span>
-                      <span className={`text-sm font-black ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                      <span className="text-xs font-bold text-zinc-400 uppercase">Available</span>
+                      <span className={`text-base font-black ${isDarkMode ? 'text-white' : 'text-zinc-900'}`}>
                         ₹{(wallet.balance || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                       </span>
                     </div>
-                    <div className="flex flex-col border-l border-gray-100 dark:border-white/5 pl-3">
-                      <span className="text-[8px] font-black text-gray-400 uppercase">Total Credits</span>
-                      <span className="text-sm font-bold text-emerald-500">
+                    <div className="flex flex-col border-l border-zinc-200 dark:border-zinc-800 pl-3">
+                      <span className="text-xs font-bold text-zinc-400 uppercase">Total Credits</span>
+                      <span className="text-base font-bold text-emerald-500">
                         ₹{(wallet.totalCredits || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                       </span>
                     </div>
-                    <div className="flex flex-col border-l border-gray-100 dark:border-white/5 pl-3">
-                      <span className="text-[8px] font-black text-gray-400 uppercase">Total Debits</span>
-                      <span className="text-sm font-bold text-rose-500">
+                    <div className="flex flex-col border-l border-zinc-200 dark:border-zinc-800 pl-3">
+                      <span className="text-xs font-bold text-zinc-400 uppercase">Total Debits</span>
+                      <span className="text-base font-bold text-rose-500">
                         ₹{(wallet.totalDebits || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                       </span>
                     </div>
@@ -140,17 +140,17 @@ export const UserDetailsModal = ({ userId, onClose }) => {
 
               {/* Transactions History Ledger */}
               <div className="space-y-3">
-                <div className="flex items-center justify-between border-b pb-2 border-gray-100 dark:border-white/5">
-                  <span className="text-sm font-black uppercase text-gray-400 tracking-wider">
+                <div className="flex items-center justify-between border-b pb-2 border-zinc-200 dark:border-zinc-800">
+                  <span className="text-xs font-extrabold uppercase text-zinc-400 tracking-wider">
                     Transaction Audit Ledger
                   </span>
-                  <span className="text-[9px] text-gray-400 font-bold uppercase">
+                  <span className="text-xs text-zinc-400 font-bold uppercase">
                     {(transactions || []).length} Records
                   </span>
                 </div>
                 
                 {(!transactions || transactions.length === 0) ? (
-                  <div className="py-6 text-center text-xs font-bold text-gray-400 uppercase italic">
+                  <div className="py-6 text-center text-xs font-bold text-zinc-400 uppercase italic">
                     No transactions recorded for this wallet.
                   </div>
                 ) : (
@@ -158,28 +158,28 @@ export const UserDetailsModal = ({ userId, onClose }) => {
                     {transactions.map((tx) => (
                       <div 
                         key={tx._id}
-                        className={`p-3 rounded-xl border flex items-center justify-between gap-3 text-xs transition-all ${
+                        className={`p-3.5 rounded-xl border flex items-center justify-between gap-3 text-xs transition-all ${
                           isDarkMode 
-                            ? 'bg-gray-900/20 border-white/5 hover:border-white/10' 
-                            : 'bg-gray-50/50 border-gray-100 hover:border-gray-200 shadow-sm'
+                            ? 'bg-zinc-900 border-zinc-800 hover:border-zinc-700' 
+                            : 'bg-zinc-50 border-zinc-200 hover:border-zinc-300 shadow-sm'
                         }`}
                       >
                         <div className="flex flex-col gap-0.5 max-w-[70%] text-left">
-                          <span className={`font-bold ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>
+                          <span className={`font-bold text-xs ${isDarkMode ? 'text-zinc-200' : 'text-zinc-800'}`}>
                             {tx.description || tx.reason || 'Transaction'}
                           </span>
-                          <span className="text-[8px] text-gray-400 font-bold uppercase">
+                          <span className="text-xs text-zinc-400 font-bold uppercase">
                             {new Date(tx.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
                           </span>
                         </div>
                         
                         <div className="text-right flex flex-col items-end gap-0.5 flex-shrink-0">
-                          <span className={`font-black text-xs ${
+                          <span className={`font-black text-sm ${
                             tx.type === 'CREDIT' ? 'text-emerald-500' : 'text-rose-500'
                           }`}>
                             {tx.type === 'CREDIT' ? '+' : '-'}₹{(tx.amount || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                           </span>
-                          <span className="text-[8px] text-gray-400 font-mono font-bold uppercase">
+                          <span className="text-xs text-zinc-400 font-mono font-bold uppercase">
                             Bal: ₹{(tx.balanceAfterTransaction || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                           </span>
                         </div>

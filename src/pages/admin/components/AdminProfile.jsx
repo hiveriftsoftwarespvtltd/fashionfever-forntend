@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { User, Mail, ShieldCheck, Calendar, KeyRound, Loader2, Phone, Award } from 'lucide-react';
+import { User, Mail, ShieldCheck, Calendar, KeyRound, Loader2, Phone, Award, CheckCircle2 } from 'lucide-react';
 import { getAdminProfile } from '../../../api/adminService';
 
 const AdminProfile = ({ isDarkMode }) => {
@@ -26,18 +26,26 @@ const AdminProfile = ({ isDarkMode }) => {
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center py-32 text-center">
-        <Loader2 className="animate-spin text-primary mb-4" size={36} />
-        <p className="text-sm font-bold text-gray-500 uppercase tracking-wider">Fetching your profile details...</p>
+      <div className="flex flex-col items-center justify-center py-28 text-center">
+        <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center mb-4">
+          <Loader2 className="animate-spin text-primary" size={24} />
+        </div>
+        <p className={`text-xs font-bold uppercase tracking-wider ${isDarkMode ? 'text-zinc-300' : 'text-zinc-600'}`}>
+          Fetching Account Profile...
+        </p>
       </div>
     );
   }
 
   if (!profile) {
     return (
-      <div className={`p-12 text-center rounded-3xl border ${isDarkMode ? 'bg-gray-950 border-white/5' : 'bg-white border-gray-150'}`}>
-        <User size={40} className="text-gray-300 mx-auto mb-4" />
-        <p className="text-sm font-bold text-gray-400">Failed to load profile details</p>
+      <div className={`p-12 text-center rounded-2xl border max-w-xl mx-auto ${
+        isDarkMode ? 'bg-zinc-900 border-zinc-800' : 'bg-white border-zinc-200 shadow-sm'
+      }`}>
+        <User size={36} className="text-zinc-400 mx-auto mb-3" />
+        <p className={`text-sm font-bold ${isDarkMode ? 'text-zinc-200' : 'text-zinc-700'}`}>
+          Unable to load profile details
+        </p>
       </div>
     );
   }
@@ -45,42 +53,54 @@ const AdminProfile = ({ isDarkMode }) => {
   const { user, adminAccess, roleTitle } = profile;
 
   return (
-    <div className="space-y-6 max-w-4xl text-left animate-in fade-in duration-300">
+    <div className="space-y-6 max-w-5xl text-left animate-in fade-in duration-300">
       {/* Header */}
       <div>
-        <h1 className="text-xl font-extrabold text-gray-900 dark:text-white uppercase flex items-center gap-2">
-          <User className="text-primary" size={22} /> My Profile
+        <h1 className={`text-2xl font-black uppercase tracking-tight flex items-center gap-2.5 ${
+          isDarkMode ? 'text-white' : 'text-zinc-900'
+        }`}>
+          <User className="text-primary" size={26} /> My Account Profile
         </h1>
-        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 font-bold">
-          Manage your personal information and view assigned access levels.
+        <p className={`text-xs font-medium mt-1 ${isDarkMode ? 'text-zinc-400' : 'text-zinc-500'}`}>
+          Manage your personal credentials, assigned privileges, and administrative roles.
         </p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {/* Left Side: Avatar Card */}
-        <div className={`p-8 rounded-[2rem] border text-center flex flex-col items-center justify-center relative overflow-hidden transition-all duration-300 ${
-          isDarkMode ? 'bg-gray-955 border-white/5 shadow-2xl shadow-black/20' : 'bg-white border-gray-150 shadow-sm'
+        {/* Left Side: Identity Card */}
+        <div className={`p-7 rounded-2xl border text-center flex flex-col items-center justify-between relative overflow-hidden transition-all duration-300 ${
+          isDarkMode 
+            ? 'bg-zinc-900/90 border-zinc-800 shadow-xl shadow-black/20' 
+            : 'bg-white border-zinc-200/90 shadow-sm'
         }`}>
-          {/* Visual Accent */}
-          <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-primary to-pink-500" />
+          {/* Top subtle line */}
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary via-pink-500 to-rose-500" />
           
-          <div className="w-24 h-24 rounded-[2rem] bg-primary/10 text-primary flex items-center justify-center font-bold text-3xl mb-4 border border-primary/20 shadow-inner">
-            {user?.name ? user.name.substring(0, 2).toUpperCase() : 'AD'}
+          <div className="flex flex-col items-center w-full">
+            <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 text-primary flex items-center justify-center font-black text-2xl mb-4 border border-primary/20 shadow-md">
+              {user?.name ? user.name.substring(0, 2).toUpperCase() : 'AD'}
+            </div>
+
+            <h2 className={`text-base font-extrabold mb-1 tracking-tight ${
+              isDarkMode ? 'text-white' : 'text-zinc-900'
+            }`}>
+              {user?.name || 'Administrator'}
+            </h2>
+            <span className="text-xs font-bold text-primary px-3 py-0.5 rounded-full bg-primary/10 border border-primary/20">
+              {roleTitle || (user?.roles?.includes('super_admin') ? 'Super Admin' : 'Admin')}
+            </span>
           </div>
 
-          <h2 className="text-lg font-bold text-gray-800 dark:text-white mb-1">
-            {user?.name || 'Admin User'}
-          </h2>
-          <p className="text-xs font-semibold text-primary px-3 py-1 rounded-full bg-primary/10 border border-primary/10">
-            {roleTitle || (user?.roles?.includes('super_admin') ? 'Super Admin' : 'Admin')}
-          </p>
-
-          <div className="w-full border-t border-gray-100 dark:border-white/5 mt-6 pt-6 text-left space-y-4">
+          <div className={`w-full border-t mt-6 pt-5 text-left space-y-4 ${
+            isDarkMode ? 'border-zinc-800' : 'border-zinc-100'
+          }`}>
             <div className="flex items-center gap-3">
-              <Calendar size={15} className="text-gray-400 flex-shrink-0" />
+              <Calendar size={16} className={isDarkMode ? 'text-zinc-400' : 'text-zinc-500'} />
               <div>
-                <p className="text-[10px] font-black text-gray-400 uppercase leading-none">Joined On</p>
-                <p className="text-xs font-bold text-gray-600 dark:text-gray-300 mt-1">
+                <p className={`text-[10px] font-bold uppercase tracking-wider ${
+                  isDarkMode ? 'text-zinc-400' : 'text-zinc-500'
+                }`}>Joined On</p>
+                <p className={`text-xs font-extrabold ${isDarkMode ? 'text-zinc-200' : 'text-zinc-800'}`}>
                   {user?.createdAt ? new Date(user.createdAt).toLocaleDateString('en-IN', {
                     day: 'numeric',
                     month: 'short',
@@ -91,66 +111,85 @@ const AdminProfile = ({ isDarkMode }) => {
             </div>
 
             <div className="flex items-center gap-3">
-              <ShieldCheck size={15} className="text-gray-400 flex-shrink-0" />
+              <ShieldCheck size={16} className="text-emerald-500" />
               <div>
-                <p className="text-[10px] font-black text-gray-400 uppercase leading-none">Account Status</p>
-                <span className="inline-block text-[10px] font-bold uppercase tracking-wider text-green-500 mt-1">
-                  Active
+                <p className={`text-[10px] font-bold uppercase tracking-wider ${
+                  isDarkMode ? 'text-zinc-400' : 'text-zinc-500'
+                }`}>Account Status</p>
+                <span className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-500">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                  Active & Verified
                 </span>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Right Side: Account Details */}
+        {/* Right Side: Information & Permissions */}
         <div className="md:col-span-2 space-y-6">
-          {/* Card 1: Details */}
-          <div className={`p-8 rounded-[2rem] border transition-all duration-300 ${
-            isDarkMode ? 'bg-gray-955 border-white/5 shadow-2xl shadow-black/20' : 'bg-white border-gray-150 shadow-sm'
+          {/* Personal Information */}
+          <div className={`p-7 rounded-2xl border transition-all duration-300 ${
+            isDarkMode 
+              ? 'bg-zinc-900/90 border-zinc-800 shadow-xl shadow-black/20' 
+              : 'bg-white border-zinc-200/90 shadow-sm'
           }`}>
-            <h3 className="text-sm font-bold text-gray-800 dark:text-white mb-6 border-b pb-3 border-gray-100 dark:border-white/5">
+            <h3 className={`text-sm font-extrabold uppercase tracking-wider mb-5 pb-3 border-b ${
+              isDarkMode ? 'text-zinc-100 border-zinc-800' : 'text-zinc-800 border-zinc-100'
+            }`}>
               Personal Information
             </h3>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
               <div className="space-y-1">
-                <p className="text-[10px] font-black text-gray-400 uppercase flex items-center gap-1.5">
-                  <User size={12} /> Full Name
+                <p className={`text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 ${
+                  isDarkMode ? 'text-zinc-400' : 'text-zinc-500'
+                }`}>
+                  <User size={13} className="text-primary" /> Full Name
                 </p>
-                <p className="text-sm font-bold text-gray-700 dark:text-gray-200">
-                  {user?.name || 'N/A'}
+                <p className={`text-sm font-extrabold ${isDarkMode ? 'text-zinc-100' : 'text-zinc-900'}`}>
+                  {user?.name || 'Administrator'}
                 </p>
               </div>
 
               <div className="space-y-1">
-                <p className="text-[10px] font-black text-gray-400 uppercase flex items-center gap-1.5">
-                  <Mail size={12} /> Email Address
+                <p className={`text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 ${
+                  isDarkMode ? 'text-zinc-400' : 'text-zinc-500'
+                }`}>
+                  <Mail size={13} className="text-primary" /> Email Address
                 </p>
-                <p className="text-sm font-bold text-gray-700 dark:text-gray-200 break-all">
+                <p className={`text-sm font-extrabold break-all ${isDarkMode ? 'text-zinc-100' : 'text-zinc-900'}`}>
                   {user?.email || 'N/A'}
                 </p>
               </div>
 
               <div className="space-y-1">
-                <p className="text-[10px] font-black text-gray-400 uppercase flex items-center gap-1.5">
-                  <Phone size={12} /> Phone Number
+                <p className={`text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 ${
+                  isDarkMode ? 'text-zinc-400' : 'text-zinc-500'
+                }`}>
+                  <Phone size={13} className="text-primary" /> Phone Number
                 </p>
-                <p className="text-sm font-bold text-gray-700 dark:text-gray-200">
-                  {user?.phone || 'N/A'}
+                <p className={`text-sm font-extrabold ${isDarkMode ? 'text-zinc-100' : 'text-zinc-900'}`}>
+                  {user?.phone || 'Not Specified'}
                 </p>
               </div>
 
               <div className="space-y-1">
-                <p className="text-[10px] font-black text-gray-400 uppercase flex items-center gap-1.5">
-                  <Award size={12} /> Assigned Roles
+                <p className={`text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 ${
+                  isDarkMode ? 'text-zinc-400' : 'text-zinc-500'
+                }`}>
+                  <Award size={13} className="text-primary" /> Assigned Roles
                 </p>
                 <div className="flex flex-wrap gap-1.5 mt-1">
                   {user?.roles?.map((r, idx) => (
                     <span 
                       key={idx} 
-                      className="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-gray-150 dark:bg-gray-900 text-gray-700 dark:text-gray-300"
+                      className={`px-2.5 py-0.5 rounded-lg text-xs font-black uppercase tracking-wider border ${
+                        r === 'super_admin'
+                          ? 'bg-rose-500/10 text-rose-500 border-rose-500/20'
+                          : 'bg-primary/10 text-primary border-primary/20'
+                      }`}
                     >
-                      {r}
+                      {r.replace('_', ' ')}
                     </span>
                   ))}
                 </div>
@@ -158,49 +197,53 @@ const AdminProfile = ({ isDarkMode }) => {
             </div>
           </div>
 
-          {/* Card 2: Permissions / Module Access */}
-          <div className={`p-8 rounded-[2rem] border transition-all duration-300 ${
-            isDarkMode ? 'bg-gray-955 border-white/5 shadow-2xl shadow-black/20' : 'bg-white border-gray-150 shadow-sm'
+          {/* Permissions / Module Access */}
+          <div className={`p-7 rounded-2xl border transition-all duration-300 ${
+            isDarkMode 
+              ? 'bg-zinc-900/90 border-zinc-800 shadow-xl shadow-black/20' 
+              : 'bg-white border-zinc-200/90 shadow-sm'
           }`}>
-            <h3 className="text-sm font-bold text-gray-800 dark:text-white mb-6 border-b pb-3 border-gray-100 dark:border-white/5">
+            <h3 className={`text-sm font-extrabold uppercase tracking-wider mb-5 pb-3 border-b ${
+              isDarkMode ? 'text-zinc-100 border-zinc-800' : 'text-zinc-800 border-zinc-100'
+            }`}>
               Assigned Permissions & Modules
             </h3>
 
             {user?.roles?.includes('super_admin') ? (
-              <div className="p-4 rounded-xl bg-primary/5 text-primary text-xs font-bold flex items-center gap-2 border border-primary/10">
-                <ShieldCheck size={18} />
-                Full System Control Granted (Super Admin permissions bypass limits).
+              <div className={`p-4 rounded-xl flex items-center gap-3 border ${
+                isDarkMode 
+                  ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' 
+                  : 'bg-emerald-50 border-emerald-200 text-emerald-800'
+              }`}>
+                <CheckCircle2 size={20} className="flex-shrink-0 text-emerald-500" />
+                <span className="text-xs font-bold">
+                  Full System Control Granted (Super Admin privileges bypass module restrictions).
+                </span>
               </div>
             ) : Array.isArray(adminAccess) && adminAccess.length > 0 ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {adminAccess.map((access, idx) => (
                   <div 
                     key={idx} 
-                    className={`p-4 rounded-xl border flex items-center justify-between ${
-                      isDarkMode ? 'bg-gray-900 border-white/5' : 'bg-gray-50 border-gray-100 shadow-sm'
+                    className={`p-3.5 rounded-xl border flex items-center justify-between ${
+                      isDarkMode ? 'bg-zinc-950/60 border-zinc-800' : 'bg-zinc-50 border-zinc-200'
                     }`}
                   >
-                    <span className="text-xs font-black uppercase text-gray-700 dark:text-gray-300">
-                      {access.module}
+                    <span className={`text-xs font-extrabold capitalize ${
+                      isDarkMode ? 'text-zinc-200' : 'text-zinc-800'
+                    }`}>
+                      {access.module || access}
                     </span>
-                    <div className="flex gap-1">
-                      {access.access?.map((perm, pIdx) => (
-                        <span 
-                          key={pIdx}
-                          className="px-2 py-0.5 rounded-full text-[9px] font-black uppercase bg-primary/10 text-primary border border-primary/10"
-                        >
-                          {perm}
-                        </span>
-                      ))}
-                    </div>
+                    <span className="text-[10px] font-black uppercase text-emerald-500 bg-emerald-500/10 px-2 py-0.5 rounded-md">
+                      Enabled
+                    </span>
                   </div>
                 ))}
               </div>
             ) : (
-              <div className="p-4 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-white/5 text-xs text-gray-400 font-bold flex items-center gap-2">
-                <KeyRound size={18} />
-                No custom modules assigned yet.
-              </div>
+              <p className={`text-xs ${isDarkMode ? 'text-zinc-400' : 'text-zinc-500'}`}>
+                Standard administrative dashboard view.
+              </p>
             )}
           </div>
         </div>

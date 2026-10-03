@@ -435,17 +435,17 @@ const Orders = () => {
                     {/* Order Metadata Header Card */}
                     <div className="bg-gray-50/70 border-b border-gray-100 px-6 py-5 md:px-8 grid grid-cols-2 md:grid-cols-4 gap-4 items-center">
                       <div className="space-y-1">
-                        <span className="text-[9px] font-black text-gray-400 uppercase tracking-wider block">Order Number</span>
+                        <span className="text-xs font-bold text-gray-400 uppercase tracking-wider block">Order Number</span>
                         <div className="flex flex-col gap-1 items-start">
                           <code className="text-xs font-black text-gray-900 uppercase tracking-tight bg-white px-2 py-0.5 rounded border border-gray-200 shadow-2xs">
                             {order.orderNumber}
                           </code>
                           {(order.isQuickDelivery || order.orderType === 'QUICK' || order.isQuickCommerce) ? (
-                            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase bg-amber-500/15 text-amber-600 border border-amber-500/30 animate-pulse">
+                            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold uppercase bg-amber-500/15 text-amber-600 border border-amber-500/30 animate-pulse">
                               ⚡ 10-MIN EXPRESS
                             </span>
                           ) : (
-                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-extrabold uppercase bg-gray-100 text-gray-500 border border-gray-200">
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-bold uppercase bg-gray-100 text-gray-500 border border-gray-200">
                               📦 STANDARD SHIPPING
                             </span>
                           )}
@@ -454,26 +454,26 @@ const Orders = () => {
 
                       {/* PLACED DATE & TIME */}
                       <div className="space-y-1">
-                        <span className="text-[9px] font-black text-gray-400 uppercase tracking-wider block">Placed Date & Time</span>
+                        <span className="text-xs font-bold text-gray-400 uppercase tracking-wider block">Placed Date & Time</span>
                         <div className="flex flex-col gap-0.5">
                           <span className="text-xs font-black text-gray-800 flex items-center gap-1.5">
                             <Calendar size={13} className="text-primary" />
                             {order.createdAt ? new Date(order.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : 'N/A'}
                           </span>
-                          <span className="text-[11px] font-bold text-gray-500 flex items-center gap-1.5">
-                            <Clock size={11} className="text-slate-400" />
+                          <span className="text-xs font-medium text-gray-500 flex items-center gap-1.5">
+                            <Clock size={12} className="text-slate-400" />
                             {order.createdAt ? new Date(order.createdAt).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true }) : ''}
                           </span>
                         </div>
                       </div>
 
                       <div className="space-y-1">
-                        <span className="text-[9px] font-black text-gray-400 uppercase tracking-wider block">Final Total</span>
+                        <span className="text-xs font-bold text-gray-400 uppercase tracking-wider block">Final Total</span>
                         <span className="text-base font-black text-primary font-mono">₹{(order.grandTotal || 0).toLocaleString()}</span>
                       </div>
 
                       <div className="flex flex-col gap-1 items-start md:items-end justify-center">
-                        <span className="text-[9px] font-black text-gray-400 uppercase tracking-wider block md:hidden">Status</span>
+                        <span className="text-xs font-bold text-gray-400 uppercase tracking-wider block md:hidden">Status</span>
                         {getStatusBadge(order.orderStatus)}
                       </div>
                     </div>
@@ -501,12 +501,12 @@ const Orders = () => {
                                     />
                                   </div>
                                   <div className="flex-grow min-w-0">
-                                    <span className="text-[9px] font-black uppercase bg-gray-100 text-gray-600 px-2 py-0.5 rounded-md mb-1 inline-block">
+                                    <span className="text-xs font-bold uppercase bg-gray-100 text-gray-600 px-2 py-0.5 rounded-md mb-1 inline-block">
                                       SKU: {item.sku || 'N/A'}
                                     </span>
                                     <h4 className="text-xs font-black text-gray-800 uppercase truncate leading-snug">{item.productName || 'Cosmetics Item'}</h4>
                                     {(color || size) && (
-                                      <p className="text-[9px] font-black text-primary uppercase mt-0.5">
+                                      <p className="text-xs font-bold text-primary uppercase mt-0.5">
                                         {color && `Color: ${color}`} {size && `• Size: ${size}`}
                                       </p>
                                     )}
@@ -519,23 +519,23 @@ const Orders = () => {
                                           <div className="flex gap-2">
                                             <button
                                               onClick={() => handleOpenReviewModal(order, item, vendorOrd, item.reviewId || (typeof item.review === 'string' ? item.review : item.review?._id), typeof item.review === 'object' ? item.review : null)}
-                                              className="mt-2.5 text-[9px] font-black uppercase tracking-wider text-amber-600 border border-amber-500/20 px-3 py-1.5 rounded-xl bg-amber-500/5 hover:bg-amber-500 hover:text-white transition-all cursor-pointer inline-flex items-center gap-1 shadow-sm hover:scale-[1.02]"
+                                              className="mt-2.5 text-xs font-bold uppercase tracking-wider text-amber-600 border border-amber-500/20 px-3 py-1.5 rounded-xl bg-amber-500/5 hover:bg-amber-500 hover:text-white transition-all cursor-pointer inline-flex items-center gap-1 shadow-sm hover:scale-[1.02]"
                                             >
-                                              <Star size={10} fill="currentColor" /> Edit Review
+                                              <Star size={12} fill="currentColor" /> Edit Review
                                             </button>
                                             <button
                                               onClick={() => handleDeleteReview(item.reviewId || (typeof item.review === 'string' ? item.review : item.review?._id))}
-                                              className="mt-2.5 text-[9px] font-black uppercase tracking-wider text-red-600 border border-red-500/20 px-3 py-1.5 rounded-xl bg-red-500/5 hover:bg-red-50 hover:text-white transition-all cursor-pointer inline-flex items-center gap-1 shadow-sm hover:scale-[1.02]"
+                                              className="mt-2.5 text-xs font-bold uppercase tracking-wider text-red-600 border border-red-500/20 px-3 py-1.5 rounded-xl bg-red-500/5 hover:bg-red-50 hover:text-white transition-all cursor-pointer inline-flex items-center gap-1 shadow-sm hover:scale-[1.02]"
                                             >
-                                              <Trash2 size={10} /> Delete Review
+                                              <Trash2 size={12} /> Delete Review
                                             </button>
                                           </div>
                                         ) : (
                                           <button
                                             onClick={() => handleOpenReviewModal(order, item, vendorOrd)}
-                                            className="mt-2.5 text-[9px] font-black uppercase tracking-wider text-primary border border-primary/20 px-3 py-1.5 rounded-xl bg-primary/5 hover:bg-primary hover:text-white transition-all cursor-pointer inline-flex items-center gap-1 shadow-sm hover:scale-[1.02]"
+                                            className="mt-2.5 text-xs font-bold uppercase tracking-wider text-primary border border-primary/20 px-3 py-1.5 rounded-xl bg-primary/5 hover:bg-primary hover:text-white transition-all cursor-pointer inline-flex items-center gap-1 shadow-sm hover:scale-[1.02]"
                                           >
-                                            <Star size={10} fill="currentColor" /> Review Product
+                                            <Star size={12} fill="currentColor" /> Review Product
                                           </button>
                                         )}
                                       </div>
@@ -544,7 +544,7 @@ const Orders = () => {
                                   <div className="text-right flex-shrink-0">
                                     <span className="text-xs font-black text-gray-800">₹{(item.finalPrice || (item.salesPrice * item.quantity)).toLocaleString()}</span>
                                     {item.discountAmount > 0 && (
-                                      <p className="text-[8px] font-bold text-green-500 uppercase mt-0.5">Save ₹{item.discountAmount}</p>
+                                      <p className="text-xs font-bold text-green-500 uppercase mt-0.5">Save ₹{item.discountAmount}</p>
                                     )}
                                   </div>
                                 </div>
@@ -559,8 +559,8 @@ const Orders = () => {
                         
                         {/* Shipping Destination */}
                         <div className="md:col-span-7 bg-gray-50/50 p-5 rounded-2xl border border-gray-100/50 space-y-3">
-                          <h5 className="text-[9px] font-black text-gray-400 uppercase tracking-wider flex items-center gap-1.5">
-                            <MapPin size={12} className="text-primary" /> Delivery Destination
+                          <h5 className="text-xs font-bold text-gray-400 uppercase tracking-wider flex items-center gap-1.5">
+                            <MapPin size={14} className="text-primary" /> Delivery Destination
                           </h5>
                           <div className="text-xs text-gray-600 font-bold uppercase leading-relaxed space-y-1">
                             <p className="text-gray-800 font-black">{order.shippingAddress?.phone}</p>
@@ -576,13 +576,13 @@ const Orders = () => {
                               <div className="flex items-center gap-2.5">
                                 <Truck size={18} className="text-blue-600 flex-shrink-0" />
                                 <div>
-                                  <span className="text-[9px] font-black uppercase text-blue-400 block tracking-wider">Courier Tracking ID</span>
+                                  <span className="text-xs font-bold uppercase text-blue-500 block tracking-wider">Courier Tracking ID</span>
                                   <span className="text-xs font-black font-mono text-blue-900 select-all">
                                     {order.trackingId || order.vendorOrders?.find(vo => vo.trackingId)?.trackingId}
                                   </span>
                                 </div>
                               </div>
-                              <span className="text-[9px] font-black uppercase bg-blue-600 text-white px-2.5 py-1 rounded-lg shadow-xs">
+                              <span className="text-xs font-bold uppercase bg-blue-600 text-white px-2.5 py-1 rounded-lg shadow-xs">
                                 Shipped 📦
                               </span>
                             </div>
@@ -591,7 +591,7 @@ const Orders = () => {
 
                         {/* Order Calculation Side */}
                         <div className="md:col-span-5 bg-gray-50/50 p-5 rounded-2xl border border-gray-100/50 space-y-2.5 text-xs font-bold text-gray-400 uppercase">
-                          <h5 className="text-[9px] font-black text-gray-400 uppercase tracking-wider mb-2">Invoice Summary</h5>
+                          <h5 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Invoice Summary</h5>
                           
                           <div className="flex justify-between">
                             <span>Subtotal</span>
@@ -601,7 +601,7 @@ const Orders = () => {
                           {order.discount > 0 && (
                             <div className="flex justify-between text-green-600">
                               <span className="flex items-center gap-1">
-                                <Tag size={10} /> Coupon ({order.appliedCoupon?.code || 'COUPON'})
+                                <Tag size={12} /> Coupon ({order.appliedCoupon?.code || 'COUPON'})
                               </span>
                               <span>-₹{(order.discount || 0).toLocaleString()}</span>
                             </div>
@@ -626,9 +626,9 @@ const Orders = () => {
                             <span className="text-base text-primary">₹{(order.grandTotal || 0).toLocaleString()}</span>
                           </div>
 
-                          <div className="flex items-center justify-between text-[9px] font-black uppercase pt-1 border-t border-gray-200/40">
-                            <span className="flex items-center gap-1"><CreditCard size={10} className="text-gray-400" /> {order.paymentMethod === 'CashOnDelivery' ? 'COD' : order.paymentMethod || 'COD'}</span>
-                            <span className={`px-2 py-0.5 rounded ${order.paymentStatus === 'paid' ? 'bg-green-50 text-green-600 border border-green-100' : 'bg-amber-50 text-amber-600 border border-amber-100'}`}>
+                          <div className="flex items-center justify-between text-xs font-bold uppercase pt-1 border-t border-gray-200/40">
+                            <span className="flex items-center gap-1"><CreditCard size={12} className="text-gray-400" /> {order.paymentMethod === 'CashOnDelivery' ? 'COD' : order.paymentMethod || 'COD'}</span>
+                            <span className={`px-2.5 py-0.5 rounded ${order.paymentStatus === 'paid' ? 'bg-green-50 text-green-600 border border-green-100' : 'bg-amber-50 text-amber-600 border border-amber-100'}`}>
                               {order.paymentStatus || 'pending'}
                             </span>
                           </div>
@@ -655,7 +655,7 @@ const Orders = () => {
             {/* Modal Header */}
             <div className="bg-gray-50/50 px-6 py-4 border-b border-gray-100 flex items-center justify-between">
               <div>
-                <span className="text-[9px] font-black text-primary uppercase block">{isEditingReview ? 'Update Review' : 'Write Review'}</span>
+                <span className="text-xs font-bold text-primary uppercase block">{isEditingReview ? 'Update Review' : 'Write Review'}</span>
                 <h3 className="text-xs font-black uppercase text-gray-800 truncate max-w-[250px]">
                   {reviewProductName}
                 </h3>
@@ -672,7 +672,7 @@ const Orders = () => {
             <form onSubmit={handleReviewSubmit} className="p-6 space-y-4">
               {/* Star Rating Select */}
               <div className="space-y-1">
-                <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest block font-bold">Rating</label>
+                <label className="text-xs font-bold text-gray-400 uppercase tracking-widest block">Rating</label>
                 <div className="flex items-center gap-1.5">
                   {[1, 2, 3, 4, 5].map((starNum) => {
                     const isFilled = reviewRatingHover !== null ? starNum <= reviewRatingHover : starNum <= reviewRating;
@@ -701,7 +701,7 @@ const Orders = () => {
 
               {/* Title */}
               <div className="space-y-1">
-                <label htmlFor="reviewTitle" className="text-[9px] font-black text-gray-400 uppercase tracking-widest block font-bold">Review Title</label>
+                <label htmlFor="reviewTitle" className="text-xs font-bold text-gray-400 uppercase tracking-widest block">Review Title</label>
                 <input 
                   id="reviewTitle"
                   type="text"
@@ -715,7 +715,7 @@ const Orders = () => {
 
               {/* Review Body */}
               <div className="space-y-1">
-                <label htmlFor="reviewBody" className="text-[9px] font-black text-gray-400 uppercase tracking-widest block font-bold">Review Details</label>
+                <label htmlFor="reviewBody" className="text-xs font-bold text-gray-400 uppercase tracking-widest block">Review Details</label>
                 <textarea 
                   id="reviewBody"
                   value={reviewBody}
@@ -730,12 +730,12 @@ const Orders = () => {
               {/* Multiple File Upload */}
               {!isEditingReview && (
                 <div className="space-y-2">
-                  <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest block font-bold">Add Photos</label>
+                  <label className="text-xs font-bold text-gray-400 uppercase tracking-widest block">Add Photos</label>
                   <div className="flex flex-wrap gap-2">
                     {/* Upload Box */}
                     <label className="w-14 h-14 rounded-xl border-2 border-dashed border-gray-200 hover:border-primary bg-gray-50 flex flex-col items-center justify-center cursor-pointer transition-colors group">
                       <Upload size={14} className="text-gray-400 group-hover:text-primary transition-colors" />
-                      <span className="text-[8px] font-black text-gray-400 group-hover:text-primary uppercase mt-1 tracking-wider">Add</span>
+                      <span className="text-xs font-bold text-gray-400 group-hover:text-primary uppercase mt-1 tracking-wider">Add</span>
                       <input 
                         type="file"
                         multiple

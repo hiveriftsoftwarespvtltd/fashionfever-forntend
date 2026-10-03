@@ -16,22 +16,22 @@ const NavItem = memo(({ id, label, icon, onClick, activeTab, isDarkMode }) => {
   return (
     <button
       onClick={onClick}
-      className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-xs font-bold tracking-wide transition-all duration-[250ms] ease-[cubic-bezier(0.22,1,0.36,1)] group relative transform-gpu will-change-[transform,opacity] ${
+      className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold tracking-normal transition-all duration-[200ms] group relative transform-gpu cursor-pointer ${
         selected
-          ? 'bg-primary text-white shadow-lg shadow-primary/25'
+          ? 'bg-primary text-white shadow-md shadow-primary/25 font-bold'
           : isDarkMode
-          ? 'text-gray-400 hover:bg-white/5 hover:text-white hover:translate-x-0.5'
-          : 'text-gray-500 hover:bg-gray-50 hover:text-gray-800 hover:translate-x-0.5'
+          ? 'text-zinc-200 hover:bg-zinc-900 hover:text-white hover:translate-x-0.5'
+          : 'text-zinc-700 hover:bg-zinc-100 hover:text-zinc-950 hover:translate-x-0.5'
       }`}
       style={{ backfaceVisibility: 'hidden' }}
     >
       {/* Active left indicator bar with smooth height and scale transition */}
       <span 
-        className={`absolute left-0 top-1/2 -translate-y-1/2 w-1 bg-white/60 rounded-full transition-all duration-[300ms] ease-[cubic-bezier(0.22,1,0.36,1)] origin-center transform-gpu will-change-[height,opacity] ${
+        className={`absolute left-0 top-1/2 -translate-y-1/2 w-1 bg-white rounded-full transition-all duration-[250ms] origin-center transform-gpu ${
           selected ? 'h-5 opacity-100 scale-y-100' : 'h-0 opacity-0 scale-y-0'
         }`}
       />
-      <span className={`transition-transform duration-[250ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-110 ${selected ? 'text-white' : isDarkMode ? 'text-gray-500' : 'text-gray-400'}`}>
+      <span className={`transition-transform duration-[200ms] group-hover:scale-105 flex-shrink-0 ${selected ? 'text-white' : isDarkMode ? 'text-zinc-400' : 'text-zinc-500'}`}>
         {icon}
       </span>
       <span className="truncate">{label}</span>
@@ -41,28 +41,23 @@ const NavItem = memo(({ id, label, icon, onClick, activeTab, isDarkMode }) => {
 
 NavItem.displayName = 'NavItem';
 
-// ==========================================
-// OPTIMIZATION: Memoized SubNavItem Component
-// Handles smooth color transitions and scales hover state slightly
-// with GPU acceleration to prevent layout shift.
-// ==========================================
 const SubNavItem = memo(({ id, label, icon, activeTab, isDarkMode, onClick }) => {
   const selected = activeTab === id;
   return (
     <button
       onClick={onClick}
-      className={`w-full flex items-center gap-2.5 px-4 py-2.5 rounded-xl text-[11px] font-bold tracking-wide transition-all duration-[250ms] ease-[cubic-bezier(0.22,1,0.36,1)] transform-gpu will-change-[transform,opacity] hover:translate-x-0.5 ${
+      className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] font-semibold tracking-normal transition-all duration-[200ms] transform-gpu hover:translate-x-0.5 cursor-pointer ${
         selected
           ? isDarkMode
-            ? 'bg-primary/15 text-primary font-extrabold'
-            : 'bg-primary/10 text-primary font-extrabold'
+            ? 'bg-primary/20 text-pink-400 font-bold border border-primary/30'
+            : 'bg-primary/10 text-primary font-bold border border-primary/20'
           : isDarkMode
-          ? 'text-gray-500 hover:bg-white/5 hover:text-gray-300'
-          : 'text-gray-400 hover:bg-gray-50 hover:text-gray-700'
+          ? 'text-zinc-300 hover:bg-zinc-900 hover:text-white'
+          : 'text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900'
       }`}
       style={{ backfaceVisibility: 'hidden' }}
     >
-      <span className={`transition-transform duration-[250ms] ease-[cubic-bezier(0.22,1,0.36,1)] ${selected ? 'text-primary' : isDarkMode ? 'text-gray-600' : 'text-gray-400'}`}>{icon}</span>
+      <span className={`transition-transform duration-[200ms] flex-shrink-0 ${selected ? (isDarkMode ? 'text-pink-400' : 'text-primary') : isDarkMode ? 'text-zinc-400' : 'text-zinc-500'}`}>{icon}</span>
       <span className="truncate">{label}</span>
     </button>
   );
@@ -70,48 +65,43 @@ const SubNavItem = memo(({ id, label, icon, activeTab, isDarkMode, onClick }) =>
 
 SubNavItem.displayName = 'SubNavItem';
 
-// ==========================================
-// OPTIMIZATION: Memoized GroupHeader Component
-// Encapsulates height, opacity, chevron, and margin transitions.
-// Uses explicit cubic-bezier transforms to prevent sudden expansion jumps.
-// ==========================================
 const GroupHeader = memo(({ groupKey, isActive, icon, label, children, isDarkMode, isOpen, onToggle }) => {
   return (
     <div className="space-y-0.5 transform-gpu">
       <button
         onClick={onToggle}
-        className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-xs font-bold tracking-wide transition-all duration-[250ms] ease-[cubic-bezier(0.22,1,0.36,1)] group transform-gpu will-change-[transform,opacity] hover:translate-x-0.5 ${
+        className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold tracking-normal transition-all duration-[200ms] group transform-gpu hover:translate-x-0.5 cursor-pointer ${
           isActive
-            ? isDarkMode ? 'bg-primary/15 text-primary' : 'bg-primary/10 text-primary'
+            ? isDarkMode ? 'bg-primary/15 text-pink-400 font-bold' : 'bg-primary/10 text-primary font-bold'
             : isDarkMode
-            ? 'text-gray-400 hover:bg-white/5 hover:text-white'
-            : 'text-gray-500 hover:bg-gray-50 hover:text-gray-800'
+            ? 'text-zinc-200 hover:bg-zinc-900 hover:text-white'
+            : 'text-zinc-700 hover:bg-zinc-100 hover:text-zinc-950'
         }`}
         style={{ backfaceVisibility: 'hidden' }}
       >
-        <span className={`transition-transform duration-[250ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-110 ${isActive ? 'text-primary' : isDarkMode ? 'text-gray-500' : 'text-gray-400'}`}>
+        <span className={`transition-transform duration-[200ms] group-hover:scale-105 flex-shrink-0 ${isActive ? (isDarkMode ? 'text-pink-400' : 'text-primary') : isDarkMode ? 'text-zinc-400' : 'text-zinc-500'}`}>
           {icon}
         </span>
         <span className="truncate flex-1 text-left">{label}</span>
         <ChevronDown
-          size={14}
-          className={`transition-transform duration-[300ms] ease-[cubic-bezier(0.22,1,0.36,1)] flex-shrink-0 transform-gpu will-change-transform ${isOpen ? 'rotate-180' : ''} ${isActive ? 'text-primary' : isDarkMode ? 'text-gray-600' : 'text-gray-300'}`}
+          size={15}
+          className={`transition-transform duration-[250ms] flex-shrink-0 ${isOpen ? 'rotate-180' : ''} ${isActive ? (isDarkMode ? 'text-pink-400' : 'text-primary') : isDarkMode ? 'text-zinc-400' : 'text-zinc-400'}`}
         />
       </button>
 
-      {/* Collapsible Container with buttery smooth spring-like cubic-bezier transition */}
+      {/* Collapsible Container */}
       <div
         style={{
-          maxHeight: isOpen ? '180px' : '0px',
+          maxHeight: isOpen ? '240px' : '0px',
           opacity: isOpen ? 1 : 0,
           paddingTop: isOpen ? '4px' : '0px',
           paddingBottom: isOpen ? '4px' : '0px',
-          transition: 'max-height 350ms cubic-bezier(0.22, 1, 0.36, 1), opacity 350ms cubic-bezier(0.22, 1, 0.36, 1), padding 350ms cubic-bezier(0.22, 1, 0.36, 1)',
+          transition: 'max-height 300ms cubic-bezier(0.22, 1, 0.36, 1), opacity 300ms cubic-bezier(0.22, 1, 0.36, 1), padding 300ms cubic-bezier(0.22, 1, 0.36, 1)',
           overflow: 'hidden'
         }}
-        className="transform-gpu will-change-[max-height,opacity,padding]"
+        className="transform-gpu"
       >
-        <div className={`ml-3 pl-3 border-l space-y-0.5 py-1 ${isDarkMode ? 'border-white/5' : 'border-gray-100'}`}>
+        <div className={`ml-3 pl-2.5 border-l space-y-0.5 py-0.5 ${isDarkMode ? 'border-zinc-800' : 'border-zinc-200'}`}>
           {children}
         </div>
       </div>
@@ -187,14 +177,14 @@ const AdminSidebar = ({
       */}
       <aside
         className={`
-          fixed inset-y-0 left-0 z-[1002] w-64 flex flex-col h-screen
+          fixed inset-y-0 left-0 z-[1002] w-72 flex flex-col h-screen
           lg:sticky lg:translate-x-0
           transition-transform duration-[450ms] ease-[cubic-bezier(0.22,1,0.36,1)]
           transform-gpu will-change-transform
           ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
           ${isDarkMode
-            ? 'bg-gray-955 border-r border-white/5'
-            : 'bg-white border-r border-gray-100 shadow-xl shadow-gray-200/60'
+            ? 'bg-zinc-950 border-r border-zinc-800'
+            : 'bg-white border-r border-zinc-200 shadow-xl shadow-zinc-200/50'
           }
         `}
         style={{ 
@@ -203,58 +193,58 @@ const AdminSidebar = ({
         }}
       >
         {/* ── Brand Header ── */}
-        <div className={`h-24 px-5 flex items-center justify-between border-b flex-shrink-0 ${isDarkMode ? 'border-white/5' : 'border-gray-100'}`}>
+        <div className={`h-20 px-5 flex items-center justify-between border-b flex-shrink-0 ${isDarkMode ? 'border-zinc-800' : 'border-zinc-200'}`}>
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center shadow-lg shadow-primary/30 flex-shrink-0">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-primary to-pink-500 flex items-center justify-center shadow-lg shadow-primary/30 flex-shrink-0">
               <span className="text-white text-xs font-black tracking-tight">FF</span>
             </div>
             <div>
-              <p className="text-[10px] font-black uppercase text-primary tracking-widest leading-none">FashionFever</p>
-              <p className={`text-sm font-extrabold uppercase tracking-wider leading-tight mt-0.5 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+              <p className="text-xs font-black uppercase text-primary tracking-widest leading-none">FashionFever</p>
+              <p className={`text-sm font-extrabold uppercase tracking-wider leading-tight mt-0.5 ${isDarkMode ? 'text-zinc-100' : 'text-zinc-900'}`}>
                 Admin Dashboard
               </p>
             </div>
           </div>
           <button
             onClick={handleCloseSidebar}
-            className={`lg:hidden p-2 rounded-xl transition-all duration-[250ms] ${isDarkMode ? 'hover:bg-white/5 text-gray-500' : 'hover:bg-gray-100 text-gray-400'}`}
+            className={`lg:hidden p-2 rounded-xl transition-all duration-[250ms] ${isDarkMode ? 'hover:bg-zinc-900 text-zinc-400' : 'hover:bg-zinc-100 text-zinc-500'}`}
           >
             <X size={18} />
           </button>
         </div>
 
         {/* ── Navigation ── */}
-        <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-0.5 scrollbar-thin scroll-smooth">
+        <nav className="flex-1 overflow-y-auto px-3.5 py-4 space-y-1 scrollbar-thin scroll-smooth">
 
           {/* Overview */}
-          <div className="mb-3">
-            <p className={`text-[9px] font-black uppercase tracking-widest px-3 mb-2 ${isDarkMode ? 'text-gray-600' : 'text-gray-300'}`}>
+          <div className="mb-4">
+            <p className="text-xs font-bold uppercase tracking-wider px-3 mb-2 text-zinc-400">
               Overview
             </p>
             {hasAccess('DASHBOARD') && (
               <NavItem 
                 id="dashboard" 
                 label="Dashboard" 
-                icon={<LayoutDashboard size={16} />} 
+                icon={<LayoutDashboard size={17} />} 
                 onClick={() => handleItemClick('dashboard')}
                 activeTab={activeTab}
                 isDarkMode={isDarkMode}
               />
             )}
             <NavItem 
-              id="profile" 
-              label="My Profile" 
-              icon={<User size={16} />} 
-              onClick={() => handleItemClick('profile')}
-              activeTab={activeTab}
-              isDarkMode={isDarkMode}
+                id="profile" 
+                label="My Profile" 
+                icon={<User size={17} />} 
+                onClick={() => handleItemClick('profile')}
+                activeTab={activeTab}
+                isDarkMode={isDarkMode}
             />
           </div>
 
           {/* People */}
           {showPeopleSection && (
-            <div className="mb-3">
-              <p className={`text-[9px] font-black uppercase tracking-widest px-3 mb-2 ${isDarkMode ? 'text-gray-600' : 'text-gray-300'}`}>
+            <div className="mb-4">
+              <p className="text-xs font-bold uppercase tracking-wider px-3 mb-2 text-zinc-400">
                 People
               </p>
               <div className="space-y-0.5">
@@ -349,25 +339,25 @@ const AdminSidebar = ({
 
           {/* Catalog */}
           {showCatalogSection && (
-            <div className="mb-3">
-              <p className={`text-[9px] font-black uppercase tracking-widest px-3 mb-2 ${isDarkMode ? 'text-gray-600' : 'text-gray-300'}`}>
+            <div className="mb-4">
+              <p className="text-xs font-bold uppercase tracking-wider px-3 mb-2 text-zinc-400">
                 Catalog
               </p>
               <div className="space-y-0.5">
                 {(hasAccess('COURSES') || hasAccess('VENDORS')) && (
-                  <NavItem id="categories" label="Categories" icon={<Grid size={16} />} onClick={() => handleItemClick('categories')} activeTab={activeTab} isDarkMode={isDarkMode} />
+                  <NavItem id="categories" label="Categories" icon={<Grid size={17} />} onClick={() => handleItemClick('categories')} activeTab={activeTab} isDarkMode={isDarkMode} />
                 )}
                 {hasAccess('COURSES') && (
-                  <NavItem id="course-categories" label="Course Categories" icon={<BookOpen size={16} />} onClick={() => handleItemClick('course-categories')} activeTab={activeTab} isDarkMode={isDarkMode} />
+                  <NavItem id="course-categories" label="Course Categories" icon={<BookOpen size={17} />} onClick={() => handleItemClick('course-categories')} activeTab={activeTab} isDarkMode={isDarkMode} />
                 )}
                 {hasAccess('VENDORS') && (
-                  <NavItem id="products" label="Products" icon={<Package size={16} />} onClick={() => handleItemClick('products')} activeTab={activeTab} isDarkMode={isDarkMode} />
+                  <NavItem id="products" label="Products" icon={<Package size={17} />} onClick={() => handleItemClick('products')} activeTab={activeTab} isDarkMode={isDarkMode} />
                 )}
                 {hasAccess('INFLUENCERS') && (
-                  <NavItem id="coupons" label="Coupons" icon={<TicketPercent size={16} />} onClick={() => handleItemClick('coupons')} activeTab={activeTab} isDarkMode={isDarkMode} />
+                  <NavItem id="coupons" label="Coupons" icon={<TicketPercent size={17} />} onClick={() => handleItemClick('coupons')} activeTab={activeTab} isDarkMode={isDarkMode} />
                 )}
                 {hasAccess('SERVICE_PROVIDERS') && (
-                  <NavItem id="subscription-plans" label="Beauty Services" icon={<Sparkles size={16} />} onClick={() => handleItemClick('subscription-plans')} activeTab={activeTab} isDarkMode={isDarkMode} />
+                  <NavItem id="subscription-plans" label="Beauty Services" icon={<Sparkles size={17} />} onClick={() => handleItemClick('subscription-plans')} activeTab={activeTab} isDarkMode={isDarkMode} />
                 )}
               </div>
             </div>
@@ -375,41 +365,41 @@ const AdminSidebar = ({
 
           {/* Operations */}
           {showOperationsSection && (
-            <div className="mb-3">
-              <p className={`text-[9px] font-black uppercase tracking-widest px-3 mb-2 ${isDarkMode ? 'text-gray-600' : 'text-gray-300'}`}>
+            <div className="mb-4">
+              <p className="text-xs font-bold uppercase tracking-wider px-3 mb-2 text-zinc-400">
                 Operations
               </p>
               <div className="space-y-0.5">
                 {(hasAccess('VENDORS') || hasAccess('SERVICE_PROVIDERS')) && (
-                  <NavItem id="orders" label="Orders Manager" icon={<ShoppingBag size={16} />} onClick={() => handleItemClick('orders')} activeTab={activeTab} isDarkMode={isDarkMode} />
+                  <NavItem id="orders" label="Orders Manager" icon={<ShoppingBag size={17} />} onClick={() => handleItemClick('orders')} activeTab={activeTab} isDarkMode={isDarkMode} />
                 )}
                 {hasAccess('SERVICE_PROVIDERS') && (
                   <>
-                    <NavItem id="beauty-services" label="Services Subscription" icon={<CreditCard size={16} />} onClick={() => handleItemClick('beauty-services')} activeTab={activeTab} isDarkMode={isDarkMode} />
-                    <NavItem id="service-categories" label="Service Categories" icon={<Layers size={16} />} onClick={() => handleItemClick('service-categories')} activeTab={activeTab} isDarkMode={isDarkMode} />
-                    <NavItem id="admin-service-leads" label="Service Leads" icon={<ClipboardList size={16} />} onClick={() => handleItemClick('admin-service-leads')} activeTab={activeTab} isDarkMode={isDarkMode} />
+                    <NavItem id="beauty-services" label="Services Subscription" icon={<CreditCard size={17} />} onClick={() => handleItemClick('beauty-services')} activeTab={activeTab} isDarkMode={isDarkMode} />
+                    <NavItem id="service-categories" label="Service Categories" icon={<Layers size={17} />} onClick={() => handleItemClick('service-categories')} activeTab={activeTab} isDarkMode={isDarkMode} />
+                    <NavItem id="admin-service-leads" label="Service Leads" icon={<ClipboardList size={17} />} onClick={() => handleItemClick('admin-service-leads')} activeTab={activeTab} isDarkMode={isDarkMode} />
                   </>
                 )}
                 {hasAccess('HOME_CONTENT') && (
                   <>
-                    <NavItem id="home-content" label="Home Content" icon={<Image size={16} />} onClick={() => handleItemClick('home-content')} activeTab={activeTab} isDarkMode={isDarkMode} />
-                    <NavItem id="home-booking-cards" label="Home Booking Cards" icon={<Sparkles size={16} />} onClick={() => handleItemClick('home-booking-cards')} activeTab={activeTab} isDarkMode={isDarkMode} />
+                    <NavItem id="home-content" label="Home Content" icon={<Image size={17} />} onClick={() => handleItemClick('home-content')} activeTab={activeTab} isDarkMode={isDarkMode} />
+                    <NavItem id="home-booking-cards" label="Home Booking Cards" icon={<Sparkles size={17} />} onClick={() => handleItemClick('home-booking-cards')} activeTab={activeTab} isDarkMode={isDarkMode} />
                   </>
                 )}
                 {(hasAccess('FINANCE') || hasAccess('USERS')) && (
-                  <NavItem id="cashback-slabs" label="Cashback Slabs" icon={<Percent size={16} />} onClick={() => handleItemClick('cashback-slabs')} activeTab={activeTab} isDarkMode={isDarkMode} />
+                  <NavItem id="cashback-slabs" label="Cashback Slabs" icon={<Percent size={17} />} onClick={() => handleItemClick('cashback-slabs')} activeTab={activeTab} isDarkMode={isDarkMode} />
                 )}
                 {hasAccess('FINANCE') && (
                   <>
-                    <NavItem id="wallet-balances" label="Wallet Balances" icon={<Wallet size={16} />} onClick={() => handleItemClick('wallet-balances')} activeTab={activeTab} isDarkMode={isDarkMode} />
-                    <NavItem id="bank-accounts" label="Bank Accounts" icon={<Landmark size={16} />} onClick={() => handleItemClick('bank-accounts')} activeTab={activeTab} isDarkMode={isDarkMode} />
+                    <NavItem id="wallet-balances" label="Wallet Balances" icon={<Wallet size={17} />} onClick={() => handleItemClick('wallet-balances')} activeTab={activeTab} isDarkMode={isDarkMode} />
+                    <NavItem id="bank-accounts" label="Bank Accounts" icon={<Landmark size={17} />} onClick={() => handleItemClick('bank-accounts')} activeTab={activeTab} isDarkMode={isDarkMode} />
                   </>
                 )}
                 {hasAccess('TICKETS') && (
-                  <NavItem id="tickets" label="Support Tickets" icon={<CircleAlert size={16} />} onClick={() => handleItemClick('tickets')} activeTab={activeTab} isDarkMode={isDarkMode} />
+                  <NavItem id="tickets" label="Support Tickets" icon={<CircleAlert size={17} />} onClick={() => handleItemClick('tickets')} activeTab={activeTab} isDarkMode={isDarkMode} />
                 )}
                 {hasAccess('NOTIFICATION') && (
-                  <NavItem id="notifications" label="Notifications Manager" icon={<Bell size={16} />} onClick={() => handleItemClick('notifications')} activeTab={activeTab} isDarkMode={isDarkMode} />
+                  <NavItem id="notifications" label="Notifications Manager" icon={<Bell size={17} />} onClick={() => handleItemClick('notifications')} activeTab={activeTab} isDarkMode={isDarkMode} />
                 )}
               </div>
             </div>
@@ -417,16 +407,16 @@ const AdminSidebar = ({
         </nav>
 
         {/* ── Logout Footer ── */}
-        <div className={`px-3 py-4 border-t flex-shrink-0 ${isDarkMode ? 'border-white/5' : 'border-gray-100'}`}>
+        <div className={`px-3 py-4 border-t flex-shrink-0 ${isDarkMode ? 'border-zinc-800' : 'border-zinc-200'}`}>
           <button
             onClick={handleLogout}
-            className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-xs font-bold tracking-wide transition-all duration-[250ms] group ${
+            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold tracking-normal transition-all duration-[200ms] group cursor-pointer ${
               isDarkMode
-                ? 'text-red-400 hover:bg-red-500/10 hover:text-red-300'
-                : 'text-red-500 hover:bg-red-55 hover:text-red-600'
+                ? 'text-rose-400 hover:bg-rose-500/10 hover:text-rose-300'
+                : 'text-rose-600 hover:bg-rose-50 hover:text-rose-700'
             }`}
           >
-            <LogOut size={16} className="group-hover:-translate-x-0.5 transition-transform duration-[250ms] ease-[cubic-bezier(0.22,1,0.36,1)]" />
+            <LogOut size={18} className="group-hover:-translate-x-0.5 transition-transform duration-[200ms]" />
             Logout System
           </button>
         </div>

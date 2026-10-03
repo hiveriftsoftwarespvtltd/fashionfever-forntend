@@ -14,37 +14,27 @@ const Toast = Swal.mixin({
 
 const EditProfileModal = ({ isOpen, onClose, initialData, onSuccess }) => {
   const { isDarkMode } = useTheme();
-  const [editForm, setEditForm] = useState({
-    businessName: initialData?.businessName || '',
-    slug: initialData?.slug || '',
-    description: initialData?.description || '',
-    address: initialData?.address || '',
-    phone: initialData?.phone || '',
-    email: initialData?.email || '',
-    vendorPincode: initialData?.vendorPincode || '',
-    city: initialData?.city || '',
-    state: initialData?.state || '',
+  const getInitialForm = (data) => ({
+    businessName: data?.businessName || '',
+    slug: data?.slug || '',
+    description: data?.description || '',
+    address: data?.address || [data?.city, data?.state, data?.vendorPincode].filter(Boolean).join(', ') || '',
+    phone: data?.phone || data?.ownerId?.phone || '',
+    email: data?.email || data?.ownerId?.email || '',
+    vendorPincode: data?.vendorPincode || '',
+    city: data?.city || '',
+    state: data?.state || '',
     logo: null,
     banner: null
   });
+
+  const [editForm, setEditForm] = useState(() => getInitialForm(initialData));
   const [editLoading, setEditLoading] = useState(false);
 
   // Sync form when initialData changes (re-open scenario)
   React.useEffect(() => {
     if (isOpen && initialData) {
-      setEditForm({
-        businessName: initialData.businessName || '',
-        slug: initialData.slug || '',
-        description: initialData.description || '',
-        address: initialData.address || '',
-        phone: initialData.phone || '',
-        email: initialData.email || '',
-        vendorPincode: initialData.vendorPincode || '',
-        city: initialData.city || '',
-        state: initialData.state || '',
-        logo: null,
-        banner: null
-      });
+      setEditForm(getInitialForm(initialData));
     }
   }, [isOpen, initialData]);
 

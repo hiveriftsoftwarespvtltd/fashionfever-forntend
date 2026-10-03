@@ -16,10 +16,10 @@ const VendorOrderDetailsModal = ({
         {/* Modal Header */}
         <div className="bg-gradient-to-r from-primary to-rose-600 text-white p-5 flex items-center justify-between">
           <div>
-            <span className="text-[10px] font-black uppercase text-rose-100 tracking-wider block">Express Vendor Order</span>
+            <span className="text-xs font-bold uppercase text-rose-100 tracking-wider block">Express Vendor Order</span>
             <h3 className="text-base font-black font-mono">#{selectedOrderModal._id}</h3>
-            <span className="text-[10px] text-rose-100 font-semibold block mt-0.5 flex items-center gap-1">
-              <Calendar size={11} /> Placed: {formatDate(selectedOrderModal.createdAt)}
+            <span className="text-xs text-rose-100 font-semibold block mt-0.5 flex items-center gap-1">
+              <Calendar size={12} /> Placed: {formatDate(selectedOrderModal.createdAt)}
             </span>
           </div>
           <button
@@ -77,7 +77,7 @@ const VendorOrderDetailsModal = ({
                 <CreditCard size={14} className="text-primary" /> Payment Details
               </h4>
               <p className="font-black text-slate-800 text-xs uppercase">{selectedOrderModal.quickOrderId?.paymentMethod?.replace(/_/g, ' ') || 'CASH ON DELIVERY'}</p>
-              <span className={`inline-block mt-1 text-[9px] font-black uppercase px-2 py-0.5 rounded-full ${
+              <span className={`inline-block mt-1 text-xs font-bold uppercase px-2.5 py-0.5 rounded-full ${
                 selectedOrderModal.paymentStatus === 'PAID' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'
               }`}>
                 Status: {selectedOrderModal.paymentStatus || 'PENDING'}
@@ -94,7 +94,7 @@ const VendorOrderDetailsModal = ({
                   <p className="text-slate-500 flex items-center gap-1">
                     <Phone size={12} /> {selectedOrderModal.deliveryPersonId.phone}
                   </p>
-                  <p className="text-[10px] text-slate-400 capitalize">Vehicle: {selectedOrderModal.deliveryPersonId.vehicleType}</p>
+                  <p className="text-xs text-slate-400 capitalize">Vehicle: {selectedOrderModal.deliveryPersonId.vehicleType}</p>
                 </div>
               ) : (
                 <p className="text-xs text-slate-400 italic">No rider assigned yet</p>
@@ -109,7 +109,7 @@ const VendorOrderDetailsModal = ({
             </h4>
             <div className="overflow-x-auto rounded-xl border border-slate-200">
               <table className="w-full text-left text-xs">
-                <thead className="bg-slate-100 text-[9px] font-black text-slate-500 uppercase">
+                <thead className="bg-slate-100 text-xs font-bold text-slate-500 uppercase">
                   <tr>
                     <th className="p-2.5">Product</th>
                     <th className="p-2.5 text-center">Qty</th>
@@ -135,7 +135,7 @@ const VendorOrderDetailsModal = ({
                           )}
                           <div>
                             <p className="font-bold text-slate-800 uppercase text-xs">{item.productName}</p>
-                            {item.sku && <p className="text-[9px] font-mono text-slate-400 uppercase">SKU: {item.sku}</p>}
+                            {item.sku && <p className="text-xs font-mono text-slate-400 uppercase">SKU: {item.sku}</p>}
                           </div>
                         </div>
                       </td>
@@ -152,7 +152,7 @@ const VendorOrderDetailsModal = ({
           {/* Section 4: Vendor Actions & Status Update */}
           <div className="bg-slate-50 border border-slate-100 p-4 rounded-2xl flex flex-wrap items-center justify-between gap-3">
             <div>
-              <span className="text-[10px] font-black uppercase text-slate-400 block tracking-wider">Current Pipeline Status</span>
+              <span className="text-xs font-bold uppercase text-slate-400 block tracking-wider">Current Pipeline Status</span>
               <span className="font-black text-slate-800 text-sm uppercase">{selectedOrderModal.status}</span>
             </div>
 

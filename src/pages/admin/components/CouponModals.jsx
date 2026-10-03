@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { TicketPercent, X, Loader2 } from 'lucide-react';
+import { TicketPercent, X, Loader2, Calendar } from 'lucide-react';
 import { toast } from '../../../utils/toast';
 import { getCouponById, createCoupon, updateCoupon } from '../../../api/adminService';
 import { useTheme } from '../../../context/ThemeContext';
@@ -267,11 +267,33 @@ export const CreateCouponModal = ({ isOpen, onClose, influencerId, influencerNam
               </div>
               <div className="space-y-2">
                 <label className="text-sm font-bold uppercase text-gray-400">Starts At</label>
-                <input required type="date" name="startsAt" value={formData.startsAt} onChange={handleChange} className={`w-full px-5 py-4 rounded-2xl text-sm font-medium outline-none border transition-all ${isDarkMode ? 'bg-gray-900 border-gray-700 text-white' : 'bg-gray-50 border-gray-100'}`} />
+                <div className="relative">
+                  <input
+                    required
+                    type="date"
+                    name="startsAt"
+                    value={formData.startsAt}
+                    onChange={handleChange}
+                    onClick={(e) => e.target.showPicker?.()}
+                    className={`w-full pl-11 pr-4 py-4 rounded-2xl text-sm font-medium outline-none border transition-all cursor-pointer ${isDarkMode ? 'bg-gray-900 border-gray-700 text-white focus:border-primary/50' : 'bg-gray-50 border-gray-100 text-gray-800 focus:bg-white focus:border-primary/30'}`}
+                  />
+                  <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 text-primary pointer-events-none" size={18} />
+                </div>
               </div>
               <div className="space-y-2">
                 <label className="text-sm font-bold uppercase text-gray-400">Expires At</label>
-                <input required type="date" name="expiresAt" value={formData.expiresAt} onChange={handleChange} className={`w-full px-5 py-4 rounded-2xl text-sm font-medium outline-none border transition-all ${isDarkMode ? 'bg-gray-900 border-gray-700 text-white' : 'bg-gray-50 border-gray-100'}`} />
+                <div className="relative">
+                  <input
+                    required
+                    type="date"
+                    name="expiresAt"
+                    value={formData.expiresAt}
+                    onChange={handleChange}
+                    onClick={(e) => e.target.showPicker?.()}
+                    className={`w-full pl-11 pr-4 py-4 rounded-2xl text-sm font-medium outline-none border transition-all cursor-pointer ${isDarkMode ? 'bg-gray-900 border-gray-700 text-white focus:border-primary/50' : 'bg-gray-50 border-gray-100 text-gray-800 focus:bg-white focus:border-primary/30'}`}
+                  />
+                  <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 text-primary pointer-events-none" size={18} />
+                </div>
               </div>
             </div>
 

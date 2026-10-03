@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   getVendorDetails,
   getVendorProducts,
@@ -21,7 +22,12 @@ import {
   Sun,
   Moon,
   Store,
-  Wallet
+  Wallet,
+  RefreshCw,
+  Loader2,
+  Clock,
+  CheckCircle2,
+  ArrowRight
 } from 'lucide-react';
 import { toast } from '../../utils/toast';
 import Swal from 'sweetalert2';
@@ -44,12 +50,27 @@ import VendorRiders from './components/VendorRiders';
 import VendorTickets from './components/VendorTickets';
 
 const VendorDashboard = () => {
+  const navigate = useNavigate();
   const { isDarkMode, toggleTheme } = useTheme();
   const [activeTab, setActiveTab] = useState(() => {
     return localStorage.getItem('vendorActiveTab') || 'overview';
   });
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [checkingStatus, setCheckingStatus] = useState(false);
   const containerRef = useRef(null);
+
+  // If first-time user has no vendor role and no onboarding, redirect to registration
+  useEffect(() => {
+    try {
+      const session = JSON.parse(localStorage.getItem('user_session') || '{}');
+      const u = session?.user;
+      const roles = Array.isArray(u?.roles) ? u.roles : (u?.role ? [u.role] : []);
+      const isVendorOrAdmin = roles.includes('vendor') || roles.includes('admin') || roles.includes('super_admin') || u?.role === 'vendor' || u?.role === 'admin';
+      if (u && !isVendorOrAdmin && !u.vendorId && !u.isVendorOnboardingCompleted) {
+        navigate('/vendor/register', { replace: true });
+      }
+    } catch (_) {}
+  }, [navigate]);
 
   useEffect(() => {
     if (containerRef.current) {
@@ -114,9 +135,22 @@ const VendorDashboard = () => {
       const vendorInfo = response?.data || response;
       if (vendorInfo && (vendorInfo._id || vendorInfo.businessName)) {
         setVendorData(vendorInfo);
+        try {
+          const session = JSON.parse(localStorage.getItem('user_session') || '{}');
+          if (session?.user && (!session.user.vendorId || !session.user.isVendorOnboardingCompleted)) {
+            session.user.vendorId = vendorInfo._id;
+            session.user.isVendorOnboardingCompleted = true;
+            localStorage.setItem('user_session', JSON.stringify(session));
+          }
+        } catch (_) {}
+      } else {
+        navigate('/vendor/register', { replace: true });
       }
     } catch (error) {
       console.error("Failed to fetch vendor details:", error);
+      if (error?.response?.status === 404 || error?.statusCode === 404) {
+        navigate('/vendor/register', { replace: true });
+      }
     } finally {
       setLoading(false);
     }
@@ -277,8 +311,10 @@ const VendorDashboard = () => {
   };
 
   useEffect(() => {
-    fetchProductsAndCategories();
-  }, [activeTab, showProductModal, graphDays]);
+    if (vendorData?.status === 'APPROVED') {
+      fetchProductsAndCategories();
+    }
+  }, [activeTab, showProductModal, graphDays, vendorData?.status]);
 
   const handleLogout = () => {
     localStorage.removeItem('user_session');
@@ -383,54 +419,125 @@ const VendorDashboard = () => {
 
   // Restrict dashboard access if vendor is not approved
   if (vendorData && vendorData.status !== 'APPROVED') {
+    const isPending = vendorData.status === 'PENDING' || !vendorData.status;
     return (
-      <div className={`min-h-screen font-outfit flex flex-col items-center justify-center p-6 text-center ${
+      <div className={`min-h-screen font-outfit flex flex-col items-center justify-center p-4 sm:p-6 text-center ${
         isDarkMode ? 'bg-gradient-to-br from-gray-900 via-gray-950 to-black text-white' : 'bg-gradient-to-br from-gray-50 via-gray-100 to-gray-200 text-gray-800'
       }`}>
-        <div className={`max-w-md w-full rounded-3xl p-8 shadow-2xl flex flex-col items-center gap-6 relative overflow-hidden border ${
-          isDarkMode ? 'bg-gray-900 border-white/5' : 'bg-white border-gray-100'
+        <div className={`max-w-lg w-full rounded-3xl p-6 sm:p-8 shadow-2xl flex flex-col items-center gap-6 relative overflow-hidden border ${
+          isDarkMode ? 'bg-gray-900 border-white/10' : 'bg-white border-gray-100'
         }`}>
-          {/* Decorative gradients */}
-          <div className="absolute -top-24 -right-24 w-48 h-48 bg-primary/10 rounded-full blur-3xl"></div>
-          <div className="absolute -bottom-24 -left-24 w-48 h-48 bg-purple-500/10 rounded-full blur-3xl"></div>
+          {/* Decorative ambient gradients */}
+          <div className="absolute -top-24 -right-24 w-48 h-48 bg-primary/10 rounded-full blur-3xl pointer-events-none"></div>
+          <div className="absolute -bottom-24 -left-24 w-48 h-48 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
           
-          <div className="w-20 h-20 rounded-2xl bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-500 shadow-lg shadow-amber-500/10 animate-pulse">
-            <Store size={36} />
+          <div className={`w-20 h-20 rounded-2xl flex items-center justify-center shadow-lg ${
+            isPending
+              ? 'bg-amber-50 border border-amber-200 text-amber-500 shadow-amber-500/10 animate-pulse'
+              : 'bg-red-50 border border-red-200 text-red-500 shadow-red-500/10'
+          }`}>
+            <Store size={38} />
           </div>
           
           <div className="space-y-2">
-            <h2 className={`text-2xl font-bold uppercase ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>Approval Pending</h2>
-            <p className="text-xs font-bold text-gray-400 uppercase ">Store: {vendorData.businessName}</p>
+            <span className={`inline-block px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${
+              isPending ? 'bg-amber-100 text-amber-700' : 'bg-red-100 text-red-700'
+            }`}>
+              {isPending ? '🟡 Application Under Review' : '🔴 Application Rejected'}
+            </span>
+            <h2 className={`text-2xl font-bold uppercase tracking-wide ${isDarkMode ? 'text-white' : 'text-zinc-900'}`}>
+              {isPending ? 'Pending Admin Approval' : 'Store Application Rejected'}
+            </h2>
+            <p className="text-xs font-semibold text-zinc-400 uppercase">
+              Store: <span className="text-primary font-bold">{vendorData.businessName}</span>
+            </p>
           </div>
           
-          <p className={`text-sm font-medium leading-relaxed ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-            Your vendor application has been received and is currently under review by our administrator team. 
-            Once approved, you will get full access to your vendor dashboard to list products and start selling!
+          <p className={`text-sm font-medium leading-relaxed ${isDarkMode ? 'text-zinc-400' : 'text-zinc-600'}`}>
+            {isPending
+              ? 'Your store registration has been successfully submitted. For marketplace safety and catalog quality, our admin team reviews every new vendor before activating dashboard access. Once approved by admin, all merchant features will automatically unlock.'
+              : 'Your vendor onboarding application was not approved by the marketplace administration. Please reach out to our vendor support team for clarification.'}
           </p>
           
-          <div className={`w-full rounded-2xl p-4 border flex items-center gap-4 text-left ${
-            isDarkMode ? 'bg-gray-950 border-white/5' : 'bg-gray-50 border-gray-100'
+          {/* Verification Steps Card */}
+          <div className={`w-full rounded-2xl p-4 sm:p-5 border text-left space-y-3 ${
+            isDarkMode ? 'bg-zinc-900 border-zinc-800' : 'bg-zinc-50 border-zinc-200'
           }`}>
-            <div className="w-2.5 h-2.5 rounded-full bg-amber-500 animate-ping"></div>
-            <div>
-              <p className="text-sm font-bold text-gray-400 uppercase ">Current Status</p>
-              <p className="text-sm font-extrabold text-amber-600 uppercase ">{vendorData.status || 'PENDING'}</p>
+            <div className="flex items-center justify-between text-xs font-bold text-zinc-500 uppercase">
+              <span>Onboarding Progress</span>
+              <span className={isPending ? 'text-amber-500 font-extrabold' : 'text-red-500 font-extrabold'}>
+                {isPending ? 'Step 2 of 3 (In Review)' : 'Application Rejected'}
+              </span>
+            </div>
+
+            <div className="space-y-2.5 text-xs">
+              <div className="flex items-center gap-2.5 text-emerald-600 font-bold">
+                <span className="w-5 h-5 rounded-full bg-emerald-100 flex items-center justify-center text-xs">✓</span>
+                <span>1. Store Registration Submitted</span>
+              </div>
+              <div className={`flex items-center gap-2.5 font-bold ${isPending ? 'text-amber-600' : 'text-zinc-400'}`}>
+                <span className="w-5 h-5 rounded-full bg-amber-100 flex items-center justify-center text-xs">⏳</span>
+                <span>2. Administrator Verification {isPending ? '(Under Review)' : ''}</span>
+              </div>
+              <div className="flex items-center gap-2.5 text-zinc-400 font-bold">
+                <span className="w-5 h-5 rounded-full bg-zinc-200 dark:bg-zinc-800 flex items-center justify-center text-xs">🔒</span>
+                <span>3. Dashboard Access Activated (Locked)</span>
+              </div>
             </div>
           </div>
           
-          <button 
-            onClick={handleLogout}
-            className="w-full bg-primary hover:bg-primary/95 text-white py-4 rounded-2xl font-bold uppercase text-xs transition-all shadow-lg shadow-primary/20 hover:opacity-95 active:opacity-90 cursor-pointer"
-          >
-            Logout & Return Home
-          </button>
+          {/* Actions */}
+          <div className="w-full space-y-2.5">
+            {isPending && (
+              <button 
+                onClick={async () => {
+                  setCheckingStatus(true);
+                  try {
+                    const res = await getVendorDetails();
+                    const vInfo = res?.data || res;
+                    if (vInfo?.status === 'APPROVED') {
+                      toast.success('Congratulations! Your vendor store has been approved.');
+                      setVendorData(vInfo);
+                    } else {
+                      toast.info(`Current status: ${vInfo?.status || 'PENDING'}. Still awaiting admin approval.`);
+                    }
+                  } catch (e) {
+                    toast.error('Could not refresh status at this moment.');
+                  } finally {
+                    setCheckingStatus(false);
+                  }
+                }}
+                disabled={checkingStatus}
+                className="w-full bg-primary hover:bg-primary/95 text-white py-3.5 rounded-2xl font-bold uppercase text-xs transition-all shadow-lg shadow-primary/20 cursor-pointer flex items-center justify-center gap-2 disabled:opacity-50"
+              >
+                {checkingStatus ? <Loader2 className="animate-spin" size={16} /> : <RefreshCw size={16} />}
+                <span>Check Approval Status</span>
+              </button>
+            )}
+
+            <button 
+              onClick={() => navigate('/')}
+              className={`w-full py-3 rounded-2xl font-bold uppercase text-xs transition-all border cursor-pointer ${
+                isDarkMode ? 'border-white/10 hover:bg-white/5 text-gray-300' : 'border-gray-200 hover:bg-gray-100 text-gray-700'
+              }`}
+            >
+              Browse Marketplace
+            </button>
+
+            <button 
+              onClick={handleLogout}
+              className="w-full text-gray-400 hover:text-red-500 py-2 text-xs font-bold uppercase transition-colors cursor-pointer"
+            >
+              Logout
+            </button>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className={`flex h-screen overflow-hidden font-outfit transition-colors duration-300 ${isDarkMode ? 'bg-gray-950 text-white' : 'bg-gray-50 text-gray-800'}`}>
+    <div className={`flex h-screen overflow-hidden font-outfit transition-colors duration-300 ${isDarkMode ? 'bg-zinc-950 text-zinc-100' : 'bg-zinc-50 text-zinc-900'}`}>
       <VendorSidebar
         activeTab={activeTab}
         setActiveTab={setActiveTab}
@@ -442,39 +549,39 @@ const VendorDashboard = () => {
 
       <div 
         ref={containerRef}
-        className={`flex-grow flex flex-col h-screen overflow-y-scroll transition-colors duration-300 ${isDarkMode ? 'bg-gray-900/30' : 'bg-gray-50'}`}
+        className={`flex-grow flex flex-col h-screen overflow-y-scroll transition-colors duration-300 ${isDarkMode ? 'bg-zinc-950' : 'bg-zinc-50'}`}
       >
-        <header className={`h-24 flex-shrink-0 flex items-center justify-between px-4 lg:px-8 sticky top-0 z-50 border-b transition-colors duration-300 ${
-          isDarkMode ? 'bg-gray-950/80 border-white/5 backdrop-blur text-white' : 'bg-white border-gray-200 text-gray-800'
+        <header className={`h-16 lg:h-20 flex-shrink-0 flex items-center justify-between px-4 lg:px-8 sticky top-0 z-40 border-b backdrop-blur-md transition-colors duration-300 ${
+          isDarkMode ? 'bg-zinc-950/85 border-zinc-800/80 text-white' : 'bg-white/95 border-zinc-200 text-zinc-900'
         }`}>
           <div className="flex items-center gap-4">
             <button className={`lg:hidden p-2 rounded-lg transition-all ${
-              isDarkMode ? 'text-gray-400 hover:bg-white/5' : 'text-gray-550 hover:bg-gray-50'
+              isDarkMode ? 'text-zinc-400 hover:bg-zinc-900' : 'text-zinc-600 hover:bg-zinc-100'
             }`} onClick={() => setIsSidebarOpen(true)}>
               <Menu size={24} />
             </button>
-            <h1 className={`text-lg lg:text-xl font-bold capitalize ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>{activeTab}</h1>
+            <h1 className={`text-base lg:text-lg font-bold capitalize tracking-tight ${isDarkMode ? 'text-white' : 'text-zinc-900'}`}>{activeTab}</h1>
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3 lg:gap-4">
             <div className="relative hidden md:block">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400" size={16} />
               <input
                 type="text"
                 placeholder="Search..."
-                className={`pl-9 pr-4 py-1.5 border-none rounded-lg text-xs font-bold outline-none w-48 lg:w-64 transition-all ${
-                  isDarkMode ? 'bg-gray-900 text-white placeholder-gray-500 focus:ring-2 focus:ring-primary/20' : 'bg-gray-100 text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-primary/10'
+                className={`pl-9 pr-4 py-2 border rounded-xl text-xs font-semibold outline-none w-48 lg:w-64 transition-all ${
+                  isDarkMode ? 'bg-zinc-900 border-zinc-800 text-white placeholder-zinc-500 focus:ring-2 focus:ring-primary/20' : 'bg-zinc-100 border-zinc-200 text-zinc-900 placeholder-zinc-400 focus:ring-2 focus:ring-primary/10'
                 }`}
               />
             </div>
 
             <button 
               onClick={toggleTheme} 
-              className={`p-2 rounded-xl transition-all border ${
-                isDarkMode ? 'bg-white/5 text-primary border-white/5 shadow-xl shadow-primary/10' : 'bg-gray-50 text-primary border-transparent hover:bg-gray-100'
+              className={`p-2.5 rounded-xl transition-all border ${
+                isDarkMode ? 'bg-zinc-900 text-amber-400 border-zinc-800 hover:bg-zinc-800' : 'bg-zinc-100 text-zinc-700 border-zinc-200 hover:bg-zinc-200'
               }`}
             >
-              {isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
+              {isDarkMode ? <Sun size={17} /> : <Moon size={17} />}
             </button>
 
             {/* Wallet Quick Indicator */}
@@ -482,8 +589,8 @@ const VendorDashboard = () => {
               onClick={() => setActiveTab('wallet')}
               className={`flex items-center gap-2 px-3.5 py-2 rounded-xl border text-xs font-extrabold uppercase transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer ${
                 isDarkMode 
-                  ? 'bg-gray-900 text-emerald-400 border-white/5 shadow-xl hover:bg-gray-850 hover:text-emerald-300' 
-                  : 'bg-emerald-50 text-emerald-600 border-transparent hover:bg-emerald-100 hover:text-emerald-700'
+                  ? 'bg-zinc-900 text-emerald-400 border-zinc-800 hover:bg-zinc-850 hover:text-emerald-300' 
+                  : 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100 hover:text-emerald-800'
               }`}
               title="View Wallet Ledger"
             >

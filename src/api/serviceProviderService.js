@@ -514,3 +514,85 @@ export const getServiceProviderMyLeads = async () => {
     };
   }
 };
+
+// ── Service-Provider Coupon APIs ──────────────────────────────────────────────
+
+/** Create a service-specific coupon (SP dashboard) */
+export const spCreateCoupon = async (dto) => {
+  try {
+    const response = await apiClient.post('/coupons/sp/create', dto);
+    return response.data;
+  } catch (error) {
+    return error.response?.data || { success: false, message: error.message };
+  }
+};
+
+/** List all coupons owned by the logged-in SP */
+export const spGetMyCoupons = async () => {
+  try {
+    const response = await apiClient.get('/coupons/sp/my-coupons');
+    return response.data;
+  } catch (error) {
+    return error.response?.data || { success: false, message: error.message };
+  }
+};
+
+/** List the SP's own services for the coupon create dropdown */
+export const spGetMyServicesForCoupon = async () => {
+  try {
+    const response = await apiClient.get('/coupons/sp/my-services');
+    return response.data;
+  } catch (error) {
+    return error.response?.data || { success: false, message: error.message };
+  }
+};
+
+/** Update a coupon (ownership enforced server-side) */
+export const spUpdateCoupon = async (id, dto) => {
+  try {
+    const response = await apiClient.put(`/coupons/sp/update/${id}`, dto);
+    return response.data;
+  } catch (error) {
+    return error.response?.data || { success: false, message: error.message };
+  }
+};
+
+/** Toggle coupon active status */
+export const spToggleCoupon = async (id) => {
+  try {
+    const response = await apiClient.patch(`/coupons/sp/toggle/${id}`);
+    return response.data;
+  } catch (error) {
+    return error.response?.data || { success: false, message: error.message };
+  }
+};
+
+/** Delete a coupon (ownership enforced server-side) */
+export const spDeleteCoupon = async (id) => {
+  try {
+    const response = await apiClient.delete(`/coupons/sp/delete/${id}`);
+    return response.data;
+  } catch (error) {
+    return error.response?.data || { success: false, message: error.message };
+  }
+};
+
+/**
+ * Customer: validate a service-specific coupon during booking Step 4.
+ * @param {string} couponCode
+ * @param {string} serviceId  - the service the coupon is being applied to
+ * @param {string} providerId - the selected salon's provider ID
+ */
+export const validateServiceCoupon = async (couponCode, serviceId, providerId) => {
+  try {
+    const response = await apiClient.post('/service-booking/validate-service-coupon', {
+      couponCode,
+      serviceId,
+      providerId,
+    });
+    return response.data;
+  } catch (error) {
+    return error.response?.data || { success: false, message: error.message };
+  }
+};
+

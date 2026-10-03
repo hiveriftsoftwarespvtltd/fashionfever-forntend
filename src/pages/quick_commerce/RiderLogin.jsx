@@ -86,7 +86,7 @@ const RiderLogin = () => {
 
           {/* Email */}
           <div>
-            <label className="text-[10px] font-black uppercase tracking-wider text-slate-500 block mb-1.5">
+            <label className="text-xs font-semibold uppercase tracking-wider text-slate-500 block mb-1.5">
               Rider Registered Email / Phone
             </label>
             <div className="relative">
@@ -104,7 +104,7 @@ const RiderLogin = () => {
 
           {/* Password */}
           <div>
-            <label className="text-[10px] font-black uppercase tracking-wider text-slate-500 block mb-1.5">
+            <label className="text-xs font-semibold uppercase tracking-wider text-slate-500 block mb-1.5">
               Rider Password
             </label>
             <div className="relative">
@@ -147,14 +147,14 @@ const RiderLogin = () => {
 
           {/* Alternative Links */}
           <div className="border-t border-slate-100 pt-4 text-center space-y-2">
-            <p className="text-[11px] text-slate-400 font-semibold">
+            <p className="text-xs text-slate-400 font-semibold">
               Not a Rider?{' '}
               <Link to="/auth" className="text-primary font-bold hover:underline">
                 Main User / Vendor Login
               </Link>
             </p>
-            <p className="text-[10px] text-slate-400 flex items-center justify-center gap-1 font-semibold">
-              <Zap size={12} className="text-primary fill-primary" /> 10-Minute Lightning Delivery Partner Network
+            <p className="text-xs text-slate-400 flex items-center justify-center gap-1 font-semibold">
+              <Zap size={14} className="text-primary fill-primary" /> 10-Minute Lightning Delivery Partner Network
             </p>
           </div>
         </form>

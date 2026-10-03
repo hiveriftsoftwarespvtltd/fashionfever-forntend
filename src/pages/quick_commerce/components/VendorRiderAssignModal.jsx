@@ -27,7 +27,7 @@ const VendorRiderAssignModal = ({
             </span>
             <div>
               <h3 className="text-base font-black uppercase tracking-tight">Assign Express Rider</h3>
-              <p className="text-rose-100 text-[10px] font-mono font-bold">
+              <p className="text-rose-100 text-xs font-mono font-bold">
                 Order #{assigningOrderId?.substring(0, 8)}
               </p>
             </div>
@@ -44,12 +44,12 @@ const VendorRiderAssignModal = ({
         <div className="p-6 space-y-4 max-h-[60vh] overflow-y-auto">
           {targetOrder && (
             <div className="bg-rose-50/50 border border-rose-100 p-3.5 rounded-2xl text-xs space-y-1">
-              <span className="text-[9px] font-black text-primary uppercase tracking-widest block">Customer Info</span>
+              <span className="text-xs font-bold text-primary uppercase tracking-wider block">Customer Info</span>
               <p className="font-extrabold text-slate-800 uppercase">
                 {targetOrder.quickOrderId?.customerId?.name || 'Customer'}
               </p>
               {targetOrder.quickOrderId?.shippingAddress && (
-                <p className="text-slate-500 font-medium text-[11px] flex items-center gap-1">
+                <p className="text-slate-500 font-medium text-xs flex items-center gap-1">
                   <MapPin size={12} className="text-primary inline" />
                   <span>{targetOrder.quickOrderId.shippingAddress.line1}, {targetOrder.quickOrderId.shippingAddress.city}</span>
                 </p>
@@ -59,7 +59,7 @@ const VendorRiderAssignModal = ({
 
           <div>
             <div className="flex items-center justify-between mb-2">
-              <span className="text-[10px] font-black uppercase tracking-wider text-slate-500">
+              <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
                 Riders List ({freeRiders.length} Free / {displayRiders.length} Total)
               </span>
             </div>
@@ -68,7 +68,7 @@ const VendorRiderAssignModal = ({
               <div className="text-center p-6 bg-slate-50 border border-dashed border-slate-200 rounded-2xl">
                 <Truck className="mx-auto mb-2 text-slate-300" size={32} />
                 <p className="text-xs font-bold text-slate-600">No Registered Riders Found</p>
-                <p className="text-[10px] text-slate-400 mt-1">
+                <p className="text-xs text-slate-400 mt-1">
                   Please register a rider in the "Riders Roster" section on the left first!
                 </p>
               </div>
@@ -94,7 +94,7 @@ const VendorRiderAssignModal = ({
                         <div className="min-w-0">
                           <div className="flex items-center gap-2">
                             <p className="font-extrabold text-slate-900 text-xs truncate">{r.name}</p>
-                            <span className={`text-[8px] font-black uppercase px-1.5 py-0.5 rounded-md flex items-center gap-0.5 ${
+                            <span className={`text-xs font-bold uppercase px-2 py-0.5 rounded-md flex items-center gap-0.5 ${
                               isFree
                                 ? 'bg-emerald-100 text-emerald-700 border border-emerald-200'
                                 : 'bg-amber-100 text-amber-700 border border-amber-200'
@@ -102,15 +102,15 @@ const VendorRiderAssignModal = ({
                               {isFree ? 'FREE' : 'BUSY'}
                             </span>
                           </div>
-                          <p className="text-[11px] font-semibold text-slate-500 flex items-center gap-1">
-                            <Phone size={11} /> {r.phone}
+                          <p className="text-xs font-semibold text-slate-500 flex items-center gap-1">
+                            <Phone size={12} /> {r.phone}
                           </p>
                         </div>
                       </div>
 
                       <button
                         onClick={() => handleAssignRider(assigningOrderId, r._id)}
-                        className={`text-[10px] font-black uppercase tracking-wider px-3.5 py-2 rounded-xl shadow-xs transition-all cursor-pointer shrink-0 flex items-center gap-1 ${
+                        className={`text-xs font-bold uppercase tracking-wider px-3.5 py-2 rounded-xl shadow-xs transition-all cursor-pointer shrink-0 flex items-center gap-1 ${
                           isFree
                             ? 'bg-emerald-600 hover:bg-emerald-700 text-white'
                             : 'bg-slate-800 hover:bg-primary text-white'

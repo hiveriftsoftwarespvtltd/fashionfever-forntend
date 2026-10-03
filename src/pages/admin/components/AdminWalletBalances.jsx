@@ -156,18 +156,18 @@ const AdminWalletBalances = ({ isDarkMode }) => {
       {/* Title */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-left">
         <div>
-          <h2 className={`text-lg lg:text-3xl font-bold uppercase transition-colors duration-300 ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>
+          <h2 className={`text-xl lg:text-2xl font-black uppercase tracking-tight ${isDarkMode ? 'text-zinc-100' : 'text-zinc-900'}`}>
             Wallet Balances Console
           </h2>
-          <p className="text-sm font-semibold uppercase text-gray-400 mt-1">
+          <p className="text-xs font-semibold uppercase text-zinc-400 tracking-wider mt-0.5">
             Global ledger control audit panel for customer deposits, merchant payouts, and commissions balances
           </p>
         </div>
       </div>
 
       {/* Switcher Tabs Bar */}
-      <div className={`flex flex-wrap p-1.5 rounded-2xl border transition-all duration-300 ${
-        isDarkMode ? 'bg-gray-800 border-white/5' : 'bg-white border-gray-100 shadow-sm'
+      <div className={`flex flex-wrap p-1.5 rounded-2xl border transition-all ${
+        isDarkMode ? 'bg-zinc-900/90 border-zinc-800' : 'bg-white border-zinc-200 shadow-sm'
       }`}>
         {tabsConfig.map(tab => {
           const active = activeTab === tab.id;
@@ -179,12 +179,12 @@ const AdminWalletBalances = ({ isDarkMode }) => {
                 setSearchQuery('');
                 setCurrentPage(1);
               }}
-              className={`flex items-center gap-2 px-5 py-3 rounded-xl text-xs font-black uppercase tracking-wider transition-all cursor-pointer ${
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider transition-all cursor-pointer ${
                 active 
                   ? 'bg-primary text-white shadow-lg shadow-primary/20' 
                   : isDarkMode
-                  ? 'text-gray-400 hover:bg-white/5 hover:text-white'
-                  : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'
+                  ? 'text-zinc-400 hover:bg-zinc-800 hover:text-zinc-100'
+                  : 'text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900'
               }`}
             >
               {tab.icon}
@@ -195,85 +195,85 @@ const AdminWalletBalances = ({ isDarkMode }) => {
       </div>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         
         {/* Card 1: Total Liquid Balance */}
-        <div className={`p-6 rounded-3xl border transition-all duration-300 shadow-sm text-left ${
-          isDarkMode ? 'bg-gray-800 border-white/5' : 'bg-white border-gray-100'
+        <div className={`p-5 rounded-2xl border transition-all text-left ${
+          isDarkMode ? 'bg-zinc-900/90 border-zinc-800' : 'bg-white border-zinc-200 shadow-sm'
         }`}>
-          <div className="flex items-center justify-between mb-4">
-            <span className="text-sm font-black uppercase text-gray-400 tracking-wider">
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-[10px] font-bold uppercase text-zinc-400 tracking-wider">
               Total Managed Balance
             </span>
-            <div className="p-3 rounded-2xl bg-emerald-500/10 text-emerald-500">
-              <IndianRupee size={20} />
+            <div className="p-2.5 rounded-xl bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
+              <IndianRupee size={18} />
             </div>
           </div>
-          <p className={`text-xl lg:text-2xl font-black ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>
+          <p className={`text-xl lg:text-2xl font-black tracking-tight ${isDarkMode ? 'text-zinc-100' : 'text-zinc-900'}`}>
             ₹{calculateTotalBalance().toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
           </p>
-          <p className="text-[9px] font-bold text-gray-400 uppercase mt-2">
+          <p className="text-[10px] font-bold text-zinc-400 uppercase mt-1">
             Sum of all active liquid currency assets in category
           </p>
         </div>
 
         {/* Card 2: Total Pending Settlement Balance (merchant types) */}
         {activeTab !== 'platform' && activeTab !== 'users' ? (
-          <div className={`p-6 rounded-3xl border transition-all duration-300 shadow-sm text-left ${
-            isDarkMode ? 'bg-gray-800 border-white/5' : 'bg-white border-gray-100'
+          <div className={`p-5 rounded-2xl border transition-all text-left ${
+            isDarkMode ? 'bg-zinc-900/90 border-zinc-800' : 'bg-white border-zinc-200 shadow-sm'
           }`}>
-            <div className="flex items-center justify-between mb-4">
-              <span className="text-sm font-black uppercase text-gray-400 tracking-wider">
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-[10px] font-bold uppercase text-zinc-400 tracking-wider">
                 Total Pending Settlement
               </span>
-              <div className="p-3 rounded-2xl bg-amber-500/10 text-amber-500">
-                <IndianRupee size={20} />
+              <div className="p-2.5 rounded-xl bg-amber-500/10 text-amber-500 border border-amber-500/20">
+                <IndianRupee size={18} />
               </div>
             </div>
-            <p className={`text-xl lg:text-2xl font-black ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>
+            <p className={`text-xl lg:text-2xl font-black tracking-tight ${isDarkMode ? 'text-zinc-100' : 'text-zinc-900'}`}>
               ₹{calculateTotalPending().toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </p>
-            <p className="text-[9px] font-bold text-gray-400 uppercase mt-2">
+            <p className="text-[10px] font-bold text-zinc-400 uppercase mt-1">
               Awaiting escrow validation or pending request settlement
             </p>
           </div>
         ) : (
-          <div className={`p-6 rounded-3xl border transition-all duration-300 shadow-sm text-left ${
-            isDarkMode ? 'bg-gray-800 border-white/5' : 'bg-white border-gray-100'
+          <div className={`p-5 rounded-2xl border transition-all text-left ${
+            isDarkMode ? 'bg-zinc-900/90 border-zinc-800' : 'bg-white border-zinc-200 shadow-sm'
           }`}>
-            <div className="flex items-center justify-between mb-4">
-              <span className="text-sm font-black uppercase text-gray-400 tracking-wider">
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-[10px] font-bold uppercase text-zinc-400 tracking-wider">
                 Active Ledger Accounts
               </span>
-              <div className="p-3 rounded-2xl bg-blue-500/10 text-blue-500">
-                <UsersIcon size={20} />
+              <div className="p-2.5 rounded-xl bg-blue-500/10 text-blue-500 border border-blue-500/20">
+                <UsersIcon size={18} />
               </div>
             </div>
-            <p className={`text-xl lg:text-2xl font-black ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>
+            <p className={`text-xl lg:text-2xl font-black tracking-tight ${isDarkMode ? 'text-zinc-100' : 'text-zinc-900'}`}>
               {data.length}
             </p>
-            <p className="text-[9px] font-bold text-gray-400 uppercase mt-2">
+            <p className="text-[10px] font-bold text-zinc-400 uppercase mt-1">
               Registered wallet accounts parsed inside this category
             </p>
           </div>
         )}
 
         {/* Card 3: Status Summary */}
-        <div className={`p-6 rounded-3xl border transition-all duration-300 shadow-sm text-left ${
-          isDarkMode ? 'bg-gray-800 border-white/5' : 'bg-white border-gray-100'
+        <div className={`p-5 rounded-2xl border transition-all text-left ${
+          isDarkMode ? 'bg-zinc-900/90 border-zinc-800' : 'bg-white border-zinc-200 shadow-sm'
         }`}>
-          <div className="flex items-center justify-between mb-4">
-            <span className="text-sm font-black uppercase text-gray-400 tracking-wider">
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-[10px] font-bold uppercase text-zinc-400 tracking-wider">
               Operational Status
             </span>
-            <div className="p-3 rounded-2xl bg-primary/10 text-primary">
-              <Wallet size={20} />
+            <div className="p-2.5 rounded-xl bg-primary/10 text-primary border border-primary/20">
+              <Wallet size={18} />
             </div>
           </div>
           <p className="text-xl lg:text-2xl font-black text-primary uppercase">
             Active
           </p>
-          <p className="text-[9px] font-bold text-gray-400 uppercase mt-2">
+          <p className="text-[10px] font-bold text-zinc-400 uppercase mt-1">
             Wallet hooks and ledger interfaces synced with backend
           </p>
         </div>
@@ -281,10 +281,10 @@ const AdminWalletBalances = ({ isDarkMode }) => {
 
       {/* Search Input Filter */}
       {activeTab !== 'platform' && (
-        <div className={`p-4 rounded-2xl border flex items-center gap-3 transition-all duration-300 ${
-          isDarkMode ? 'bg-gray-800 border-white/5' : 'bg-white border-gray-100 shadow-sm'
+        <div className={`p-3.5 rounded-2xl border flex items-center gap-3 transition-all ${
+          isDarkMode ? 'bg-zinc-900/90 border-zinc-800' : 'bg-white border-zinc-200 shadow-sm'
         }`}>
-          <Search className="text-gray-400 flex-shrink-0" size={16} />
+          <Search className="text-zinc-400 flex-shrink-0" size={16} />
           <input 
             type="text"
             placeholder={`Filter balances by name, email, or ID...`}
@@ -294,30 +294,30 @@ const AdminWalletBalances = ({ isDarkMode }) => {
               setCurrentPage(1);
             }}
             className={`w-full bg-transparent text-xs font-bold outline-none border-none ${
-              isDarkMode ? 'text-white placeholder:text-gray-600' : 'text-gray-800 placeholder:text-gray-300'
+              isDarkMode ? 'text-zinc-100 placeholder:text-zinc-500' : 'text-zinc-900 placeholder:text-zinc-400'
             }`}
           />
         </div>
       )}
 
       {/* Main Ledger Table Card */}
-      <div className={`rounded-3xl border overflow-hidden transition-all duration-300 ${
-        isDarkMode ? 'bg-gray-800 border-white/5' : 'bg-white border-gray-100 shadow-sm'
+      <div className={`rounded-2xl border overflow-hidden transition-all duration-300 ${
+        isDarkMode ? 'bg-zinc-900/90 border-zinc-800' : 'bg-white border-zinc-200 shadow-sm'
       }`}>
         {loading ? (
           <div className="py-24 flex flex-col items-center justify-center">
             <Loader2 className="animate-spin text-primary mb-3" size={32} />
-            <span className="text-xs font-bold text-gray-400 uppercase tracking-widest animate-pulse">
+            <span className="text-xs font-bold text-zinc-400 uppercase tracking-widest animate-pulse">
               Querying wallet balances database...
             </span>
           </div>
         ) : filteredData.length === 0 ? (
-          <div className="py-24 flex flex-col items-center justify-center text-center">
-            <ShieldAlert size={48} className="text-gray-300 dark:text-gray-600 mb-4" />
-            <p className={`text-sm font-black uppercase ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+          <div className="py-20 flex flex-col items-center justify-center text-center">
+            <ShieldAlert size={42} className="text-zinc-400 mb-3" />
+            <p className={`text-sm font-black uppercase ${isDarkMode ? 'text-zinc-200' : 'text-zinc-700'}`}>
               No Balances Found
             </p>
-            <p className="text-sm text-gray-400 font-bold uppercase mt-1">
+            <p className="text-xs text-zinc-400 font-bold uppercase mt-1">
               Either search mismatch or no records registered in database
             </p>
           </div>
@@ -326,67 +326,67 @@ const AdminWalletBalances = ({ isDarkMode }) => {
             <div className="overflow-x-auto w-full">
             <table className="w-full border-collapse">
               <thead>
-                <tr className={`border-b text-left text-sm font-black uppercase tracking-wider ${
-                  isDarkMode ? 'bg-gray-900/30 border-white/5 text-gray-400' : 'bg-gray-50/50 border-gray-100 text-gray-500'
+                <tr className={`border-b text-left text-[11px] font-black uppercase tracking-wider ${
+                  isDarkMode ? 'bg-zinc-950/60 border-zinc-800 text-zinc-400' : 'bg-zinc-50/80 border-zinc-200 text-zinc-500'
                 }`}>
                   {activeTab === 'platform' && (
                     <>
-                      <th className="py-5 px-6">Platform ID</th>
-                      <th className="py-5 px-6 text-right">Managed Balance</th>
-                      <th className="py-5 px-6 text-right">Commission Earned</th>
-                      <th className="py-5 px-6 text-right">Platform Fees</th>
-                      <th className="py-5 px-6 text-right">Total Payouts</th>
-                      <th className="py-5 px-6 text-center">Status</th>
+                      <th className="py-4 px-6">Platform ID</th>
+                      <th className="py-4 px-6 text-right">Managed Balance</th>
+                      <th className="py-4 px-6 text-right">Commission Earned</th>
+                      <th className="py-4 px-6 text-right">Platform Fees</th>
+                      <th className="py-4 px-6 text-right">Total Payouts</th>
+                      <th className="py-4 px-6 text-center">Status</th>
                     </>
                   )}
                   {activeTab === 'users' && (
                     <>
-                      <th className="py-5 px-6">Customer Profile</th>
-                      <th className="py-5 px-6 text-right">Liquid Balance</th>
-                      <th className="py-5 px-6 text-right">Total Credits</th>
-                      <th className="py-5 px-6 text-right">Total Debits</th>
-                      <th className="py-5 px-6 text-center">Created At</th>
-                      <th className="py-5 px-6 text-center">Status</th>
+                      <th className="py-4 px-6">Customer Profile</th>
+                      <th className="py-4 px-6 text-right">Liquid Balance</th>
+                      <th className="py-4 px-6 text-right">Total Credits</th>
+                      <th className="py-4 px-6 text-right">Total Debits</th>
+                      <th className="py-4 px-6 text-center">Created At</th>
+                      <th className="py-4 px-6 text-center">Status</th>
                     </>
                   )}
                   {activeTab === 'vendors' && (
                     <>
-                      <th className="py-5 px-6">Vendor / Business</th>
-                      <th className="py-5 px-6 text-right">Liquid Balance</th>
-                      <th className="py-5 px-6 text-right">Pending Balance</th>
-                      <th className="py-5 px-6 text-right">Total Earnings</th>
-                      <th className="py-5 px-6 text-right">Total Withdrawn</th>
-                      <th className="py-5 px-6 text-center">Status</th>
+                      <th className="py-4 px-6">Vendor / Business</th>
+                      <th className="py-4 px-6 text-right">Liquid Balance</th>
+                      <th className="py-4 px-6 text-right">Pending Balance</th>
+                      <th className="py-4 px-6 text-right">Total Earnings</th>
+                      <th className="py-4 px-6 text-right">Total Withdrawn</th>
+                      <th className="py-4 px-6 text-center">Status</th>
                     </>
                   )}
                   {activeTab === 'influencers' && (
                     <>
-                      <th className="py-5 px-6">Influencer Profile</th>
-                      <th className="py-5 px-6 text-right">Liquid Balance</th>
-                      <th className="py-5 px-6 text-right">Pending Balance</th>
-                      <th className="py-5 px-6 text-right">Total Earnings</th>
-                      <th className="py-5 px-6 text-right">Total Withdrawn</th>
-                      <th className="py-5 px-6 text-center">Status</th>
+                      <th className="py-4 px-6">Influencer Profile</th>
+                      <th className="py-4 px-6 text-right">Liquid Balance</th>
+                      <th className="py-4 px-6 text-right">Pending Balance</th>
+                      <th className="py-4 px-6 text-right">Total Earnings</th>
+                      <th className="py-4 px-6 text-right">Total Withdrawn</th>
+                      <th className="py-4 px-6 text-center">Status</th>
                     </>
                   )}
                   {activeTab === 'service-providers' && (
                     <>
-                      <th className="py-5 px-6">Service Provider / Salon</th>
-                      <th className="py-5 px-6 text-right">Liquid Balance</th>
-                      <th className="py-5 px-6 text-right">Pending Balance</th>
-                      <th className="py-5 px-6 text-right">Total Earnings</th>
-                      <th className="py-5 px-6 text-right">Total Withdrawn</th>
-                      <th className="py-5 px-6 text-center">Status</th>
+                      <th className="py-4 px-6">Service Provider / Salon</th>
+                      <th className="py-4 px-6 text-right">Liquid Balance</th>
+                      <th className="py-4 px-6 text-right">Pending Balance</th>
+                      <th className="py-4 px-6 text-right">Total Earnings</th>
+                      <th className="py-4 px-6 text-right">Total Withdrawn</th>
+                      <th className="py-4 px-6 text-center">Status</th>
                     </>
                   )}
                   {activeTab === 'educators' && (
                     <>
-                      <th className="py-5 px-6">Educator Profile ID</th>
-                      <th className="py-5 px-6 text-right">Liquid Balance</th>
-                      <th className="py-5 px-6 text-right">Pending Balance</th>
-                      <th className="py-5 px-6 text-right">Total Earnings</th>
-                      <th className="py-5 px-6 text-right">Total Withdrawn</th>
-                      <th className="py-5 px-6 text-center">Status</th>
+                      <th className="py-4 px-6">Educator Profile ID</th>
+                      <th className="py-4 px-6 text-right">Liquid Balance</th>
+                      <th className="py-4 px-6 text-right">Pending Balance</th>
+                      <th className="py-4 px-6 text-right">Total Earnings</th>
+                      <th className="py-4 px-6 text-right">Total Withdrawn</th>
+                      <th className="py-4 px-6 text-center">Status</th>
                     </>
                   )}
                 </tr>
@@ -657,9 +657,9 @@ const AdminWalletBalances = ({ isDarkMode }) => {
           {/* Pagination Controls */}
           {totalPages > 1 && (
             <div className={`p-4 border-t flex flex-col sm:flex-row items-center justify-between gap-4 transition-colors ${
-              isDarkMode ? 'border-white/5 bg-gray-900/10' : 'border-gray-100 bg-gray-50/20'
+              isDarkMode ? 'border-zinc-800 bg-zinc-950/40' : 'border-zinc-200 bg-zinc-50/50'
             }`}>
-              <span className="text-sm font-black uppercase text-gray-400">
+              <span className="text-xs font-bold uppercase text-zinc-400">
                 Showing {(currentPage - 1) * itemsPerPage + 1} to {Math.min(currentPage * itemsPerPage, totalItems)} of {totalItems} entries
               </span>
               <div className="flex items-center gap-2">
@@ -667,8 +667,8 @@ const AdminWalletBalances = ({ isDarkMode }) => {
                   type="button"
                   onClick={() => setCurrentPage(p => Math.max(p - 1, 1))} 
                   disabled={currentPage === 1}
-                  className={`p-2 rounded-xl disabled:opacity-30 transition-all cursor-pointer ${
-                    isDarkMode ? 'bg-gray-700 text-white hover:bg-primary' : 'bg-white text-gray-600 hover:bg-primary hover:text-white border border-gray-150 shadow-sm'
+                  className={`w-9 h-9 flex items-center justify-center rounded-xl border disabled:opacity-30 disabled:cursor-not-allowed transition-all cursor-pointer ${
+                    isDarkMode ? 'bg-zinc-800 border-zinc-700 text-zinc-300 hover:text-white' : 'bg-white border-zinc-200 text-zinc-700 hover:bg-zinc-100'
                   }`}
                 >
                   <ChevronLeft size={16} />
@@ -680,8 +680,8 @@ const AdminWalletBalances = ({ isDarkMode }) => {
                   type="button"
                   onClick={() => setCurrentPage(p => Math.min(p + 1, totalPages))} 
                   disabled={currentPage === totalPages}
-                  className={`p-2 rounded-xl disabled:opacity-30 transition-all cursor-pointer ${
-                    isDarkMode ? 'bg-gray-700 text-white hover:bg-primary' : 'bg-white text-gray-600 hover:bg-primary hover:text-white border border-gray-150 shadow-sm'
+                  className={`w-9 h-9 flex items-center justify-center rounded-xl border disabled:opacity-30 disabled:cursor-not-allowed transition-all cursor-pointer ${
+                    isDarkMode ? 'bg-zinc-800 border-zinc-700 text-zinc-300 hover:text-white' : 'bg-white border-zinc-200 text-zinc-700 hover:bg-zinc-100'
                   }`}
                 >
                   <ChevronRight size={16} />

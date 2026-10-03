@@ -175,7 +175,7 @@ const getDashboardLink = (user) => {
     return { path: '/admin?tab=dashboard', label: 'Admin Panel' };
   }
   if (role === 'vendor') {
-    return { path: user.vendorId || user.vendor ? '/vendor/dashboard' : '/vendor/register', label: 'Vendor Dashboard' };
+    return { path: '/vendor/dashboard', label: 'Vendor Dashboard' };
   }
   if (role === 'service_provider') {
     return { path: '/service-provider/panel', label: 'Service Provider Panel' };

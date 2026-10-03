@@ -403,20 +403,20 @@ const ProductModal = ({ isOpen, onClose, isEditing, isViewing, productId, catego
 
                         <div className="flex-1 grid grid-cols-2 lg:grid-cols-4 gap-6 content-center">
                           <div className="space-y-1">
-                            <p className="text-[9px] font-bold text-gray-400 uppercase">SKU</p>
-                            <p className={`text-sm font-bold ${isDarkMode ? 'text-gray-200' : 'text-gray-900'}`}>{v.sku}</p>
+                            <p className="text-xs font-bold text-zinc-400 uppercase">SKU</p>
+                            <p className={`text-sm font-bold ${isDarkMode ? 'text-zinc-200' : 'text-zinc-900'}`}>{v.sku}</p>
                           </div>
                           <div className="space-y-1">
-                            <p className="text-[9px] font-bold text-gray-400 uppercase">Sales Price</p>
+                            <p className="text-xs font-bold text-zinc-400 uppercase">Sales Price</p>
                             <p className="text-sm font-bold text-primary">₹{v.salesPrice}</p>
                           </div>
                           <div className="space-y-1">
-                            <p className="text-[9px] font-bold text-gray-400 uppercase">Stock</p>
-                            <p className={`text-sm font-bold ${v.stock < 10 ? 'text-orange-500' : (isDarkMode ? 'text-gray-200' : 'text-gray-900')}`}>{v.stock} Units</p>
+                            <p className="text-xs font-bold text-zinc-400 uppercase">Stock</p>
+                            <p className={`text-sm font-bold ${v.stock < 10 ? 'text-orange-500' : (isDarkMode ? 'text-zinc-200' : 'text-zinc-900')}`}>{v.stock} Units</p>
                           </div>
                           <div className="space-y-1">
-                            <p className="text-[9px] font-bold text-gray-400 uppercase">Attributes</p>
-                            <p className={`text-xs font-bold uppercase ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                            <p className="text-xs font-bold text-zinc-400 uppercase">Attributes</p>
+                            <p className={`text-xs font-bold uppercase ${isDarkMode ? 'text-zinc-300' : 'text-zinc-600'}`}>
                               {v.attributes.color || 'N/A'} • {v.attributes.size || 'N/A'}
                             </p>
                           </div>
@@ -425,23 +425,23 @@ const ProductModal = ({ isOpen, onClose, isEditing, isViewing, productId, catego
                       
                       {/* Advanced details in view panel */}
                       <div className={`grid grid-cols-2 lg:grid-cols-4 gap-6 mt-4 pt-4 border-t ${
-                        isDarkMode ? 'border-white/5' : 'border-gray-100'
+                        isDarkMode ? 'border-zinc-800' : 'border-zinc-100'
                       }`}>
                         <div className="space-y-1">
-                          <p className="text-[9px] font-bold text-gray-400 uppercase">Cost Price</p>
-                          <p className={`text-sm font-bold ${isDarkMode ? 'text-gray-250' : 'text-gray-800'}`}>₹{v.costPrice || '—'}</p>
+                          <p className="text-xs font-bold text-zinc-400 uppercase">Cost Price</p>
+                          <p className={`text-sm font-bold ${isDarkMode ? 'text-zinc-200' : 'text-zinc-800'}`}>₹{v.costPrice || '—'}</p>
                         </div>
                         <div className="space-y-1">
-                          <p className="text-[9px] font-bold text-gray-400 uppercase">Offered Price</p>
+                          <p className="text-xs font-bold text-zinc-400 uppercase">Offered Price</p>
                           <p className={`text-sm font-bold ${isDarkMode ? 'text-green-400' : 'text-green-600'}`}>₹{v.offeredPrice || '—'}</p>
                         </div>
                         <div className="space-y-1">
-                          <p className="text-[9px] font-bold text-gray-400 uppercase">Weight</p>
-                          <p className={`text-sm font-bold ${isDarkMode ? 'text-gray-250' : 'text-gray-800'}`}>{v.weight ? `${v.weight} kg` : '—'}</p>
+                          <p className="text-xs font-bold text-zinc-400 uppercase">Weight</p>
+                          <p className={`text-sm font-bold ${isDarkMode ? 'text-zinc-200' : 'text-zinc-800'}`}>{v.weight ? `${v.weight} kg` : '—'}</p>
                         </div>
                         <div className="space-y-1">
-                          <p className="text-[9px] font-bold text-gray-400 uppercase">Dimensions (L x W x H)</p>
-                          <p className={`text-xs font-bold ${isDarkMode ? 'text-gray-250' : 'text-gray-800'}`}>
+                          <p className="text-xs font-bold text-zinc-400 uppercase">Dimensions (L x W x H)</p>
+                          <p className={`text-xs font-bold ${isDarkMode ? 'text-zinc-200' : 'text-zinc-800'}`}>
                             {v.length || '0'} x {v.width || '0'} x {v.height || '0'} cm
                           </p>
                         </div>
@@ -735,8 +735,8 @@ const ProductModal = ({ isOpen, onClose, isEditing, isViewing, productId, catego
                               </div>
                             ) : (
                               <div className="w-full h-full flex flex-col items-center justify-center gap-1">
-                                <Upload size={16} className="text-gray-400" />
-                                <span className="text-[8px] font-bold text-gray-400 uppercase">Pick Main</span>
+                                <Upload size={16} className="text-zinc-400" />
+                                <span className="text-xs font-bold text-zinc-400 uppercase">Pick Main</span>
                               </div>
                             )}
                             <input 
@@ -773,8 +773,8 @@ const ProductModal = ({ isOpen, onClose, isEditing, isViewing, productId, catego
                               </div>
                             ) : (
                               <div className="w-full h-20 flex flex-col items-center justify-center gap-1">
-                                <Plus size={16} className="text-gray-400" />
-                                <span className="text-[8px] font-bold text-gray-400 uppercase">Add Gallery</span>
+                                <Plus size={16} className="text-zinc-400" />
+                                <span className="text-xs font-bold text-zinc-400 uppercase">Add Gallery</span>
                                 <input 
                                   type="file" multiple
                                   onChange={(e) => updateVariant(vIdx, 'images', Array.from(e.target.files))}

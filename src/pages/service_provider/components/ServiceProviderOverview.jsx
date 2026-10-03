@@ -125,16 +125,16 @@ const ServiceProviderOverview = ({ isDarkMode, user, services = [], bookings = [
         {/* Tier Details Card */}
         <div className={`lg:col-span-2 p-6 md:p-8 rounded-3xl border flex flex-col justify-between ${
           isDarkMode 
-            ? 'bg-gray-900 border-white/5' 
-            : 'bg-white border-gray-100 shadow-sm'
+            ? 'bg-zinc-900 border-zinc-800' 
+            : 'bg-white border-zinc-200 shadow-sm'
         }`}>
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <div>
-                <span className="text-[9px] font-black text-primary uppercase tracking-widest block mb-0.5">
+                <span className="text-xs font-bold text-primary uppercase tracking-widest block mb-1">
                   Plan Details
                 </span>
-                <h3 className={`text-lg font-black uppercase ${isDarkMode ? 'text-white' : 'text-gray-850'}`}>
+                <h3 className={`text-lg font-black uppercase ${isDarkMode ? 'text-white' : 'text-zinc-850'}`}>
                   Subscription Plan
                 </h3>
               </div>
@@ -144,35 +144,35 @@ const ServiceProviderOverview = ({ isDarkMode, user, services = [], bookings = [
               </div>
             </div>
 
-            <div className={`h-[1px] ${isDarkMode ? 'bg-white/5' : 'bg-gray-100'}`} />
+            <div className={`h-[1px] ${isDarkMode ? 'bg-zinc-800' : 'bg-zinc-100'}`} />
 
             <div className="grid grid-cols-3 gap-4 text-left">
               <div>
-                <p className="text-[9px] font-black text-gray-400 uppercase">Monthly Cost</p>
-                <p className={`text-base font-black ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>₹{subscription.price}</p>
+                <p className="text-xs font-bold text-zinc-400 uppercase">Monthly Cost</p>
+                <p className={`text-base font-black ${isDarkMode ? 'text-white' : 'text-zinc-800'}`}>₹{subscription.price}</p>
               </div>
               <div>
-                <p className="text-[9px] font-black text-gray-400 uppercase">Platform Fee</p>
+                <p className="text-xs font-bold text-zinc-400 uppercase">Platform Fee</p>
                 <p className={`text-base font-black text-primary`}>{subscription.commission}%</p>
               </div>
               <div>
-                <p className="text-[9px] font-black text-gray-400 uppercase">Expiry Date</p>
-                <p className={`text-base font-black ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>{subscription.expiresAt}</p>
+                <p className="text-xs font-bold text-zinc-400 uppercase">Expiry Date</p>
+                <p className={`text-base font-black ${isDarkMode ? 'text-white' : 'text-zinc-800'}`}>{subscription.expiresAt}</p>
               </div>
             </div>
 
-            <div className={`h-[1px] ${isDarkMode ? 'bg-white/5' : 'bg-gray-100'}`} />
+            <div className={`h-[1px] ${isDarkMode ? 'bg-zinc-800' : 'bg-zinc-100'}`} />
 
             <div className="grid grid-cols-2 gap-4 text-left">
               <div className="flex items-center gap-2">
                 <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                <span className={`text-[11px] font-bold ${isDarkMode ? 'text-gray-300' : 'text-gray-650'}`}>
+                <span className={`text-xs font-semibold ${isDarkMode ? 'text-zinc-300' : 'text-zinc-650'}`}>
                   Max Catalog Services: <strong className="text-primary">{subscription.maxServices}</strong>
                 </span>
               </div>
               <div className="flex items-center gap-2">
                 <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                <span className={`text-[11px] font-bold ${isDarkMode ? 'text-gray-300' : 'text-gray-650'}`}>
+                <span className={`text-xs font-semibold ${isDarkMode ? 'text-zinc-300' : 'text-zinc-650'}`}>
                   Max Staff Logins: <strong className="text-primary">{subscription.maxStaff}</strong>
                 </span>
               </div>
@@ -205,15 +205,15 @@ const ServiceProviderOverview = ({ isDarkMode, user, services = [], bookings = [
       {/* Services Catalog List */}
       <div className={`p-6 md:p-8 rounded-3xl border text-left ${
         isDarkMode 
-          ? 'bg-gray-900 border-white/5' 
-          : 'bg-white border-gray-100 shadow-sm'
+          ? 'bg-zinc-900 border-zinc-800' 
+          : 'bg-white border-zinc-200 shadow-sm'
       }`}>
         <div className="flex items-center justify-between mb-6">
           <div>
-            <span className="text-[9px] font-black text-primary uppercase tracking-widest block mb-0.5">
+            <span className="text-xs font-bold text-primary uppercase tracking-widest block mb-1">
               Catalog Registry
             </span>
-            <h3 className={`text-lg font-black uppercase ${isDarkMode ? 'text-white' : 'text-gray-855'}`}>
+            <h3 className={`text-lg font-black uppercase ${isDarkMode ? 'text-white' : 'text-zinc-855'}`}>
               My Services Catalog
             </h3>
           </div>
@@ -225,14 +225,14 @@ const ServiceProviderOverview = ({ isDarkMode, user, services = [], bookings = [
         {servicesLoading ? (
           <div className="flex flex-col items-center justify-center py-12 gap-3">
             <div className="w-8 h-8 border-4 border-primary/20 border-t-primary rounded-full animate-spin"></div>
-            <p className="text-sm font-bold text-gray-400 uppercase tracking-widest">Loading Catalog Services...</p>
+            <p className="text-sm font-bold text-zinc-400 uppercase tracking-widest">Loading Catalog Services...</p>
           </div>
         ) : services.length === 0 ? (
           <div className="text-center py-12 space-y-3">
-            <p className={`text-sm font-semibold ${isDarkMode ? 'text-gray-550' : 'text-gray-400'}`}>
+            <p className={`text-sm font-semibold ${isDarkMode ? 'text-zinc-500' : 'text-zinc-400'}`}>
               No services found in your catalog.
             </p>
-            <p className="text-xs text-gray-500 max-w-md mx-auto">
+            <p className="text-xs text-zinc-500 max-w-md mx-auto">
               Once you list services on the platform, they will appear here with active pricing, description, and status.
             </p>
           </div>
@@ -245,12 +245,12 @@ const ServiceProviderOverview = ({ isDarkMode, user, services = [], bookings = [
                   key={service._id} 
                   className={`rounded-2xl border overflow-hidden flex flex-col justify-between transition-all hover:scale-[1.01] ${
                     isDarkMode 
-                      ? 'bg-gray-950 border-white/5 hover:border-white/10' 
-                      : 'bg-gray-55 border-gray-150/70 hover:bg-white hover:shadow-md'
+                      ? 'bg-zinc-950 border-zinc-800 hover:border-zinc-700' 
+                      : 'bg-zinc-50 border-zinc-200 hover:bg-white hover:shadow-md'
                   }`}
                 >
                   {/* Service Image / Fallback */}
-                  <div className="h-40 relative w-full bg-gray-100 dark:bg-gray-900 flex items-center justify-center overflow-hidden border-b border-gray-100 dark:border-white/5">
+                  <div className="h-40 relative w-full bg-zinc-100 dark:bg-zinc-900 flex items-center justify-center overflow-hidden border-b border-zinc-200 dark:border-zinc-800">
                     {serviceImg ? (
                       <img 
                         src={serviceImg} 
@@ -263,7 +263,7 @@ const ServiceProviderOverview = ({ isDarkMode, user, services = [], bookings = [
                       </div>
                     )}
                     {/* Service Type Tag */}
-                    <span className="absolute top-3 right-3 px-2 py-1 bg-black/60 backdrop-blur-md text-white rounded-lg text-[9px] font-black uppercase tracking-wider">
+                    <span className="absolute top-3 right-3 px-2 py-1 bg-black/60 backdrop-blur-md text-white rounded-lg text-xs font-bold uppercase tracking-wider">
                       {service.serviceType || 'BOTH'}
                     </span>
                   </div>
@@ -271,10 +271,10 @@ const ServiceProviderOverview = ({ isDarkMode, user, services = [], bookings = [
                   {/* Service Details */}
                   <div className="p-4 space-y-4 flex-grow flex flex-col justify-between">
                     <div className="space-y-1">
-                      <h4 className={`text-sm font-black truncate uppercase ${isDarkMode ? 'text-white' : 'text-gray-805'}`}>
+                      <h4 className={`text-sm font-black truncate uppercase ${isDarkMode ? 'text-white' : 'text-zinc-805'}`}>
                         {service.title}
                       </h4>
-                      <p className={`text-[11px] font-medium line-clamp-2 h-8 ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                      <p className={`text-xs font-medium line-clamp-2 h-8 ${isDarkMode ? 'text-zinc-400' : 'text-zinc-500'}`}>
                         {service.description || 'No description provided.'}
                       </p>
                     </div>

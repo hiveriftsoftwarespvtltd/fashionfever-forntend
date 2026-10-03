@@ -1,42 +1,78 @@
-import React, { useState } from 'react';
-import { 
-  Store, 
-  MapPin, 
-  Phone, 
-  Mail, 
-  Type, 
-  FileText, 
-  Image as ImageIcon, 
-  Upload,
-  Loader2,
-  CheckCircle2,
-  ArrowRight,
-  Globe
-} from 'lucide-react';
-import { registerVendor } from '../api/vendorService';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Store, Upload, X, Loader2, Check } from 'lucide-react';
+import { registerVendor, getVendorDetails } from '../api/vendorService';
 import { toast } from '../utils/toast';
+import { useUser } from '../context/UserContext';
 
 const VendorRegistration = () => {
+  const navigate = useNavigate();
+  const { user } = useUser();
+
   const [loading, setLoading] = useState(false);
 
-  // Redirect if already registered
-  React.useEffect(() => {
-    const session = JSON.parse(localStorage.getItem('user_session'));
-    if (session?.user?.vendorId) {
-      window.location.href = '/vendor/dashboard';
-    }
-  }, []);
-  const [formData, setFormData] = useState({
-    businessName: '',
-    slug: '',
-    description: '',
-    address: '',
-    phone: '',
-    email: '',
-    vendorPincode: '',
-    city: '',
-    state: '',
+  // Redirect if vendor onboarding already completed or vendor already exists
+  useEffect(() => {
+    let isMounted = true;
+    const checkExistingVendor = async () => {
+      try {
+        const session = JSON.parse(localStorage.getItem('user_session') || '{}');
+        const currentUser = user || session?.user;
+
+        // Check if vendor profile already exists on backend
+        const res = await getVendorDetails();
+        const vendorData = res?.data || res;
+        if (vendorData && (vendorData._id || vendorData.businessName) && isMounted) {
+          try {
+            if (session?.user) {
+              session.user.vendorId = vendorData._id;
+              session.user.isVendorOnboardingCompleted = true;
+              localStorage.setItem('user_session', JSON.stringify(session));
+            }
+          } catch (_) {}
+          navigate('/vendor/dashboard', { replace: true });
+        }
+      } catch (_) {}
+    };
+
+    checkExistingVendor();
+    return () => { isMounted = false; };
+  }, [user, navigate]);
+
+  // Form State
+  const [formData, setFormData] = useState(() => {
+    let initialEmail = '';
+    let initialPhone = '';
+    try {
+      const session = JSON.parse(localStorage.getItem('user_session') || '{}');
+      initialEmail = session?.user?.email || '';
+      initialPhone = session?.user?.phone || '';
+    } catch (_) {}
+    return {
+      businessName: '',
+      slug: '',
+      description: '',
+      address: '',
+      phone: initialPhone,
+      email: initialEmail,
+      vendorPincode: '',
+      city: '',
+      state: '',
+    };
   });
+
+  // Sync email & phone from user context if available
+  useEffect(() => {
+    if (user?.email) {
+      setFormData(prev => ({
+        ...prev,
+        email: prev.email || user.email,
+        phone: prev.phone || user.phone || ''
+      }));
+    }
+  }, [user]);
+
+  // Files & Previews
   const [files, setFiles] = useState({
     logo: null,
     banner: null,
@@ -49,10 +85,15 @@ const VendorRegistration = () => {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
-    
-    // Auto-generate slug from business name
+
+    // Automatically generate slug from business name
     if (name === 'businessName') {
-      const generatedSlug = value.toLowerCase().trim().replace(/[^\w\s-]/g, '').replace(/[\s_-]+/g, '-').replace(/^-+|-+$/g, '');
+      const generatedSlug = value
+        .toLowerCase()
+        .trim()
+        .replace(/[^\w\s-]/g, '')
+        .replace(/[\s_-]+/g, '-')
+        .replace(/^-+|-+$/g, '');
       setFormData(prev => ({ ...prev, slug: generatedSlug }));
     }
   };
@@ -62,8 +103,7 @@ const VendorRegistration = () => {
     if (selectedFiles && selectedFiles[0]) {
       const file = selectedFiles[0];
       setFiles(prev => ({ ...prev, [name]: file }));
-      
-      // Create preview
+
       const reader = new FileReader();
       reader.onloadend = () => {
         setPreviews(prev => ({ ...prev, [name]: reader.result }));
@@ -72,324 +112,398 @@ const VendorRegistration = () => {
     }
   };
 
+  const removeFile = (type) => {
+    setFiles(prev => ({ ...prev, [type]: null }));
+    setPreviews(prev => ({ ...prev, [type]: null }));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
 
+    if (!formData.businessName.trim()) {
+      toast.error('Store Name is required');
+      return;
+    }
+    if (!formData.slug.trim()) {
+      toast.error('Store URL slug is required');
+      return;
+    }
+    if (!formData.email.trim()) {
+      toast.error('Email is required');
+      return;
+    }
+    if (!formData.vendorPincode.trim()) {
+      toast.error('Pincode is required');
+      return;
+    }
+    if (!formData.city.trim()) {
+      toast.error('City is required');
+      return;
+    }
+    if (!formData.state.trim()) {
+      toast.error('State is required');
+      return;
+    }
+
+    setLoading(true);
     try {
       const data = new FormData();
-      Object.keys(formData).forEach(key => data.append(key, formData[key]));
+      Object.keys(formData).forEach(key => {
+        if (formData[key] !== undefined && formData[key] !== null) {
+          data.append(key, formData[key]);
+        }
+      });
       if (files.logo) data.append('logo', files.logo);
       if (files.banner) data.append('banner', files.banner);
 
       const response = await registerVendor(data);
 
-      if (response.success) {
-        toast.success('Vendor registered successfully!');
-        // Redirect to dashboard or success page
+      if (response && response.success) {
+        toast.success('Store registered successfully!');
         setTimeout(() => {
           window.location.href = '/vendor/dashboard';
-        }, 2000);
+        }, 1200);
       } else {
-        toast.error(response.message || 'Registration failed');
+        toast.error(response?.message || 'Registration failed');
       }
     } catch (error) {
-      toast.error('Something went wrong. Please try again.');
+      const errorMsg = error?.response?.data?.message || '';
+      if (errorMsg.toLowerCase().includes('already exist')) {
+        toast.info('Your store already exists. Redirecting to dashboard...');
+        try {
+          const session = JSON.parse(localStorage.getItem('user_session') || '{}');
+          if (session?.user) {
+            session.user.isVendorOnboardingCompleted = true;
+            localStorage.setItem('user_session', JSON.stringify(session));
+          }
+        } catch (_) {}
+        setTimeout(() => {
+          navigate('/vendor/dashboard', { replace: true });
+        }, 1200);
+        return;
+      }
+      toast.error(errorMsg || 'Failed to register vendor profile');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8 font-outfit">
-      <div className="max-w-4xl mx-auto">
-        <div className="text-center mb-12">
-          <div className="inline-flex items-center justify-center w-20 h-20 rounded-3xl bg-primary/10 text-primary mb-6 animate-bounce">
-            <Store size={40} />
+    <div className="min-h-screen bg-slate-50 py-10 px-4 sm:px-6 text-slate-900">
+      <div className="max-w-3xl mx-auto">
+
+        {/* Clean Header */}
+        <div className="mb-6 text-center sm:text-left">
+          <div className="inline-flex items-center gap-2 text-primary font-semibold text-sm mb-1">
+            <Store size={18} />
+            <span>Merchant Onboarding</span>
           </div>
-          <h1 className="text-4xl font-bold text-gray-900 uppercase">Vendor Registration</h1>
-          <p className="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">
-            Scale your beauty business with FashionFever. Fill in your business details below to get started.
+          <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">
+            Register Your Store
+          </h1>
+          <p className="text-sm text-slate-600 mt-1">
+            Fill in your store and business details to start selling on Fashion Fever.
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-8">
-          {/* Business Core Info */}
-          <div className="bg-white rounded-3xl shadow-xl shadow-gray-200/50 p-8 lg:p-12 border border-gray-100 overflow-hidden relative">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-bl-full -mr-10 -mt-10"></div>
-            
-            <h2 className="text-xl font-bold text-gray-900 mb-8 flex items-center gap-3">
-              <span className="w-8 h-8 rounded-lg bg-primary text-white flex items-center justify-center text-sm">1</span>
-              Business Identity
-            </h2>
+        {/* Main Clean Form Card */}
+        <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 sm:p-8">
+          <form onSubmit={handleSubmit} className="space-y-6">
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div className="space-y-2">
-                <label className="text-xs font-bold text-gray-400 uppercase flex items-center gap-2">
-                  <Type size={14} className="text-primary" /> Business Name
-                </label>
-                <input
-                  name="businessName"
-                  type="text"
-                  required
-                  value={formData.businessName}
-                  onChange={handleInputChange}
-                  className="w-full px-5 py-4 bg-gray-50 border-none rounded-2xl text-sm font-bold focus:ring-2 focus:ring-primary/20 outline-none transition-all placeholder:text-gray-300"
-                  placeholder="e.g. Glamour Cosmetics"
-                />
-              </div>
+            {/* Section 1: Store Information */}
+            <div>
+              <h2 className="text-base font-semibold text-slate-900 mb-4 pb-2 border-b border-slate-200">
+                Store Information
+              </h2>
 
-              <div className="space-y-2">
-                <label className="text-xs font-bold text-gray-400 uppercase flex items-center gap-2">
-                  <Globe size={14} className="text-primary" /> Store URL Slug
-                </label>
-                <div className="relative">
-                  <span className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 text-sm font-bold">@</span>
-                  <input
-                    name="slug"
-                    type="text"
-                    required
-                    value={formData.slug}
-                    onChange={handleInputChange}
-                    className="w-full pl-10 pr-5 py-4 bg-gray-50 border-none rounded-2xl text-sm font-bold focus:ring-2 focus:ring-primary/20 outline-none transition-all placeholder:text-gray-300"
-                    placeholder="glamour-cosmetics"
-                  />
-                </div>
-              </div>
-
-              <div className="md:col-span-2 space-y-2">
-                <label className="text-xs font-bold text-gray-400 uppercase flex items-center gap-2">
-                  <FileText size={14} className="text-primary" /> Description
-                </label>
-                <textarea
-                  name="description"
-                  required
-                  rows="4"
-                  value={formData.description}
-                  onChange={handleInputChange}
-                  className="w-full px-5 py-4 bg-gray-50 border-none rounded-2xl text-sm font-bold focus:ring-2 focus:ring-primary/20 outline-none transition-all placeholder:text-gray-300 resize-none"
-                  placeholder="Tell us about your brand and products..."
-                ></textarea>
-              </div>
-            </div>
-          </div>
-
-          {/* Contact Details */}
-          <div className="bg-white rounded-3xl shadow-xl shadow-gray-200/50 p-8 lg:p-12 border border-gray-100 overflow-hidden relative">
-             <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/5 rounded-bl-full -mr-10 -mt-10"></div>
-            
-            <h2 className="text-xl font-bold text-gray-900 mb-8 flex items-center gap-3">
-              <span className="w-8 h-8 rounded-lg bg-blue-500 text-white flex items-center justify-center text-sm">2</span>
-              Contact Information
-            </h2>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div className="space-y-2">
-                <label className="text-xs font-bold text-gray-400 uppercase flex items-center gap-2">
-                  <Mail size={14} className="text-blue-500" /> Business Email
-                </label>
-                <input
-                  name="email"
-                  type="email"
-                  required
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  className="w-full px-5 py-4 bg-gray-50 border-none rounded-2xl text-sm font-bold focus:ring-2 focus:ring-blue-500/20 outline-none transition-all placeholder:text-gray-300"
-                  placeholder="contact@yourbusiness.com"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-xs font-bold text-gray-400 uppercase flex items-center gap-2">
-                  <Phone size={14} className="text-blue-500" /> Phone Number
-                </label>
-                <input
-                  name="phone"
-                  type="tel"
-                  required
-                  value={formData.phone}
-                  onChange={handleInputChange}
-                  className="w-full px-5 py-4 bg-gray-50 border-none rounded-2xl text-sm font-bold focus:ring-2 focus:ring-blue-500/20 outline-none transition-all placeholder:text-gray-300"
-                  placeholder="+91 00000 00000"
-                />
-              </div>
-
-              <div className="md:col-span-2 space-y-2">
-                <label className="text-xs font-bold text-gray-400 uppercase flex items-center gap-2">
-                  <MapPin size={14} className="text-blue-500" /> Physical Address
-                </label>
-                <textarea
-                  name="address"
-                  required
-                  rows="3"
-                  value={formData.address}
-                  onChange={handleInputChange}
-                  className="w-full px-5 py-4 bg-gray-50 border-none rounded-2xl text-sm font-bold focus:ring-2 focus:ring-blue-500/20 outline-none transition-all placeholder:text-gray-300 resize-none"
-                  placeholder="Full business or office address..."
-                ></textarea>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:col-span-2">
-                <div className="space-y-2">
-                  <label className="text-xs font-bold text-gray-400 uppercase flex items-center gap-2">
-                    <MapPin size={14} className="text-blue-500" /> Pincode
-                  </label>
-                  <input
-                    name="vendorPincode"
-                    type="text"
-                    required
-                    value={formData.vendorPincode}
-                    onChange={handleInputChange}
-                    className="w-full px-5 py-4 bg-gray-50 border-none rounded-2xl text-sm font-bold focus:ring-2 focus:ring-blue-500/20 outline-none transition-all placeholder:text-gray-300"
-                    placeholder="e.g. 273001"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <label className="text-xs font-bold text-gray-400 uppercase flex items-center gap-2">
-                    <MapPin size={14} className="text-blue-500" /> City
-                  </label>
-                  <input
-                    name="city"
-                    type="text"
-                    required
-                    value={formData.city}
-                    onChange={handleInputChange}
-                    className="w-full px-5 py-4 bg-gray-50 border-none rounded-2xl text-sm font-bold focus:ring-2 focus:ring-blue-500/20 outline-none transition-all placeholder:text-gray-300"
-                    placeholder="e.g. Gorakhpur"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <label className="text-xs font-bold text-gray-400 uppercase flex items-center gap-2">
-                    <MapPin size={14} className="text-blue-500" /> State
-                  </label>
-                  <input
-                    name="state"
-                    type="text"
-                    required
-                    value={formData.state}
-                    onChange={handleInputChange}
-                    className="w-full px-5 py-4 bg-gray-50 border-none rounded-2xl text-sm font-bold focus:ring-2 focus:ring-blue-500/20 outline-none transition-all placeholder:text-gray-300"
-                    placeholder="e.g. Uttar Pradesh"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Branding Assets */}
-          <div className="bg-white rounded-3xl shadow-xl shadow-gray-200/50 p-8 lg:p-12 border border-gray-100 overflow-hidden relative">
-             <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500/5 rounded-bl-full -mr-10 -mt-10"></div>
-            
-            <h2 className="text-xl font-bold text-gray-900 mb-8 flex items-center gap-3">
-              <span className="w-8 h-8 rounded-lg bg-orange-500 text-white flex items-center justify-center text-sm">3</span>
-              Store Branding
-            </h2>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {/* Logo Upload */}
               <div className="space-y-4">
-                <label className="text-xs font-bold text-gray-400 uppercase flex items-center gap-2">
-                  <ImageIcon size={14} className="text-orange-500" /> Brand Logo
-                </label>
-                <div className="relative group">
+                {/* Business Name */}
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-1.5">
+                    Store / Business Name <span className="text-red-500">*</span>
+                  </label>
                   <input
-                    type="file"
-                    name="logo"
-                    accept="image/*"
-                    onChange={handleFileChange}
-                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                    type="text"
+                    name="businessName"
+                    required
+                    value={formData.businessName}
+                    onChange={handleInputChange}
+                    placeholder="e.g. Urban Style Studio"
+                    className="w-full px-3.5 py-2.5 bg-white text-slate-900 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors"
                   />
-                  <div className={`aspect-square rounded-3xl border-2 border-dashed flex flex-col items-center justify-center p-6 transition-all ${previews.logo ? 'border-orange-500 bg-orange-50/10' : 'border-gray-200 hover:border-orange-400 hover:bg-gray-50'}`}>
-                    {previews.logo ? (
-                      <div className="relative w-full h-full">
-                        <img src={previews.logo} alt="Logo preview" className="w-full h-full object-contain rounded-2xl" />
-                        <div className="absolute inset-0 bg-black/40 rounded-2xl opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
-                          <Upload className="text-white" size={24} />
-                        </div>
-                      </div>
-                    ) : (
-                      <>
-                        <div className="w-16 h-16 rounded-2xl bg-gray-100 text-gray-400 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                          <Upload size={24} />
-                        </div>
-                        <p className="text-sm font-bold text-gray-400 text-center">Click to upload Logo</p>
-                        <p className="text-sm font-bold text-gray-300 mt-2 uppercase">PNG, JPG up to 5MB</p>
-                      </>
-                    )}
+                </div>
+
+                {/* Slug */}
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-1.5">
+                    Storefront URL <span className="text-red-500">*</span>
+                  </label>
+                  <div className="flex rounded-lg border border-slate-300 overflow-hidden focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary">
+                    <span className="px-3 bg-slate-100 text-slate-600 text-xs sm:text-sm flex items-center border-r border-slate-300 select-none whitespace-nowrap">
+                      fashionfever.in/store/
+                    </span>
+                    <input
+                      type="text"
+                      name="slug"
+                      required
+                      value={formData.slug}
+                      onChange={handleInputChange}
+                      placeholder="urban-style-studio"
+                      className="flex-1 px-3.5 py-2.5 bg-white text-slate-900 text-sm outline-none"
+                    />
+                  </div>
+                  <p className="text-xs text-slate-500 mt-1">
+                    Auto-generated from your store name. Only lowercase letters, numbers, and hyphens.
+                  </p>
+                </div>
+
+                {/* Description */}
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-1.5">
+                    Store Description
+                  </label>
+                  <textarea
+                    name="description"
+                    rows="3"
+                    value={formData.description}
+                    onChange={handleInputChange}
+                    placeholder="Tell customers about your brand, specialty, and products..."
+                    className="w-full px-3.5 py-2.5 bg-white text-slate-900 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors resize-none"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Section 2: Contact Details */}
+            <div>
+              <h2 className="text-base font-semibold text-slate-900 mb-4 pb-2 border-b border-slate-200">
+                Contact & Address
+              </h2>
+
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {/* Email */}
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1.5">
+                      Business Email <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="email"
+                      name="email"
+                      required
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      placeholder="merchant@example.com"
+                      className="w-full px-3.5 py-2.5 bg-white text-slate-900 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors"
+                    />
+                    <p className="text-xs text-slate-500 mt-1">
+                      Auto-filled from your logged-in account.
+                    </p>
+                  </div>
+
+                  {/* Phone */}
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1.5">
+                      Phone Number
+                    </label>
+                    <input
+                      type="tel"
+                      name="phone"
+                      value={formData.phone}
+                      onChange={handleInputChange}
+                      placeholder="+91 9876543210"
+                      className="w-full px-3.5 py-2.5 bg-white text-slate-900 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors"
+                    />
                   </div>
                 </div>
-              </div>
 
-              {/* Banner Upload */}
-              <div className="space-y-4">
-                <label className="text-xs font-bold text-gray-400 uppercase flex items-center gap-2">
-                  <ImageIcon size={14} className="text-orange-500" /> Store Banner
-                </label>
-                <div className="relative group">
+                {/* Street Address */}
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-1.5">
+                    Physical Address
+                  </label>
                   <input
-                    type="file"
-                    name="banner"
-                    accept="image/*"
-                    onChange={handleFileChange}
-                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                    type="text"
+                    name="address"
+                    value={formData.address}
+                    onChange={handleInputChange}
+                    placeholder="Shop/Office No., Street, Landmark"
+                    className="w-full px-3.5 py-2.5 bg-white text-slate-900 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors"
                   />
-                  <div className={`aspect-video rounded-3xl border-2 border-dashed flex flex-col items-center justify-center p-6 transition-all h-[calc(100%-2rem)] ${previews.banner ? 'border-orange-500 bg-orange-50/10' : 'border-gray-200 hover:border-orange-400 hover:bg-gray-50'}`}>
-                    {previews.banner ? (
-                      <div className="relative w-full h-full">
-                        <img src={previews.banner} alt="Banner preview" className="w-full h-full object-cover rounded-2xl" />
-                        <div className="absolute inset-0 bg-black/40 rounded-2xl opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
-                          <Upload className="text-white" size={24} />
-                        </div>
-                      </div>
-                    ) : (
-                      <>
-                        <div className="w-16 h-16 rounded-2xl bg-gray-100 text-gray-400 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                          <Upload size={24} />
-                        </div>
-                        <p className="text-sm font-bold text-gray-400 text-center">Click to upload Banner</p>
-                        <p className="text-sm font-bold text-gray-300 mt-2 uppercase">Landscape orientation preferred</p>
-                      </>
-                    )}
+                </div>
+
+                {/* City, State, Pincode */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1.5">
+                      City <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      name="city"
+                      required
+                      value={formData.city}
+                      onChange={handleInputChange}
+                      placeholder="e.g. Gorakhpur"
+                      className="w-full px-3.5 py-2.5 bg-white text-slate-900 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1.5">
+                      State <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      name="state"
+                      required
+                      value={formData.state}
+                      onChange={handleInputChange}
+                      placeholder="e.g. Uttar Pradesh"
+                      className="w-full px-3.5 py-2.5 bg-white text-slate-900 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1.5">
+                      Pincode <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      name="vendorPincode"
+                      required
+                      value={formData.vendorPincode}
+                      onChange={handleInputChange}
+                      placeholder="e.g. 273001"
+                      className="w-full px-3.5 py-2.5 bg-white text-slate-900 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors"
+                    />
                   </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          {/* Submit Button */}
-          <div className="flex flex-col sm:flex-row items-center gap-6 pt-6">
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full sm:flex-1 py-5 bg-primary text-white rounded-3xl font-bold uppercase text-sm hover:bg-primary-hover shadow-2xl shadow-primary/30 transition-all active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-3 group"
-            >
-              {loading ? (
-                <>
-                  <Loader2 className="animate-spin" size={20} />
-                  Processing...
-                </>
-              ) : (
-                <>
-                  Complete Registration
-                  <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
-                </>
-              )}
-            </button>
-            <button
-              type="button"
-              onClick={() => window.history.back()}
-              className="w-full sm:w-auto px-10 py-5 bg-white text-gray-400 rounded-3xl font-bold uppercase text-sm hover:bg-gray-50 border border-gray-100 transition-all"
-            >
-              Skip for later
-            </button>
-          </div>
-        </form>
+            {/* Section 3: Store Images */}
+            <div>
+              <h2 className="text-base font-semibold text-slate-900 mb-4 pb-2 border-b border-slate-200">
+                Store Images <span className="text-xs font-normal text-slate-500">(Optional)</span>
+              </h2>
 
-        <p className="mt-12 text-center text-xs font-bold text-gray-400 uppercase pb-12">
-          By registering, you agree to FashionFever's <span className="text-primary cursor-pointer hover:underline">Vendor Terms & Conditions</span>
-        </p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {/* Logo Upload */}
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-1.5">
+                    Store Logo
+                  </label>
+                  {previews.logo ? (
+                    <div className="flex items-center gap-3 p-3 border border-slate-200 rounded-lg bg-slate-50">
+                      <img
+                        src={previews.logo}
+                        alt="Logo"
+                        className="w-12 h-12 rounded object-cover border border-slate-300 shrink-0"
+                      />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs font-medium text-slate-900 truncate">Logo selected</p>
+                        <p className="text-[11px] text-slate-500">Ready to upload</p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => removeFile('logo')}
+                        className="p-1.5 text-slate-400 hover:text-red-500 rounded-md cursor-pointer"
+                        title="Remove"
+                      >
+                        <X size={16} />
+                      </button>
+                    </div>
+                  ) : (
+                    <label className="flex flex-col items-center justify-center p-4 border border-dashed border-slate-300 rounded-lg hover:border-primary hover:bg-slate-50 cursor-pointer transition-colors bg-white">
+                      <Upload size={20} className="text-slate-400 mb-1" />
+                      <span className="text-xs font-medium text-slate-700">Choose logo image</span>
+                      <span className="text-[11px] text-slate-400 mt-0.5">PNG, JPG up to 5MB</span>
+                      <input
+                        type="file"
+                        name="logo"
+                        accept="image/*"
+                        onChange={handleFileChange}
+                        className="hidden"
+                      />
+                    </label>
+                  )}
+                </div>
+
+                {/* Banner Upload */}
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-1.5">
+                    Store Banner
+                  </label>
+                  {previews.banner ? (
+                    <div className="flex items-center gap-3 p-3 border border-slate-200 rounded-lg bg-slate-50">
+                      <img
+                        src={previews.banner}
+                        alt="Banner"
+                        className="w-16 h-12 rounded object-cover border border-slate-300 shrink-0"
+                      />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs font-medium text-slate-900 truncate">Banner selected</p>
+                        <p className="text-[11px] text-slate-500">Ready to upload</p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => removeFile('banner')}
+                        className="p-1.5 text-slate-400 hover:text-red-500 rounded-md cursor-pointer"
+                        title="Remove"
+                      >
+                        <X size={16} />
+                      </button>
+                    </div>
+                  ) : (
+                    <label className="flex flex-col items-center justify-center p-4 border border-dashed border-slate-300 rounded-lg hover:border-primary hover:bg-slate-50 cursor-pointer transition-colors bg-white">
+                      <Upload size={20} className="text-slate-400 mb-1" />
+                      <span className="text-xs font-medium text-slate-700">Choose banner image</span>
+                      <span className="text-[11px] text-slate-400 mt-0.5">Recommended 1200x400</span>
+                      <input
+                        type="file"
+                        name="banner"
+                        accept="image/*"
+                        onChange={handleFileChange}
+                        className="hidden"
+                      />
+                    </label>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Form Actions */}
+            <div className="pt-4 border-t border-slate-200 flex items-center justify-end gap-3">
+              <button
+                type="button"
+                onClick={() => navigate(-1)}
+                className="px-5 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-100 rounded-lg border border-slate-300 transition-colors cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                disabled={loading}
+                className="px-6 py-2.5 text-sm font-semibold text-white bg-primary hover:bg-primary-hover rounded-lg shadow-sm transition-colors cursor-pointer flex items-center gap-2 disabled:opacity-60"
+              >
+                {loading ? (
+                  <>
+                    <Loader2 size={16} className="animate-spin" />
+                    <span>Submitting...</span>
+                  </>
+                ) : (
+                  <>
+                    <Check size={16} />
+                    <span>Complete Registration</span>
+                  </>
+                )}
+              </button>
+            </div>
+
+          </form>
+        </div>
+
       </div>
     </div>
   );

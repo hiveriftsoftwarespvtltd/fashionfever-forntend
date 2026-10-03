@@ -141,11 +141,11 @@ const ServiceProviderProfile = ({ isDarkMode, profileData, setProfileData }) => 
       
       {/* Header section */}
       <div>
-        <span className="text-[9px] font-black text-primary uppercase tracking-widest block mb-0.5">KYC & Business Setup</span>
-        <h2 className={`text-lg md:text-xl font-black uppercase ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+        <span className="text-xs font-bold text-primary uppercase tracking-widest block mb-1">KYC & Business Setup</span>
+        <h2 className={`text-lg md:text-xl font-black uppercase ${isDarkMode ? 'text-white' : 'text-zinc-900'}`}>
           Service Provider Registration
         </h2>
-        <p className={`text-[11px] font-semibold ${isDarkMode ? 'text-gray-500' : 'text-gray-400'}`}>
+        <p className={`text-xs font-medium ${isDarkMode ? 'text-zinc-400' : 'text-zinc-500'}`}>
           Enter business details and submit to register/update your active profile on the platform.
         </p>
       </div>
@@ -164,19 +164,19 @@ const ServiceProviderProfile = ({ isDarkMode, profileData, setProfileData }) => 
               <Clock className="text-amber-500 flex-shrink-0 animate-pulse" size={20} />
             )}
             <div>
-              <p className={`text-[11px] font-black uppercase tracking-wider ${
+              <p className={`text-xs font-bold uppercase tracking-wider ${
                 profileData.verificationStatus === 'APPROVED' ? 'text-emerald-600' : 'text-amber-600'
               }`}>
                 Verification Status: {profileData.verificationStatus}
               </p>
-              <p className={`text-sm font-bold ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+              <p className={`text-sm font-bold ${isDarkMode ? 'text-zinc-400' : 'text-zinc-500'}`}>
                 {profileData.verificationStatus === 'APPROVED'
                   ? 'Your profile is approved and active in searches.'
                   : 'Your profile registration is pending review by FashionFever admin.'}
               </p>
             </div>
           </div>
-          <span className={`w-fit px-2.5 py-1 rounded-lg text-[8px] font-black uppercase tracking-wider border ${
+          <span className={`w-fit px-2.5 py-1 rounded-lg text-xs font-bold uppercase tracking-wider border ${
             profileData.verificationStatus === 'APPROVED'
               ? 'bg-emerald-500/20 text-emerald-500 border-emerald-500/30'
               : 'bg-amber-500/20 text-amber-500 border-amber-500/30'
@@ -189,19 +189,19 @@ const ServiceProviderProfile = ({ isDarkMode, profileData, setProfileData }) => 
       {/* Profile Form card */}
       <div className={`p-5 md:p-8 rounded-2xl border ${
         isDarkMode 
-          ? 'bg-gray-900 border-white/5 text-white' 
-          : 'bg-white border-gray-100 text-gray-855 shadow-md shadow-gray-250/20'
+          ? 'bg-zinc-900 border-zinc-800 text-white' 
+          : 'bg-white border-zinc-200 text-zinc-900 shadow-md shadow-zinc-200/20'
       }`}>
         <form onSubmit={handleRegisterSubmit} className="space-y-6">
           
           {/* Section 1: Business Identity */}
           <div className="space-y-4">
-            <h3 className="text-[11px] font-black uppercase text-primary tracking-widest flex items-center gap-1.5">
-              <Sparkles size={12} /> 1. Business Info
+            <h3 className="text-xs font-bold uppercase text-primary tracking-widest flex items-center gap-1.5">
+              <Sparkles size={14} /> 1. Business Info
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <div className="space-y-1">
-                <label className="text-[9px] font-bold text-gray-455 uppercase">Business Name</label>
+                <label className="text-xs font-semibold text-zinc-500 uppercase">Business Name</label>
                 <input 
                   type="text" 
                   required 
@@ -213,7 +213,7 @@ const ServiceProviderProfile = ({ isDarkMode, profileData, setProfileData }) => 
               </div>
 
               <div className="space-y-1">
-                <label className="text-[9px] font-bold text-gray-455 uppercase">Provider Type</label>
+                <label className="text-xs font-semibold text-zinc-500 uppercase">Provider Type</label>
                 <select 
                   value={form.providerType} 
                   onChange={(e) => handleInputChange(e, 'providerType')} 
@@ -225,7 +225,7 @@ const ServiceProviderProfile = ({ isDarkMode, profileData, setProfileData }) => 
               </div>
 
               <div className="space-y-1">
-                <label className="text-[9px] font-bold text-gray-455 uppercase">Gender Serviced</label>
+                <label className="text-xs font-semibold text-zinc-500 uppercase">Gender Serviced</label>
                 <select 
                   value={form.providedGenderService} 
                   onChange={(e) => handleInputChange(e, 'providedGenderService')} 
@@ -238,7 +238,7 @@ const ServiceProviderProfile = ({ isDarkMode, profileData, setProfileData }) => 
               </div>
 
               <div className="space-y-1">
-                <label className="text-[9px] font-bold text-gray-455 uppercase">Experience (Years)</label>
+                <label className="text-xs font-semibold text-zinc-500 uppercase">Experience (Years)</label>
                 <input 
                   type="number" 
                   required 
@@ -251,7 +251,7 @@ const ServiceProviderProfile = ({ isDarkMode, profileData, setProfileData }) => 
             </div>
 
             <div className="space-y-1">
-              <label className="text-[9px] font-bold text-gray-455 uppercase">Business Overview Description</label>
+              <label className="text-xs font-semibold text-zinc-500 uppercase">Business Overview Description</label>
               <textarea 
                 rows="2" 
                 required 
@@ -263,16 +263,16 @@ const ServiceProviderProfile = ({ isDarkMode, profileData, setProfileData }) => 
             </div>
           </div>
 
-          <div className={`h-[1px] ${isDarkMode ? 'bg-white/5' : 'bg-gray-100'}`} />
+          <div className={`h-[1px] ${isDarkMode ? 'bg-zinc-800' : 'bg-zinc-100'}`} />
 
           {/* Section 2: Contact Info */}
           <div className="space-y-4">
-            <h3 className="text-[11px] font-black uppercase text-primary tracking-widest flex items-center gap-1.5">
-              <Sparkles size={12} /> 2. Contact Registry
+            <h3 className="text-xs font-bold uppercase text-primary tracking-widest flex items-center gap-1.5">
+              <Sparkles size={14} /> 2. Contact Registry
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-1">
-                <label className="text-[9px] font-bold text-gray-455 uppercase">Contact Phone</label>
+                <label className="text-xs font-semibold text-zinc-500 uppercase">Contact Phone</label>
                 <input 
                   type="text" 
                   required 
@@ -285,28 +285,28 @@ const ServiceProviderProfile = ({ isDarkMode, profileData, setProfileData }) => 
 
               {isRegistered && (
                 <div className="space-y-1">
-                  <label className="text-[9px] font-bold text-gray-455 uppercase">Business Email</label>
+                  <label className="text-xs font-semibold text-zinc-500 uppercase">Business Email</label>
                   <input 
                     type="email" 
                     disabled 
                     value={profileData.email || ''} 
-                    className="w-full px-4 py-2.5 rounded-xl text-xs font-semibold outline-none bg-transparent opacity-60 cursor-not-allowed border border-dashed border-gray-300 dark:border-gray-700" 
+                    className="w-full px-4 py-2.5 rounded-xl text-xs font-semibold outline-none bg-transparent opacity-60 cursor-not-allowed border border-dashed border-zinc-300 dark:border-zinc-700" 
                   />
                 </div>
               )}
             </div>
           </div>
 
-          <div className={`h-[1px] ${isDarkMode ? 'bg-white/5' : 'bg-gray-100'}`} />
+          <div className={`h-[1px] ${isDarkMode ? 'bg-zinc-800' : 'bg-zinc-100'}`} />
 
           {/* Section 3: Legal Verification */}
           <div className="space-y-4">
-            <h3 className="text-[11px] font-black uppercase text-primary tracking-widest flex items-center gap-1.5">
-              <Sparkles size={12} /> 3. Verification Details
+            <h3 className="text-xs font-bold uppercase text-primary tracking-widest flex items-center gap-1.5">
+              <Sparkles size={14} /> 3. Verification Details
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-1">
-                <label className="text-[9px] font-bold text-gray-455 uppercase">GST Registration Number</label>
+                <label className="text-xs font-semibold text-zinc-500 uppercase">GST Registration Number</label>
                 <input 
                   type="text" 
                   value={form.gstNumber} 
@@ -317,7 +317,7 @@ const ServiceProviderProfile = ({ isDarkMode, profileData, setProfileData }) => 
               </div>
 
               <div className="space-y-1">
-                <label className="text-[9px] font-bold text-gray-455 uppercase">PAN Card Number</label>
+                <label className="text-xs font-semibold text-zinc-500 uppercase">PAN Card Number</label>
                 <input 
                   type="text" 
                   required 
@@ -330,12 +330,12 @@ const ServiceProviderProfile = ({ isDarkMode, profileData, setProfileData }) => 
             </div>
           </div>
 
-          <div className={`h-[1px] ${isDarkMode ? 'bg-white/5' : 'bg-gray-100'}`} />
+          <div className={`h-[1px] ${isDarkMode ? 'bg-zinc-800' : 'bg-zinc-100'}`} />
 
           {/* Section 4: Service Availability Settings */}
           <div className="space-y-4">
-            <h3 className="text-[11px] font-black uppercase text-primary tracking-widest flex items-center gap-1.5">
-              <Sparkles size={12} /> 4. Service Delivery Configuration
+            <h3 className="text-xs font-bold uppercase text-primary tracking-widest flex items-center gap-1.5">
+              <Sparkles size={14} /> 4. Service Delivery Configuration
             </h3>
             
             {/* Toggles */}
@@ -343,34 +343,34 @@ const ServiceProviderProfile = ({ isDarkMode, profileData, setProfileData }) => 
               <button
                 type="button"
                 onClick={() => setForm(f => ({ ...f, homeServiceAvailable: !f.homeServiceAvailable }))}
-                className={`px-4 py-2.5 rounded-xl border text-[11px] font-bold uppercase transition-all duration-200 cursor-pointer flex items-center justify-between ${
+                className={`px-4 py-2.5 rounded-xl border text-xs font-semibold uppercase transition-all duration-200 cursor-pointer flex items-center justify-between ${
                   form.homeServiceAvailable
                     ? 'bg-primary/10 text-primary border-primary/30 shadow-sm'
-                    : isDarkMode ? 'bg-gray-950 border-gray-800 text-gray-455 hover:text-white' : 'bg-gray-50 border-gray-150 text-gray-500 hover:text-gray-700'
+                    : isDarkMode ? 'bg-zinc-950 border-zinc-800 text-zinc-400 hover:text-white' : 'bg-zinc-50 border-zinc-200 text-zinc-600 hover:text-zinc-900'
                 }`}
               >
                 <span>Home Service Available</span>
-                <span className={`w-2 h-2 rounded-full ${form.homeServiceAvailable ? 'bg-primary shadow-[0_0_8px_rgba(218,1,106,0.6)]' : 'bg-gray-400'}`}></span>
+                <span className={`w-2 h-2 rounded-full ${form.homeServiceAvailable ? 'bg-primary shadow-[0_0_8px_rgba(218,1,106,0.6)]' : 'bg-zinc-400'}`}></span>
               </button>
 
               <button
                 type="button"
                 onClick={() => setForm(f => ({ ...f, salonVisitAvailable: !f.salonVisitAvailable }))}
-                className={`px-4 py-2.5 rounded-xl border text-[11px] font-bold uppercase transition-all duration-200 cursor-pointer flex items-center justify-between ${
+                className={`px-4 py-2.5 rounded-xl border text-xs font-semibold uppercase transition-all duration-200 cursor-pointer flex items-center justify-between ${
                   form.salonVisitAvailable
                     ? 'bg-primary/10 text-primary border-primary/30 shadow-sm'
-                    : isDarkMode ? 'bg-gray-950 border-gray-800 text-gray-500 hover:text-white' : 'bg-gray-50 border-gray-150 text-gray-500 hover:text-gray-700'
+                    : isDarkMode ? 'bg-zinc-950 border-zinc-800 text-zinc-400 hover:text-white' : 'bg-zinc-50 border-zinc-200 text-zinc-600 hover:text-zinc-900'
                 }`}
               >
                 <span>Salon Visit Available</span>
-                <span className={`w-2 h-2 rounded-full ${form.salonVisitAvailable ? 'bg-primary shadow-[0_0_8px_rgba(218,1,106,0.6)]' : 'bg-gray-400'}`}></span>
+                <span className={`w-2 h-2 rounded-full ${form.salonVisitAvailable ? 'bg-primary shadow-[0_0_8px_rgba(218,1,106,0.6)]' : 'bg-zinc-400'}`}></span>
               </button>
             </div>
 
             {/* Radius and Coordinates */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="space-y-1">
-                <label className="text-[9px] font-bold text-gray-455 uppercase">Service Radius (Km)</label>
+                <label className="text-xs font-semibold text-zinc-500 uppercase">Service Radius (Km)</label>
                 <input 
                   type="number" 
                   required 
@@ -381,7 +381,7 @@ const ServiceProviderProfile = ({ isDarkMode, profileData, setProfileData }) => 
                 />
               </div>
               <div className="space-y-1">
-                <label className="text-[9px] font-bold text-gray-455 uppercase">Latitude Coordinate</label>
+                <label className="text-xs font-semibold text-zinc-500 uppercase">Latitude Coordinate</label>
                 <input 
                   type="number" 
                   step="any"
@@ -393,7 +393,7 @@ const ServiceProviderProfile = ({ isDarkMode, profileData, setProfileData }) => 
                 />
               </div>
               <div className="space-y-1">
-                <label className="text-[9px] font-bold text-gray-455 uppercase">Longitude Coordinate</label>
+                <label className="text-xs font-semibold text-zinc-500 uppercase">Longitude Coordinate</label>
                 <input 
                   type="number" 
                   step="any"
@@ -415,15 +415,15 @@ const ServiceProviderProfile = ({ isDarkMode, profileData, setProfileData }) => 
             />
           </div>
 
-          <div className={`h-[1px] ${isDarkMode ? 'bg-white/5' : 'bg-gray-100'}`} />
+          <div className={`h-[1px] ${isDarkMode ? 'bg-zinc-800' : 'bg-zinc-100'}`} />
 
           {/* Section 5: Physical Address */}
           <div className="space-y-4">
-            <h3 className="text-[11px] font-black uppercase text-primary tracking-widest flex items-center gap-1.5">
-              <Sparkles size={12} /> 5. Physical Location
+            <h3 className="text-xs font-bold uppercase text-primary tracking-widest flex items-center gap-1.5">
+              <Sparkles size={14} /> 5. Physical Location
             </h3>
             <div className="space-y-1">
-              <label className="text-[9px] font-bold text-gray-455 uppercase">Business Address</label>
+              <label className="text-xs font-semibold text-zinc-500 uppercase">Business Address</label>
               <input 
                 type="text" 
                 required 
@@ -435,7 +435,7 @@ const ServiceProviderProfile = ({ isDarkMode, profileData, setProfileData }) => 
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="space-y-1">
-                <label className="text-[9px] font-bold text-gray-455 uppercase">City</label>
+                <label className="text-xs font-semibold text-zinc-500 uppercase">City</label>
                 <input 
                   type="text" 
                   required 
@@ -447,7 +447,7 @@ const ServiceProviderProfile = ({ isDarkMode, profileData, setProfileData }) => 
               </div>
 
               <div className="space-y-1">
-                <label className="text-[9px] font-bold text-gray-455 uppercase">State</label>
+                <label className="text-xs font-semibold text-zinc-500 uppercase">State</label>
                 <input 
                   type="text" 
                   required 
@@ -459,7 +459,7 @@ const ServiceProviderProfile = ({ isDarkMode, profileData, setProfileData }) => 
               </div>
 
               <div className="space-y-1">
-                <label className="text-[9px] font-bold text-gray-455 uppercase">Pincode</label>
+                <label className="text-xs font-semibold text-zinc-500 uppercase">Pincode</label>
                 <input 
                   type="text" 
                   required 

@@ -118,7 +118,7 @@ const UserServiceLeads = () => {
                 
                 <Link
                   to="/booking"
-                  className="bg-primary hover:bg-primary/95 text-white font-black uppercase text-[10px] tracking-wider px-5 py-3 rounded-xl shadow-md shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all text-center self-start sm:self-center"
+                  className="bg-primary hover:bg-primary/95 text-white font-bold uppercase text-xs tracking-wider px-5 py-3 rounded-xl shadow-md shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all text-center self-start sm:self-center"
                 >
                   Create New Request
                 </Link>
@@ -168,10 +168,10 @@ const UserServiceLeads = () => {
                       {/* Top Header Card Info */}
                       <div className="flex flex-wrap items-center justify-between gap-3 mb-4 pb-4 border-b border-gray-50">
                         <div className="space-y-1">
-                          <span className="text-[10px] font-black text-primary uppercase bg-primary/5 px-2.5 py-1 rounded-lg">
+                          <span className="text-xs font-bold text-primary uppercase bg-primary/5 px-2.5 py-1 rounded-lg">
                             {categories}
                           </span>
-                          <span className="text-[9px] text-gray-400 font-bold uppercase block mt-1">
+                          <span className="text-xs text-gray-400 font-medium uppercase block mt-1">
                             Posted on {createdDateStr}
                           </span>
                         </div>
@@ -184,7 +184,7 @@ const UserServiceLeads = () => {
                           </div>
 
                           {/* Status badge */}
-                          <span className={`px-3 py-1.5 rounded-xl text-[9px] font-black uppercase tracking-wider ${getStatusBadgeClass(renderVal(lead.status))}`}>
+                          <span className={`px-3 py-1.5 rounded-xl text-xs font-bold uppercase tracking-wider ${getStatusBadgeClass(renderVal(lead.status))}`}>
                             {renderVal(lead.status)}
                           </span>
                         </div>
@@ -198,21 +198,21 @@ const UserServiceLeads = () => {
                       </div>
 
                       {/* Metadata specs row */}
-                      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 text-[10px] font-black uppercase text-gray-400">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 text-xs font-semibold uppercase text-gray-400">
                         {/* Preferred Date */}
                         <div className="flex items-center gap-2">
-                          <Calendar size={13} className="text-primary flex-shrink-0" />
+                          <Calendar size={14} className="text-primary flex-shrink-0" />
                           <div>
-                            <span className="text-[8px] font-bold text-gray-450 block leading-none mb-0.5">Preferred Schedule</span>
+                            <span className="text-xs font-semibold text-gray-500 block leading-none mb-0.5">Preferred Schedule</span>
                             <span className="text-gray-700 font-bold">{preferredDateStr}</span>
                           </div>
                         </div>
 
                         {/* Persons (Qty) / Gender */}
                         <div className="flex items-center gap-2">
-                          <Users size={13} className="text-primary flex-shrink-0" />
+                          <Users size={14} className="text-primary flex-shrink-0" />
                           <div>
-                            <span className="text-[8px] font-bold text-gray-450 block leading-none mb-0.5">Quantity & Gender</span>
+                            <span className="text-xs font-semibold text-gray-500 block leading-none mb-0.5">Quantity & Gender</span>
                             <span className="text-gray-700 font-bold">
                               {renderVal(totalPersonsCount)} Person(s) • {renderVal(lead.gender || 'Any')}
                             </span>
@@ -221,9 +221,9 @@ const UserServiceLeads = () => {
 
                         {/* Location address */}
                         <div className="flex items-center gap-2 sm:col-span-2 md:col-span-1">
-                          <MapPin size={13} className="text-primary flex-shrink-0" />
+                          <MapPin size={14} className="text-primary flex-shrink-0" />
                           <div className="min-w-0">
-                            <span className="text-[8px] font-bold text-gray-450 block leading-none mb-0.5">Service Location</span>
+                            <span className="text-xs font-semibold text-gray-500 block leading-none mb-0.5">Service Location</span>
                             <span className="text-gray-700 font-bold truncate block" title={`${renderVal(lead.address)}, ${renderVal(lead.city)}, ${renderVal(lead.state)} - ${renderVal(lead.pincode)}`}>
                               {renderVal(lead.city)}, {renderVal(lead.state)} ({renderVal(lead.pincode)})
                             </span>
@@ -232,7 +232,7 @@ const UserServiceLeads = () => {
                       </div>
 
                       {/* Expandable address details and phone details on hover */}
-                      <div className="mt-4 pt-4 border-t border-gray-50 flex flex-wrap items-center justify-between gap-3 text-[10px] font-bold text-gray-500 bg-gray-50/50 -mx-6 -mb-6 px-6 py-4 rounded-b-3xl">
+                      <div className="mt-4 pt-4 border-t border-gray-50 flex flex-wrap items-center justify-between gap-3 text-xs font-medium text-gray-500 bg-gray-50/50 -mx-6 -mb-6 px-6 py-4 rounded-b-3xl">
                         <div className="flex items-center gap-1.5 min-w-0">
                           <MapPin size={11} className="text-gray-400 flex-shrink-0" />
                           <span className="truncate" title={renderVal(lead.address)}>Address: {renderVal(lead.address)}</span>
@@ -249,12 +249,12 @@ const UserServiceLeads = () => {
                 <div className="py-20 bg-white rounded-3xl border border-gray-100 shadow-xl shadow-gray-100/40 flex flex-col items-center justify-center text-center p-6">
                   <Info size={40} className="text-gray-300 mb-4" />
                   <h3 className="text-sm font-black text-gray-800 uppercase tracking-wide">No Custom Requests Posted</h3>
-                  <p className="text-[10px] text-gray-400 font-bold uppercase mt-2 max-w-sm leading-relaxed">
+                  <p className="text-xs text-gray-500 font-medium mt-2 max-w-sm leading-relaxed">
                     Have a wedding event or custom makeup requirements? Request custom service details and let verified salons offer quotes.
                   </p>
                   <Link
                     to="/booking"
-                    className="mt-6 bg-primary hover:bg-primary/95 text-white font-black uppercase text-[10px] tracking-wider px-6 py-3.5 rounded-xl shadow-md shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all"
+                    className="mt-6 bg-primary hover:bg-primary/95 text-white font-bold uppercase text-xs tracking-wider px-6 py-3.5 rounded-xl shadow-md shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all"
                   >
                     Post Requirement Now
                   </Link>

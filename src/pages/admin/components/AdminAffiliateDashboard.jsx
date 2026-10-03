@@ -178,7 +178,7 @@ const AdminAffiliateDashboard = ({ isDarkMode }) => {
       color: 'border-green-500/20 bg-green-500/5 text-green-500'
     },
     {
-      label: 'Total Sales Volume',
+      label: 'Total Network GMV',
       value: `₹${aggregates.totalOrderValue.toLocaleString('en-IN')}`,
       icon: <Coins size={20} className="text-orange-500" />,
       color: 'border-orange-500/20 bg-orange-500/5 text-orange-500'
@@ -203,10 +203,10 @@ const AdminAffiliateDashboard = ({ isDarkMode }) => {
             {row.name?.charAt(0).toUpperCase() || 'I'}
           </div>
           <div className="flex flex-col">
-            <span className={`text-sm font-bold ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>
+            <span className={`text-sm font-bold ${isDarkMode ? 'text-zinc-200' : 'text-zinc-800'}`}>
               {row.name || 'Anonymous Creator'}
             </span>
-            <span className="text-[9px] font-mono text-gray-400">
+            <span className="text-xs font-mono text-zinc-500">
               ID: {row.influencerId?.substring(18) || 'N/A'}
             </span>
           </div>
@@ -241,11 +241,30 @@ const AdminAffiliateDashboard = ({ isDarkMode }) => {
       )
     },
     {
-      header: 'Referral Sales',
+      header: 'Network GMV',
       key: 'sales',
       render: (row) => (
         <span className={`text-sm font-bold ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>
           ₹{(row.stats?.totalOrderValue || 0).toLocaleString('en-IN')}
+        </span>
+      )
+    },
+    {
+      header: 'Commission Rate',
+      key: 'commissionRate',
+      render: (row) => (
+        <span className={`px-2.5 py-1 rounded-lg text-xs font-bold uppercase tracking-wider ${
+          row.commissionRate === null || row.commissionRate === undefined
+            ? 'bg-amber-500/10 text-amber-500 border border-amber-500/20'
+            : row.commissionRate === 0
+            ? 'bg-zinc-500/10 text-zinc-400 border border-zinc-500/20'
+            : 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20'
+        }`}>
+          {row.commissionRate === null || row.commissionRate === undefined
+            ? 'Rate Unset'
+            : row.commissionRate === 0
+            ? '0%'
+            : `${row.commissionRate}%`}
         </span>
       )
     },
@@ -300,10 +319,10 @@ const AdminAffiliateDashboard = ({ isDarkMode }) => {
             {row.name?.charAt(0).toUpperCase() || 'C'}
           </div>
           <div className="flex flex-col">
-            <span className={`text-sm font-bold ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>
+            <span className={`text-sm font-bold ${isDarkMode ? 'text-zinc-200' : 'text-zinc-800'}`}>
               {row.name}
             </span>
-            <span className="text-[9px] font-mono text-gray-400">
+            <span className="text-xs font-mono text-zinc-500">
               ID: {row.influencerId?.substring(18)}
             </span>
           </div>
@@ -320,7 +339,7 @@ const AdminAffiliateDashboard = ({ isDarkMode }) => {
             <span className={`text-xs font-black ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>
               Orders: {stats.totalOrders || 0}
             </span>
-            <span className="text-[10px] text-gray-400 font-bold uppercase">
+            <span className="text-xs text-zinc-400 font-bold uppercase">
               Courses: {stats.totalCourses || 0} / Services: {stats.totalServices || 0}
             </span>
           </div>
@@ -438,7 +457,7 @@ const AdminAffiliateDashboard = ({ isDarkMode }) => {
                   }`}
                 >
                   <div className="flex items-center justify-between mb-4">
-                    <span className="text-[10px] font-black uppercase text-gray-400 tracking-wider">
+                    <span className="text-xs font-bold uppercase text-zinc-400 tracking-wider">
                       {card.label}
                     </span>
                     <div className={`p-2 rounded-xl ${card.color.split(' ')[1]} ${card.color.split(' ')[0]}`}>
@@ -459,7 +478,7 @@ const AdminAffiliateDashboard = ({ isDarkMode }) => {
               
               {/* Left: Registration breakdown Donut chart */}
               <div className={`p-6 rounded-2xl border flex flex-col justify-between transition-all duration-300 ${
-                isDarkMode ? 'bg-gray-800 border-white/5' : 'bg-white border-gray-100 shadow-sm'
+                isDarkMode ? 'bg-zinc-900 border-zinc-800' : 'bg-white border-zinc-200 shadow-sm'
               }`}>
                 <div>
                   <h3 className={`text-sm font-black uppercase tracking-wider mb-4 ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>
@@ -470,7 +489,7 @@ const AdminAffiliateDashboard = ({ isDarkMode }) => {
                     {/* Donut SVG */}
                     <div className="relative flex items-center justify-center w-36 h-36 flex-shrink-0">
                       <svg viewBox="0 0 42 42" className="w-full h-full transform -rotate-90">
-                        <circle cx="21" cy="21" r="15.91549430918954" fill="transparent" stroke={isDarkMode ? "#1f2937" : "#f3f4f6"} strokeWidth="4.5" />
+                        <circle cx="21" cy="21" r="15.91549430918954" fill="transparent" stroke={isDarkMode ? "#27272a" : "#f4f4f5"} strokeWidth="4.5" />
                         
                         {pieSum > 0 ? (
                           processedPieSegments.map((seg, idx) => (
@@ -494,7 +513,7 @@ const AdminAffiliateDashboard = ({ isDarkMode }) => {
                       </svg>
                       <div className="absolute text-center">
                         <span className={`block text-2xl font-black ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>{pieSum}</span>
-                        <span className="block text-[8px] font-black uppercase text-gray-400">Total Signups</span>
+                        <span className="block text-xs font-bold uppercase text-zinc-400">Total Signups</span>
                       </div>
                     </div>
 
@@ -548,7 +567,7 @@ const AdminAffiliateDashboard = ({ isDarkMode }) => {
                 </div>
                 
                 <div className="mt-6 flex items-center justify-between border-t border-gray-100 dark:border-white/5 pt-4">
-                  <span className="text-[10px] font-black uppercase text-gray-400">Creators matching:</span>
+                  <span className="text-xs font-bold uppercase text-zinc-400">Creators matching:</span>
                   <span className="text-xs font-black text-primary">{filteredInfluencers.length} Creators</span>
                 </div>
               </div>
@@ -676,7 +695,7 @@ const AdminAffiliateDashboard = ({ isDarkMode }) => {
                       <span className="text-sm font-black uppercase truncate max-w-full block">
                         {winner.name}
                       </span>
-                      <span className="text-[10px] text-primary font-black uppercase mt-0.5">
+                      <span className="text-xs text-primary font-bold uppercase mt-0.5">
                         ₹{(winner.stats?.totalOrderValue || 0).toLocaleString('en-IN')} Sales
                       </span>
 
@@ -689,7 +708,7 @@ const AdminAffiliateDashboard = ({ isDarkMode }) => {
                         <span className={`w-8 h-8 rounded-full flex items-center justify-center font-black text-white text-xs ${badgeBg}`}>
                           {winner.rank}
                         </span>
-                        <span className="text-[10px] font-black uppercase tracking-wider text-gray-400">
+                        <span className="text-xs font-bold uppercase tracking-wider text-zinc-400">
                           {rankTitle}
                         </span>
                       </div>
@@ -714,7 +733,7 @@ const AdminAffiliateDashboard = ({ isDarkMode }) => {
       {selectedInfluencer && (
         <div className="fixed inset-0 z-[3000] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm overflow-y-auto">
           <div className={`w-full max-w-xl my-auto md:my-8 rounded-3xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200 ${
-            isDarkMode ? 'bg-gray-800 border border-gray-700 text-white' : 'bg-white text-gray-800'
+            isDarkMode ? 'bg-zinc-900 border border-zinc-800 text-white' : 'bg-white text-zinc-900'
           }`}>
             <div className="p-6 md:p-8 max-h-[90vh] overflow-y-auto text-left">
               
@@ -724,14 +743,14 @@ const AdminAffiliateDashboard = ({ isDarkMode }) => {
                   <h2 className="text-xl font-black uppercase tracking-wide">
                     {selectedInfluencer.name}'s Analytics
                   </h2>
-                  <p className="text-[10px] font-mono text-gray-400 uppercase mt-0.5">
+                  <p className="text-xs font-mono text-zinc-400 uppercase mt-0.5">
                     Influencer ID: {selectedInfluencer.influencerId}
                   </p>
                 </div>
                 <button
                   onClick={() => setSelectedInfluencer(null)}
-                  className={`p-2 rounded-xl transition-all ${
-                    isDarkMode ? 'hover:bg-white/5 text-gray-400 hover:text-white' : 'hover:bg-gray-100 text-gray-500'
+                  className={`p-2 rounded-xl transition-all cursor-pointer ${
+                    isDarkMode ? 'hover:bg-zinc-800 text-zinc-400 hover:text-white' : 'hover:bg-zinc-100 text-zinc-500'
                   }`}
                 >
                   <X size={20} />
@@ -742,37 +761,37 @@ const AdminAffiliateDashboard = ({ isDarkMode }) => {
               <div className="grid grid-cols-2 gap-4 mb-6">
                 
                 {/* Unique Clicks */}
-                <div className={`p-4 rounded-xl border ${isDarkMode ? 'bg-gray-900/50 border-white/5' : 'bg-gray-50 border-gray-100'}`}>
+                <div className={`p-4 rounded-xl border ${isDarkMode ? 'bg-zinc-800/50 border-zinc-700/50' : 'bg-zinc-50 border-zinc-200'}`}>
                   <div className="flex items-center gap-2 mb-2 text-purple-500">
                     <MousePointerClick size={16} />
-                    <span className="text-[10px] font-black uppercase tracking-wider">Unique Clicks</span>
+                    <span className="text-xs font-bold uppercase tracking-wider">Unique Clicks</span>
                   </div>
                   <p className="text-lg font-black">{selectedInfluencer.stats?.uniqueClicks || 0}</p>
                 </div>
 
                 {/* Total Signups */}
-                <div className={`p-4 rounded-xl border ${isDarkMode ? 'bg-gray-900/50 border-white/5' : 'bg-gray-50 border-gray-100'}`}>
+                <div className={`p-4 rounded-xl border ${isDarkMode ? 'bg-zinc-800/50 border-zinc-700/50' : 'bg-zinc-50 border-zinc-200'}`}>
                   <div className="flex items-center gap-2 mb-2 text-blue-500">
                     <UserCheck size={16} />
-                    <span className="text-[10px] font-black uppercase tracking-wider">Total Signups</span>
+                    <span className="text-xs font-bold uppercase tracking-wider">Total Signups</span>
                   </div>
                   <p className="text-lg font-black">{selectedInfluencer.stats?.totalSignups || 0}</p>
                 </div>
 
                 {/* Total Orders */}
-                <div className={`p-4 rounded-xl border ${isDarkMode ? 'bg-gray-900/50 border-white/5' : 'bg-gray-50 border-gray-100'}`}>
-                  <div className="flex items-center gap-2 mb-2 text-green-500">
+                <div className={`p-4 rounded-xl border ${isDarkMode ? 'bg-zinc-800/50 border-zinc-700/50' : 'bg-zinc-50 border-zinc-200'}`}>
+                  <div className="flex items-center gap-2 mb-2 text-emerald-500">
                     <ShoppingBag size={16} />
-                    <span className="text-[10px] font-black uppercase tracking-wider">Total Orders</span>
+                    <span className="text-xs font-bold uppercase tracking-wider">Total Orders</span>
                   </div>
                   <p className="text-lg font-black">{selectedInfluencer.stats?.totalOrders || 0}</p>
                 </div>
 
                 {/* Platform Profit */}
-                <div className={`p-4 rounded-xl border ${isDarkMode ? 'bg-gray-900/50 border-white/5' : 'bg-gray-50 border-gray-100'}`}>
+                <div className={`p-4 rounded-xl border ${isDarkMode ? 'bg-zinc-800/50 border-zinc-700/50' : 'bg-zinc-50 border-zinc-200'}`}>
                   <div className="flex items-center gap-2 mb-2 text-pink-500">
                     <Percent size={16} />
-                    <span className="text-[10px] font-black uppercase tracking-wider">Platform Profit</span>
+                    <span className="text-xs font-bold uppercase tracking-wider">Platform Profit</span>
                   </div>
                   <p className="text-lg font-black">₹{(selectedInfluencer.stats?.platformCommissionEarned || 0).toLocaleString('en-IN')}</p>
                 </div>

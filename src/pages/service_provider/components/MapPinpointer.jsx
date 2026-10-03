@@ -278,7 +278,7 @@ const MapPinpointer = ({ latitude, longitude, onCoordinatesChange, isDarkMode })
         <div ref={containerRef} className="w-full h-full" style={{ minHeight: '100%' }} />
       </div>
       
-      <p className="text-[9px] font-bold text-gray-400 uppercase leading-normal tracking-wide">
+      <p className="text-xs font-medium text-gray-400 uppercase leading-normal tracking-wide">
         💡 Drag the pink pin or click anywhere on the map to pinpoint your exact salon coordinates.
       </p>
     </div>

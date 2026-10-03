@@ -211,7 +211,7 @@ const RequestedRoles = () => {
                               {status === 'APPROVED' && actionLink && (
                                 <Link 
                                   to={actionLink}
-                                  className="inline-flex items-center gap-1.5 px-4 py-2 text-[10px] font-black uppercase rounded-xl text-white bg-emerald-600 hover:bg-emerald-700 shadow-sm transition-all whitespace-nowrap cursor-pointer hover:scale-[1.02] active:scale-98"
+                                  className="inline-flex items-center gap-1.5 px-4 py-2.5 text-xs font-bold uppercase rounded-xl text-white bg-emerald-600 hover:bg-emerald-700 shadow-sm transition-all whitespace-nowrap cursor-pointer hover:scale-[1.02] active:scale-98"
                                 >
                                   Go to Dashboard
                                 </Link>

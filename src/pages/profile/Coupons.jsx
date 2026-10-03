@@ -202,14 +202,14 @@ const Coupons = () => {
                         >
                           {/* Premium badge */}
                           {coupon.status === 'active' && coupon.premium && (
-                            <div className="absolute top-0 right-0 bg-primary text-white text-[8px] font-bold uppercase px-3 py-1 rounded-bl-xl flex items-center gap-1 shadow-md">
-                              <Sparkles size={8} /> Mega Offer
+                            <div className="absolute top-0 right-0 bg-primary text-white text-xs font-bold uppercase px-3 py-1 rounded-bl-xl flex items-center gap-1 shadow-md">
+                              <Sparkles size={10} /> Mega Offer
                             </div>
                           )}
 
                           {/* Red / Gray Coupon status tag for history */}
                           {coupon.status !== 'active' && (
-                            <div className={`absolute top-0 right-0 text-[8px] font-bold uppercase px-3 py-1 rounded-bl-xl ${
+                            <div className={`absolute top-0 right-0 text-xs font-bold uppercase px-3 py-1 rounded-bl-xl ${
                               coupon.status === 'redeemed'
                                 ? 'bg-green-100 text-green-700'
                                 : 'bg-gray-100 text-gray-500'
@@ -227,7 +227,7 @@ const Coupons = () => {
                             }`}>
                               <span className="text-xs leading-none">FLAT</span>
                               <span className="text-base tracking-tighter mt-0.5 leading-none">{coupon.discount.split(' ')[0]}</span>
-                              <span className="text-[8px] leading-none mt-0.5">{coupon.discount.split(' ')[1] || 'OFF'}</span>
+                              <span className="text-xs leading-none mt-0.5">{coupon.discount.split(' ')[1] || 'OFF'}</span>
                             </div>
 
                             {/* Details info */}
@@ -235,17 +235,17 @@ const Coupons = () => {
                               <h3 className={`text-sm font-extrabold truncate ${coupon.status === 'active' ? 'text-gray-950' : 'text-gray-500'}`}>
                                 {coupon.title}
                               </h3>
-                              <p className="text-[11px] text-gray-400 font-medium leading-relaxed mt-1 line-clamp-2">
+                              <p className="text-xs text-gray-500 font-medium leading-relaxed mt-1 line-clamp-2">
                                 {coupon.desc}
                               </p>
                               
                               {/* Order & expiry restrictions */}
-                              <div className="flex flex-wrap gap-x-4 gap-y-1.5 mt-3 pt-3 border-t border-dashed border-gray-100 text-[9px] font-bold text-gray-400 uppercase">
+                              <div className="flex flex-wrap gap-x-4 gap-y-1.5 mt-3 pt-3 border-t border-dashed border-gray-100 text-xs font-bold text-gray-400 uppercase">
                                 <span className="flex items-center gap-1">
                                   Min. Order: <strong className="text-gray-600">{coupon.minOrder}</strong>
                                 </span>
                                 <span className="flex items-center gap-1">
-                                  <Clock size={10} /> Expired: <strong className="text-gray-600">{coupon.expiry}</strong>
+                                  <Clock size={12} /> Expired: <strong className="text-gray-600">{coupon.expiry}</strong>
                                 </span>
                               </div>
                             </div>
@@ -263,11 +263,11 @@ const Coupons = () => {
                               >
                                 {copiedCode === coupon.code ? (
                                   <>
-                                    <Check size={11} className="text-green-500 hover:text-white" /> Copied
+                                    <Check size={12} className="text-green-500 hover:text-white" /> Copied
                                   </>
                                 ) : (
                                   <>
-                                    <Copy size={10} /> Copy Code
+                                    <Copy size={12} /> Copy Code
                                   </>
                                 )}
                               </button>
@@ -285,7 +285,7 @@ const Coupons = () => {
                 <AlertCircle className="text-gray-400 flex-shrink-0" size={16} />
                 <div className="space-y-0.5">
                   <p className="text-sm font-bold text-gray-600 uppercase">Coupon Usage Policy</p>
-                  <p className="text-[9px] text-gray-400 font-bold uppercase leading-relaxed max-w-xl">
+                  <p className="text-xs text-gray-500 font-medium leading-relaxed max-w-xl">
                     Only one coupon code can be applied per checkout pipeline session. Certain rewards cannot be combined with sitewide promotions or sales.
                   </p>
                 </div>

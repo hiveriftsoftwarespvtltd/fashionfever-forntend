@@ -467,13 +467,13 @@ const ServiceProviderStaff = ({ isDarkMode, profileData }) => {
                           </span>
                         </div>
                         <div className="flex flex-col">
-                          <span className={`text-sm font-bold flex items-center gap-2 ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>
+                          <span className={`text-sm font-bold flex items-center gap-2 ${isDarkMode ? 'text-zinc-200' : 'text-zinc-800'}`}>
                             {item.name}
-                            <span className="px-1.5 py-0.5 bg-gray-150 dark:bg-gray-700 text-gray-500 dark:text-gray-400 rounded text-[9px] font-bold">
+                            <span className="px-1.5 py-0.5 bg-zinc-150 dark:bg-zinc-700 text-zinc-500 dark:text-zinc-400 rounded text-xs font-semibold">
                               {item.gender || 'FEMALE'}
                             </span>
                           </span>
-                          <span className="text-sm text-gray-405 font-medium">
+                          <span className="text-xs text-zinc-400 font-medium">
                             Staff ID: {item._id?.substring(18)}
                           </span>
                         </div>
@@ -483,11 +483,11 @@ const ServiceProviderStaff = ({ isDarkMode, profileData }) => {
                     {/* Contact Details */}
                     <td className="py-4 px-6">
                       <div className="flex flex-col gap-0.5">
-                        <span className={`text-xs font-bold flex items-center gap-1.5 ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                        <span className={`text-xs font-bold flex items-center gap-1.5 ${isDarkMode ? 'text-zinc-300' : 'text-zinc-700'}`}>
                           <Phone size={11} className="text-primary/70" />
                           {item.phone}
                         </span>
-                        <span className="text-sm text-gray-405 flex items-center gap-1.5">
+                        <span className="text-xs text-zinc-400 flex items-center gap-1.5">
                           <Mail size={11} />
                           {item.email}
                         </span>
@@ -498,7 +498,7 @@ const ServiceProviderStaff = ({ isDarkMode, profileData }) => {
                     <td className="py-4 px-6">
                       <div className="flex items-center gap-1.5">
                         <Award size={12} className="text-amber-500" />
-                        <span className={`text-xs font-bold ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                        <span className={`text-xs font-bold ${isDarkMode ? 'text-zinc-300' : 'text-zinc-600'}`}>
                           {item.experienceYears} Years
                         </span>
                       </div>
@@ -510,7 +510,7 @@ const ServiceProviderStaff = ({ isDarkMode, profileData }) => {
                         {item.skills && item.skills.map((skill, idx) => (
                           <span 
                             key={idx} 
-                            className="px-2 py-0.5 bg-primary/5 text-primary border border-primary/10 rounded-full text-[9px] font-black uppercase tracking-wider"
+                            className="px-2 py-0.5 bg-primary/5 text-primary border border-primary/10 rounded-full text-xs font-bold uppercase tracking-wider"
                           >
                             {skill}
                           </span>
@@ -520,7 +520,7 @@ const ServiceProviderStaff = ({ isDarkMode, profileData }) => {
                           return (
                             <span 
                               key={`srv-${idx}`} 
-                              className="px-2 py-0.5 bg-green-500/5 text-green-500 border border-green-500/10 rounded-full text-[9px] font-black uppercase tracking-wider"
+                              className="px-2 py-0.5 bg-green-500/5 text-green-500 border border-green-500/10 rounded-full text-xs font-bold uppercase tracking-wider"
                               title="Assigned Service"
                             >
                               {serviceName}
@@ -538,7 +538,7 @@ const ServiceProviderStaff = ({ isDarkMode, profileData }) => {
                             ? 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.5)]'
                             : 'bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.5)]'
                         }`} />
-                        <span className="text-[9px] font-black uppercase text-gray-400 tracking-wider">
+                        <span className="text-xs font-bold uppercase text-zinc-400 tracking-wider">
                           {item.isActive ? 'Active' : 'Inactive'}
                         </span>
                       </div>
@@ -754,7 +754,7 @@ const ServiceProviderStaff = ({ isDarkMode, profileData }) => {
                       <button 
                         type="button" 
                         onClick={addSkillInput}
-                        className="text-[9px] font-black text-primary hover:underline uppercase"
+                        className="text-xs font-bold text-primary hover:underline uppercase"
                       >
                         + Add Skill
                       </button>
@@ -839,7 +839,7 @@ const ServiceProviderStaff = ({ isDarkMode, profileData }) => {
                               }}
                               className="accent-primary"
                             />
-                            <span className={`text-[11px] font-bold ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                            <span className={`text-xs font-semibold ${isDarkMode ? 'text-zinc-300' : 'text-zinc-700'}`}>
                               {srv.title || srv.name}
                             </span>
                           </label>
@@ -924,8 +924,8 @@ const ServiceProviderStaff = ({ isDarkMode, profileData }) => {
 
               {/* Status, Experience & Gender */}
               <div className="grid grid-cols-3 gap-3">
-                <div className={`p-3 rounded-2xl border ${isDarkMode ? 'bg-gray-900/50 border-white/5' : 'bg-gray-50 border-gray-100/50'}`}>
-                  <p className="text-[9px] font-black text-gray-400 uppercase mb-1">Status</p>
+                <div className={`p-3 rounded-2xl border ${isDarkMode ? 'bg-zinc-900/50 border-zinc-800' : 'bg-zinc-50 border-zinc-200'}`}>
+                  <p className="text-xs font-bold text-zinc-400 uppercase mb-1">Status</p>
                   <div className="flex items-center gap-1.5">
                     <div className={`w-1.5 h-1.5 rounded-full ${viewingStaff.isActive ? 'bg-green-500' : 'bg-amber-500'}`} />
                     <span className={`text-sm font-black uppercase ${viewingStaff.isActive ? 'text-green-500' : 'text-amber-500'}`}>
@@ -933,17 +933,17 @@ const ServiceProviderStaff = ({ isDarkMode, profileData }) => {
                     </span>
                   </div>
                 </div>
-                <div className={`p-3 rounded-2xl border ${isDarkMode ? 'bg-gray-900/50 border-white/5' : 'bg-gray-50 border-gray-100/50'}`}>
-                  <p className="text-[9px] font-black text-gray-400 uppercase mb-1 flex items-center gap-1">
+                <div className={`p-3 rounded-2xl border ${isDarkMode ? 'bg-zinc-900/50 border-zinc-800' : 'bg-zinc-50 border-zinc-200'}`}>
+                  <p className="text-xs font-bold text-zinc-400 uppercase mb-1 flex items-center gap-1">
                     <Award size={10} className="text-amber-500" /> Exp
                   </p>
-                  <p className={`text-sm font-black ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>
+                  <p className={`text-sm font-black ${isDarkMode ? 'text-white' : 'text-zinc-800'}`}>
                     {viewingStaff.experienceYears} Years
                   </p>
                 </div>
-                <div className={`p-3 rounded-2xl border ${isDarkMode ? 'bg-gray-900/50 border-white/5' : 'bg-gray-50 border-gray-100/50'}`}>
-                  <p className="text-[9px] font-black text-gray-400 uppercase mb-1">Gender</p>
-                  <p className={`text-sm font-black uppercase ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>
+                <div className={`p-3 rounded-2xl border ${isDarkMode ? 'bg-zinc-900/50 border-zinc-800' : 'bg-zinc-50 border-zinc-200'}`}>
+                  <p className="text-xs font-bold text-zinc-400 uppercase mb-1">Gender</p>
+                  <p className={`text-sm font-black uppercase ${isDarkMode ? 'text-white' : 'text-zinc-800'}`}>
                     {viewingStaff.gender || 'FEMALE'}
                   </p>
                 </div>
@@ -951,9 +951,9 @@ const ServiceProviderStaff = ({ isDarkMode, profileData }) => {
 
               {/* Contact details */}
               <div className={`p-4 rounded-2xl border space-y-3 ${
-                isDarkMode ? 'bg-gray-900/30 border-white/5 text-gray-300' : 'bg-gray-50 border-gray-100 text-gray-700'
+                isDarkMode ? 'bg-zinc-900/30 border-zinc-800 text-zinc-300' : 'bg-zinc-50 border-zinc-200 text-zinc-700'
               }`}>
-                <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest border-b border-gray-100 dark:border-white/5 pb-1">
+                <p className="text-xs font-bold text-zinc-400 uppercase tracking-widest border-b border-zinc-200 dark:border-zinc-800 pb-1">
                   Contact Specifications
                 </p>
                 <div className="flex items-center gap-2.5 text-xs font-bold">

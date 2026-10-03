@@ -219,28 +219,28 @@ const CreateCourseModal = ({ isOpen, onClose, onCourseCreated, isDarkMode, editC
           {/* Main Info Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-1.5">
-              <label className="text-[9px] font-black uppercase tracking-wider text-gray-400">Course Title *</label>
+              <label className="text-xs font-bold uppercase tracking-wider text-zinc-400">Course Title *</label>
               <input 
                 type="text" 
                 value={title} 
                 onChange={(e) => setTitle(e.target.value)} 
                 placeholder="e.g. Master Bridal Makeup Essentials"
                 required
-                className={`block w-full px-4 py-3 border rounded-xl font-bold leading-normal transition-all ${
-                  isDarkMode ? 'bg-gray-900 border-white/5 text-white placeholder-gray-650 focus:border-primary' : 'bg-white border-gray-200 text-gray-800 placeholder-gray-405 focus:border-primary'
+                className={`block w-full px-4 py-3 border rounded-xl font-semibold leading-normal transition-all ${
+                  isDarkMode ? 'bg-zinc-900 border-zinc-800 text-white placeholder-zinc-500 focus:border-primary' : 'bg-white border-zinc-200 text-zinc-800 placeholder-zinc-400 focus:border-primary'
                 }`}
               />
             </div>
             
             <div className="space-y-1.5">
-              <label className="text-[9px] font-black uppercase tracking-wider text-gray-400">Subtitle</label>
+              <label className="text-xs font-bold uppercase tracking-wider text-zinc-400">Subtitle</label>
               <input 
                 type="text" 
                 value={subtitle} 
                 onChange={(e) => setSubtitle(e.target.value)} 
                 placeholder="e.g. Learn advanced blending techniques"
-                className={`block w-full px-4 py-3 border rounded-xl font-bold leading-normal transition-all ${
-                  isDarkMode ? 'bg-gray-900 border-white/5 text-white placeholder-gray-650 focus:border-primary' : 'bg-white border-gray-200 text-gray-800 placeholder-gray-405 focus:border-primary'
+                className={`block w-full px-4 py-3 border rounded-xl font-semibold leading-normal transition-all ${
+                  isDarkMode ? 'bg-zinc-900 border-zinc-800 text-white placeholder-zinc-500 focus:border-primary' : 'bg-white border-zinc-200 text-zinc-800 placeholder-zinc-400 focus:border-primary'
                 }`}
               />
             </div>
@@ -248,14 +248,14 @@ const CreateCourseModal = ({ isOpen, onClose, onCourseCreated, isDarkMode, editC
 
           {/* Description */}
           <div className="space-y-1.5">
-            <label className="text-[9px] font-black uppercase tracking-wider text-gray-400">Course Description</label>
+            <label className="text-xs font-bold uppercase tracking-wider text-zinc-400">Course Description</label>
             <textarea 
               value={description} 
               onChange={(e) => setDescription(e.target.value)} 
               placeholder="Provide a detailed outline of what students will learn..."
               rows={3}
-              className={`block w-full px-4 py-3 border rounded-xl font-bold leading-normal transition-all resize-none ${
-                isDarkMode ? 'bg-gray-900 border-white/5 text-white placeholder-gray-650 focus:border-primary' : 'bg-white border-gray-200 text-gray-800 placeholder-gray-405 focus:border-primary'
+              className={`block w-full px-4 py-3 border rounded-xl font-semibold leading-normal transition-all resize-none ${
+                isDarkMode ? 'bg-zinc-900 border-zinc-800 text-white placeholder-zinc-500 focus:border-primary' : 'bg-white border-zinc-200 text-zinc-800 placeholder-zinc-400 focus:border-primary'
               }`}
             />
           </div>
@@ -263,41 +263,41 @@ const CreateCourseModal = ({ isOpen, onClose, onCourseCreated, isDarkMode, editC
           {/* Category & Thumbnail */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-1.5">
-              <label className="text-[9px] font-black uppercase tracking-wider text-gray-400">Category *</label>
+              <label className="text-xs font-bold uppercase tracking-wider text-zinc-400">Category *</label>
               <select
                 value={categoryId}
                 onChange={(e) => setCategoryId(e.target.value)}
                 required
-                className={`block w-full px-4 py-3 border rounded-xl font-bold leading-normal outline-none transition-all ${
-                  isDarkMode ? 'bg-gray-900 border-white/5 text-white' : 'bg-white border-gray-200 text-gray-800'
+                className={`block w-full px-4 py-3 border rounded-xl font-semibold leading-normal outline-none transition-all ${
+                  isDarkMode ? 'bg-zinc-900 border-zinc-800 text-white' : 'bg-white border-zinc-200 text-zinc-800'
                 }`}
               >
-                <option value="" className={isDarkMode ? 'bg-gray-900 text-white' : 'bg-white text-gray-800'}>Select Category</option>
+                <option value="" className={isDarkMode ? 'bg-zinc-900 text-white' : 'bg-white text-zinc-800'}>Select Category</option>
                 {categories.map((cat) => (
-                  <option key={cat._id} value={cat._id} className={isDarkMode ? 'bg-gray-900 text-white' : 'bg-white text-gray-800'}>{cat.label || cat.name}</option>
+                  <option key={cat._id} value={cat._id} className={isDarkMode ? 'bg-zinc-900 text-white' : 'bg-white text-zinc-800'}>{cat.label || cat.name}</option>
                 ))}
               </select>
-              {loadingCategories && <span className="text-[9px] text-gray-400 animate-pulse uppercase font-black">Syncing categories...</span>}
+              {loadingCategories && <span className="text-xs text-zinc-400 animate-pulse uppercase font-semibold">Syncing categories...</span>}
             </div>
 
             {/* Thumbnail upload */}
             <div className="space-y-1.5">
-              <label className="text-[9px] font-black uppercase tracking-wider text-gray-400">Course Thumbnail *</label>
+              <label className="text-xs font-bold uppercase tracking-wider text-zinc-400">Course Thumbnail *</label>
               <div className="flex items-center gap-3">
                 <div className={`w-14 h-14 rounded-xl border flex items-center justify-center overflow-hidden flex-shrink-0 ${
-                  isDarkMode ? 'bg-gray-900 border-white/5' : 'bg-gray-50 border-gray-155'
+                  isDarkMode ? 'bg-zinc-950 border-zinc-800' : 'bg-zinc-100 border-zinc-200'
                 }`}>
                   {imagePreview ? (
                     <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
                   ) : (
-                    <Upload size={18} className="text-gray-400" />
+                    <Upload size={18} className="text-zinc-400" />
                   )}
                 </div>
                 <div>
                   <label 
                     htmlFor="thumbnail-upload" 
-                    className={`inline-flex items-center gap-2 px-3.5 py-2 border text-[9px] font-black uppercase rounded-xl cursor-pointer hover:bg-primary/5 hover:border-primary/30 transition-all ${
-                      isDarkMode ? 'bg-white/5 border-white/5 text-gray-300' : 'bg-white border-gray-200 text-gray-700'
+                    className={`inline-flex items-center gap-2 px-3.5 py-2 border text-xs font-bold uppercase rounded-xl cursor-pointer hover:bg-primary/5 hover:border-primary/30 transition-all ${
+                      isDarkMode ? 'bg-zinc-900 border-zinc-800 text-zinc-300' : 'bg-white border-zinc-200 text-zinc-700'
                     }`}
                   >
                     Select Image
@@ -317,54 +317,54 @@ const CreateCourseModal = ({ isOpen, onClose, onCourseCreated, isDarkMode, editC
           {/* Level, Language & Access */}
           <div className={`grid grid-cols-1 ${editCourseData ? 'sm:grid-cols-4' : 'sm:grid-cols-3'} gap-4`}>
             <div className="space-y-1.5">
-              <label className="text-[9px] font-black uppercase tracking-wider text-gray-400">Difficulty Level</label>
+              <label className="text-xs font-bold uppercase tracking-wider text-zinc-400">Difficulty Level</label>
               <select
                 value={level}
                 onChange={(e) => setLevel(e.target.value)}
-                className={`block w-full px-4 py-3 border rounded-xl font-bold leading-normal outline-none transition-all ${
-                  isDarkMode ? 'bg-gray-900 border-white/5 text-white' : 'bg-white border-gray-200 text-gray-800'
+                className={`block w-full px-4 py-3 border rounded-xl font-semibold leading-normal outline-none transition-all ${
+                  isDarkMode ? 'bg-zinc-900 border-zinc-800 text-white' : 'bg-white border-zinc-200 text-zinc-800'
                 }`}
               >
-                <option value="BEGINNER" className={isDarkMode ? 'bg-gray-900 text-white' : 'bg-white text-gray-800'}>Beginner</option>
-                <option value="INTERMEDIATE" className={isDarkMode ? 'bg-gray-900 text-white' : 'bg-white text-gray-800'}>Intermediate</option>
-                <option value="ADVANCED" className={isDarkMode ? 'bg-gray-900 text-white' : 'bg-white text-gray-800'}>Advanced</option>
+                <option value="BEGINNER" className={isDarkMode ? 'bg-zinc-900 text-white' : 'bg-white text-zinc-800'}>Beginner</option>
+                <option value="INTERMEDIATE" className={isDarkMode ? 'bg-zinc-900 text-white' : 'bg-white text-zinc-800'}>Intermediate</option>
+                <option value="ADVANCED" className={isDarkMode ? 'bg-zinc-900 text-white' : 'bg-white text-zinc-800'}>Advanced</option>
               </select>
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-[9px] font-black uppercase tracking-wider text-gray-400">Language</label>
+              <label className="text-xs font-bold uppercase tracking-wider text-zinc-400">Language</label>
               <select
                 value={language}
                 onChange={(e) => setLanguage(e.target.value)}
-                className={`block w-full px-4 py-3 border rounded-xl font-bold leading-normal outline-none transition-all ${
-                  isDarkMode ? 'bg-gray-900 border-white/5 text-white' : 'bg-white border-gray-200 text-gray-800'
+                className={`block w-full px-4 py-3 border rounded-xl font-semibold leading-normal outline-none transition-all ${
+                  isDarkMode ? 'bg-zinc-900 border-zinc-800 text-white' : 'bg-white border-zinc-200 text-zinc-800'
                 }`}
               >
-                <option value="HINDI" className={isDarkMode ? 'bg-gray-900 text-white' : 'bg-white text-gray-800'}>Hindi</option>
-                <option value="ENGLISH" className={isDarkMode ? 'bg-gray-900 text-white' : 'bg-white text-gray-800'}>English</option>
+                <option value="HINDI" className={isDarkMode ? 'bg-zinc-900 text-white' : 'bg-white text-zinc-800'}>Hindi</option>
+                <option value="ENGLISH" className={isDarkMode ? 'bg-zinc-900 text-white' : 'bg-white text-zinc-800'}>English</option>
               </select>
             </div>
 
             {editCourseData && (
               <div className="space-y-1.5">
-                <label className="text-[9px] font-black uppercase tracking-wider text-gray-400">Course Status</label>
+                <label className="text-xs font-bold uppercase tracking-wider text-zinc-400">Course Status</label>
                 <select
                   value={status}
                   onChange={(e) => setStatus(e.target.value)}
-                  className={`block w-full px-4 py-3 border rounded-xl font-bold leading-normal outline-none transition-all ${
-                    isDarkMode ? 'bg-gray-900 border-white/5 text-white' : 'bg-white border-gray-200 text-gray-800'
+                  className={`block w-full px-4 py-3 border rounded-xl font-semibold leading-normal outline-none transition-all ${
+                    isDarkMode ? 'bg-zinc-900 border-zinc-800 text-white' : 'bg-white border-zinc-200 text-zinc-800'
                   }`}
                 >
-                  <option value="DRAFT" className={isDarkMode ? 'bg-gray-900 text-white' : 'bg-white text-gray-800'}>Draft</option>
-                  <option value="PUBLISHED" className={isDarkMode ? 'bg-gray-900 text-white' : 'bg-white text-gray-800'}>Published</option>
-                  <option value="REJECTED" className={isDarkMode ? 'bg-gray-900 text-white' : 'bg-white text-gray-800'}>Rejected</option>
-                  <option value="ARCHIVED" className={isDarkMode ? 'bg-gray-900 text-white' : 'bg-white text-gray-800'}>Archived</option>
+                  <option value="DRAFT" className={isDarkMode ? 'bg-zinc-900 text-white' : 'bg-white text-zinc-800'}>Draft</option>
+                  <option value="PUBLISHED" className={isDarkMode ? 'bg-zinc-900 text-white' : 'bg-white text-zinc-800'}>Published</option>
+                  <option value="REJECTED" className={isDarkMode ? 'bg-zinc-900 text-white' : 'bg-white text-zinc-800'}>Rejected</option>
+                  <option value="ARCHIVED" className={isDarkMode ? 'bg-zinc-900 text-white' : 'bg-white text-zinc-800'}>Archived</option>
                 </select>
               </div>
             )}
 
             <div className="space-y-1.5">
-              <label className="text-[9px] font-black uppercase tracking-wider text-gray-400">Access Mode</label>
+              <label className="text-xs font-bold uppercase tracking-wider text-zinc-400">Access Mode</label>
               <div className="flex gap-4 items-center h-11">
                 <label className="flex items-center gap-2 cursor-pointer font-bold uppercase text-sm">
                   <input
@@ -388,43 +388,43 @@ const CreateCourseModal = ({ isOpen, onClose, onCourseCreated, isDarkMode, editC
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div className="space-y-1">
-                  <label className="text-[8.5px] font-black uppercase tracking-wider text-gray-400">Cost Price</label>
+                  <label className="text-xs font-bold uppercase tracking-wider text-zinc-400">Cost Price</label>
                   <input 
                     type="number" 
                     value={costPrice} 
                     onChange={(e) => setCostPrice(e.target.value)} 
                     placeholder="e.g. 300"
                     required={!isFree}
-                    className={`block w-full px-3.5 py-2.5 border rounded-xl font-bold leading-normal transition-all ${
-                      isDarkMode ? 'bg-gray-900 border-white/5 text-white' : 'bg-white border-gray-200 text-gray-800'
+                    className={`block w-full px-3.5 py-2.5 border rounded-xl font-semibold leading-normal transition-all ${
+                      isDarkMode ? 'bg-zinc-900 border-zinc-800 text-white' : 'bg-white border-zinc-200 text-zinc-800'
                     }`}
                   />
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-[8.5px] font-black uppercase tracking-wider text-gray-400">Selling Price</label>
+                  <label className="text-xs font-bold uppercase tracking-wider text-zinc-400">Selling Price</label>
                   <input 
                     type="number" 
                     value={sellingPrice} 
                     onChange={(e) => setSellingPrice(e.target.value)} 
                     placeholder="e.g. 100"
                     required={!isFree}
-                    className={`block w-full px-3.5 py-2.5 border rounded-xl font-bold leading-normal transition-all ${
-                      isDarkMode ? 'bg-gray-900 border-white/5 text-white' : 'bg-white border-gray-200 text-gray-800'
+                    className={`block w-full px-3.5 py-2.5 border rounded-xl font-semibold leading-normal transition-all ${
+                      isDarkMode ? 'bg-zinc-900 border-zinc-800 text-white' : 'bg-white border-zinc-200 text-zinc-800'
                     }`}
                   />
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-[8.5px] font-black uppercase tracking-wider text-gray-400">Offered Price</label>
+                  <label className="text-xs font-bold uppercase tracking-wider text-zinc-400">Offered Price</label>
                   <input 
                     type="number" 
                     value={offeredPrice} 
                     onChange={(e) => setOfferedPrice(e.target.value)} 
                     placeholder="e.g. 100"
                     required={!isFree}
-                    className={`block w-full px-3.5 py-2.5 border rounded-xl font-bold leading-normal transition-all ${
-                      isDarkMode ? 'bg-gray-900 border-white/5 text-white' : 'bg-white border-gray-200 text-gray-800'
+                    className={`block w-full px-3.5 py-2.5 border rounded-xl font-semibold leading-normal transition-all ${
+                      isDarkMode ? 'bg-zinc-900 border-zinc-800 text-white' : 'bg-white border-zinc-200 text-zinc-800'
                     }`}
                   />
                 </div>
@@ -435,11 +435,11 @@ const CreateCourseModal = ({ isOpen, onClose, onCourseCreated, isDarkMode, editC
           {/* Tags */}
           <div className="space-y-2">
             <div className="flex justify-between items-center">
-              <label className="text-[9px] font-black uppercase tracking-wider text-gray-400">Course Tags / Keywords</label>
+              <label className="text-xs font-bold uppercase tracking-wider text-zinc-400">Course Tags / Keywords</label>
               <button
                 type="button"
                 onClick={handleAddTag}
-                className="text-[9px] font-black text-primary hover:underline uppercase"
+                className="text-xs font-bold text-primary hover:underline uppercase cursor-pointer"
               >
                 + Add Tag
               </button>

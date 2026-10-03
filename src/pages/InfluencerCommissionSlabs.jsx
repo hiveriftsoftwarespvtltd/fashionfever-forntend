@@ -63,97 +63,100 @@ const InfluencerCommissionSlabs = () => {
 
       {/* Sidebar */}
       <div className={`
-        fixed lg:static inset-y-0 left-0 w-64 z-[101] 
+        fixed lg:static inset-y-0 left-0 w-72 z-[101] 
         flex flex-col transition-transform duration-300 transform border-r
         ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
-        ${isDarkMode ? 'bg-gray-950 border-white/5' : 'bg-white border-gray-200'}
+        ${isDarkMode ? 'bg-zinc-950 border-zinc-800' : 'bg-white border-zinc-200'}
       `}>
-        <div className={`h-24 px-6 border-b flex items-center justify-between ${isDarkMode ? 'border-white/5' : 'border-gray-100'}`}>
+        <div className={`h-20 px-6 border-b flex items-center justify-between ${isDarkMode ? 'border-zinc-800' : 'border-zinc-200'}`}>
           <div className="flex flex-col text-left min-w-0">
-            <span className="text-[10px] font-black text-primary uppercase tracking-widest leading-none">
+            <span className="text-xs font-black text-primary uppercase tracking-widest leading-none">
               FashionFever Creator
             </span>
-            <span className={`text-xs font-black uppercase tracking-wide block mt-1.5 whitespace-nowrap ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+            <span className={`text-sm font-bold uppercase tracking-wide block mt-1.5 whitespace-nowrap ${isDarkMode ? 'text-zinc-100' : 'text-zinc-900'}`}>
               Influencer Dashboard
             </span>
           </div>
-          <button className="lg:hidden text-gray-400 hover:text-white" onClick={() => setIsSidebarOpen(false)}>
+          <button className="lg:hidden text-zinc-400 hover:text-white" onClick={() => setIsSidebarOpen(false)}>
             <X size={20} />
           </button>
         </div>
-        <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
+        <nav className="flex-1 p-4 space-y-1.5 overflow-y-auto">
           <button 
             onClick={() => { navigate('/influencer/dashboard?tab=dashboard'); setIsSidebarOpen(false); }}
-            className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-xs font-bold transition-all text-left ${
-              isDarkMode ? 'text-gray-400 hover:bg-white/5 hover:text-white' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-900'
+            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all text-left ${
+              isDarkMode ? 'text-zinc-400 hover:bg-zinc-900 hover:text-white' : 'text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900'
             } cursor-pointer`}
           >
-            <LayoutDashboard size={18} /> Dashboard
+            <LayoutDashboard size={19} /> Dashboard
           </button>
           <button 
             onClick={() => { navigate('/influencer/dashboard?tab=affiliate'); setIsSidebarOpen(false); }}
-            className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-xs font-bold transition-all text-left ${
-              isDarkMode ? 'text-gray-400 hover:bg-white/5 hover:text-white' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-900'
+            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all text-left ${
+              isDarkMode ? 'text-zinc-400 hover:bg-zinc-900 hover:text-white' : 'text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900'
             } cursor-pointer`}
           >
-            <Share2 size={18} /> Affiliate Network
+            <Share2 size={19} /> Affiliate Network
           </button>
           <button 
             onClick={() => { navigate('/influencer/dashboard?tab=submit-story'); setIsSidebarOpen(false); }}
-            className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-xs font-bold transition-all text-left ${
-              isDarkMode ? 'text-gray-400 hover:bg-white/5 hover:text-white' : 'text-gray-550 hover:bg-gray-100 hover:text-gray-900'
+            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all text-left ${
+              isDarkMode ? 'text-zinc-400 hover:bg-zinc-900 hover:text-white' : 'text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900'
             } cursor-pointer`}
           >
-            <PlusCircle size={18} /> Submit Story
+            <PlusCircle size={19} /> Submit Story
           </button>
           <button 
             onClick={() => { navigate('/influencer/dashboard?tab=tasks'); setIsSidebarOpen(false); }}
-            className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-xs font-bold transition-all text-left ${
-              isDarkMode ? 'text-gray-400 hover:bg-white/5 hover:text-white' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-900'
+            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all text-left ${
+              isDarkMode ? 'text-zinc-400 hover:bg-zinc-900 hover:text-white' : 'text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900'
             } cursor-pointer`}
           >
-            <Briefcase size={18} /> My Tasks
+            <Briefcase size={19} /> My Tasks
           </button>
           <button 
             onClick={() => { navigate('/influencer/commission-slabs'); setIsSidebarOpen(false); }}
-            className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-xs font-bold transition-all text-left bg-primary text-white shadow-lg shadow-primary/20 cursor-pointer"
+            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all text-left bg-primary text-white shadow-lg shadow-primary/20 cursor-pointer"
           >
-            <Percent size={18} /> Commission Slabs
+            <Percent size={19} /> Commission Slabs
           </button>
           <button 
             onClick={() => { navigate('/influencer/dashboard?tab=wallet'); setIsSidebarOpen(false); }}
-            className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-xs font-bold transition-all text-left ${
-              isDarkMode ? 'text-gray-400 hover:bg-white/5 hover:text-white' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-900'
+            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all text-left ${
+              isDarkMode ? 'text-zinc-400 hover:bg-zinc-900 hover:text-white' : 'text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900'
             } cursor-pointer`}
           >
-            <Wallet size={18} /> My Wallet
+            <Wallet size={19} /> My Wallet
           </button>
           <button 
             onClick={() => { navigate('/influencer/dashboard?tab=payout'); setIsSidebarOpen(false); }}
-            className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-xs font-bold transition-all text-left ${
-              isDarkMode ? 'text-gray-400 hover:bg-white/5 hover:text-white' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-900'
+            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all text-left ${
+              isDarkMode ? 'text-zinc-400 hover:bg-zinc-900 hover:text-white' : 'text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900'
             } cursor-pointer`}
           >
-            <Landmark size={18} /> Bank Details
+            <Landmark size={19} /> Bank Details
           </button>
-          <button className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-xs font-bold transition-all text-left ${
-            isDarkMode ? 'text-gray-400 hover:bg-white/5 hover:text-white' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-900'
-          } cursor-pointer`}>
-            <Users size={18} /> Audience
+          <button 
+            onClick={() => { navigate('/influencer/dashboard?tab=audience'); setIsSidebarOpen(false); }}
+            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all text-left ${
+              isDarkMode ? 'text-zinc-400 hover:bg-zinc-900 hover:text-white' : 'text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900'
+            } cursor-pointer`}
+          >
+            <Users size={19} /> Audience
           </button>
         </nav>
         
         {/* Footer/Logout button in sidebar */}
-        <div className={`p-4 border-t ${isDarkMode ? 'border-white/5' : 'border-gray-100'}`}>
+        <div className={`p-4 border-t ${isDarkMode ? 'border-zinc-800' : 'border-zinc-200'}`}>
           <button
             onClick={() => navigate('/')}
-            className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-xs font-bold transition-all ${
+            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all ${
               isDarkMode 
-                ? 'text-red-400 hover:bg-red-500/10' 
-                : 'text-red-500 hover:bg-red-55'
+                ? 'text-rose-400 hover:bg-rose-500/10' 
+                : 'text-rose-500 hover:bg-rose-50'
             } cursor-pointer`}
           >
-            <X size={18} /> Back to Home
+            <X size={19} /> Back to Home
           </button>
         </div>
       </div>
@@ -162,15 +165,15 @@ const InfluencerCommissionSlabs = () => {
       <div className="flex-grow flex flex-col h-screen overflow-y-auto">
         
         {/* Header */}
-        <header className={`h-24 flex-shrink-0 flex items-center justify-between px-4 sm:px-6 lg:px-8 border-b sticky top-0 z-40 transition-colors duration-300 ${
+        <header className={`h-20 flex-shrink-0 flex items-center justify-between px-4 sm:px-6 lg:px-8 border-b sticky top-0 z-40 transition-colors duration-300 ${
           isDarkMode 
-            ? 'bg-gray-950/85 border-white/5 backdrop-blur text-white' 
-            : 'bg-white border-gray-200 text-gray-800'
+            ? 'bg-zinc-950/85 border-zinc-800 backdrop-blur text-white' 
+            : 'bg-white border-zinc-200 text-zinc-900'
         }`}>
           <div className="flex items-center gap-3 sm:gap-4 overflow-hidden">
             <button 
               className={`lg:hidden p-2 rounded-xl transition-all border ${
-                isDarkMode ? 'text-gray-400 hover:bg-white/5 border-white/5' : 'text-gray-600 hover:bg-gray-50 border-gray-100'
+                isDarkMode ? 'text-zinc-400 hover:bg-zinc-800 border-zinc-800' : 'text-zinc-600 hover:bg-zinc-100 border-zinc-200'
               }`} 
               onClick={() => setIsSidebarOpen(true)}
             >

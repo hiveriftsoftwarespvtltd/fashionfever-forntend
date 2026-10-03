@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Loader2, X, Camera, Video, TicketPercent, Pencil, Trash2 } from 'lucide-react';
+import { Loader2, X, Camera, Video, TicketPercent, Pencil, Trash2, Percent, AlertTriangle, Check } from 'lucide-react';
+import Swal from 'sweetalert2';
 import { toast } from '../../../utils/toast';
 import { 
   getInfluencerById, 
   deleteCoupon,
   getInfluencerWalletBalance,
-  getInfluencerWalletTransactions
+  getInfluencerWalletTransactions,
+  updateInfluencerCommissionRate
 } from '../../../api/adminService';
 import { useTheme } from '../../../context/ThemeContext';
 
@@ -19,6 +21,8 @@ const InfluencerDetailsModal = ({ influencerId, onClose, onEditCoupon, onRefresh
   const [wallet, setWallet] = useState(null);
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [commissionRateInput, setCommissionRateInput] = useState('');
+  const [isUpdatingRate, setIsUpdatingRate] = useState(false);
 
   useEffect(() => {
     const fetchDetail = async () => {
@@ -34,6 +38,7 @@ const InfluencerDetailsModal = ({ influencerId, onClose, onEditCoupon, onRefresh
         if (influRes.success) {
           const data = influRes.data?.data || influRes.data;
           setInfluencer(data);
+          setCommissionRateInput(typeof data.commissionRate === 'number' ? data.commissionRate : '');
         } else {
           toast.error(influRes.message || 'Failed to load details');
         }
@@ -55,6 +60,76 @@ const InfluencerDetailsModal = ({ influencerId, onClose, onEditCoupon, onRefresh
     };
     fetchDetail();
   }, [influencerId]);
+
+  const handleSaveCommissionRate = async (isUnsetting = false) => {
+    if (!influencer) return;
+
+    let targetRate = null;
+    if (!isUnsetting) {
+      if (commissionRateInput === '' || commissionRateInput === null) {
+        toast.error('Please enter a valid rate between 0 and 100, or choose Unset Rate');
+        return;
+      }
+      const parsed = parseFloat(commissionRateInput);
+      if (isNaN(parsed) || parsed < 0 || parsed > 100) {
+        toast.error('Commission rate must be between 0% and 100%');
+        return;
+      }
+      targetRate = parseFloat(parsed.toFixed(2));
+    }
+
+    const swalTitle = isUnsetting 
+      ? 'Unset Commission Rate?' 
+      : `Set Commission Rate to ${targetRate}%?`;
+      
+    const swalText = isUnsetting
+      ? `This will remove the configured rate for ${influencer.name}. No commission records will be created for attributed orders until a rate is explicitly configured.`
+      : `Set custom commission rate of ${targetRate}% for ${influencer.name}. This custom percentage is funded from platform margin upon verified order completion.`;
+
+    const result = await Swal.fire({
+      title: swalTitle,
+      text: swalText,
+      icon: isUnsetting ? 'warning' : 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#fe3e6a',
+      cancelButtonColor: '#71717a',
+      confirmButtonText: isUnsetting ? 'Yes, Unset Rate' : 'Yes, Update Rate',
+      cancelButtonText: 'Cancel',
+      background: isDarkMode ? '#18181b' : '#ffffff',
+      color: isDarkMode ? '#ffffff' : '#18181b',
+      borderRadius: '20px',
+      customClass: {
+        popup: 'rounded-3xl border border-zinc-700/50',
+        confirmButton: 'rounded-xl font-bold uppercase text-xs px-5 py-2.5 text-white cursor-pointer',
+        cancelButton: 'rounded-xl font-bold uppercase text-xs px-5 py-2.5 cursor-pointer'
+      }
+    });
+
+    if (result.isConfirmed) {
+      setIsUpdatingRate(true);
+      const loadingToast = toast.loading('Updating commission rate...');
+      try {
+        const res = await updateInfluencerCommissionRate(influencer._id, targetRate);
+        toast.dismiss(loadingToast);
+        if (res.success || res.statusCode === 200) {
+          toast.success(isUnsetting ? 'Commission rate unset successfully!' : `Commission rate updated to ${targetRate}%!`);
+          setInfluencer(prev => ({
+            ...prev,
+            commissionRate: targetRate
+          }));
+          setCommissionRateInput(targetRate !== null ? targetRate : '');
+          if (onRefresh) onRefresh();
+        } else {
+          toast.error(res.message || 'Failed to update commission rate');
+        }
+      } catch (err) {
+        toast.dismiss(loadingToast);
+        toast.error('An error occurred while updating commission rate');
+      } finally {
+        setIsUpdatingRate(false);
+      }
+    }
+  };
 
   const handleDeleteCoupon = (couponId) => {
     toast((t) => (
@@ -121,8 +196,20 @@ const InfluencerDetailsModal = ({ influencerId, onClose, onEditCoupon, onRefresh
                 <h3 className="text-sm font-bold uppercase text-gray-400">Financial Performance</h3>
                 <div className="grid grid-cols-2 gap-3">
                   <div className={`p-4 rounded-2xl ${isDarkMode ? 'bg-gray-900/50' : 'bg-gray-50'}`}>
-                    <p className="text-sm font-bold text-gray-400 uppercase mb-1">Commission</p>
-                    <p className="text-lg font-bold text-primary">{influencer.commissionRate}%</p>
+                    <p className="text-sm font-bold text-gray-400 uppercase mb-1">Commission Rate</p>
+                    {typeof influencer.commissionRate === 'number' ? (
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-lg font-bold text-primary">{influencer.commissionRate}%</span>
+                        {influencer.commissionRate === 0 && (
+                          <span className="text-[10px] font-bold uppercase px-1.5 py-0.5 rounded bg-zinc-500/20 text-zinc-400">0%</span>
+                        )}
+                      </div>
+                    ) : (
+                      <div className="flex flex-col gap-0.5">
+                        <span className="text-sm font-black text-amber-500 uppercase tracking-wide">Rate Unset</span>
+                        <span className="text-[10px] font-bold uppercase text-amber-400/80">Commission Disabled</span>
+                      </div>
+                    )}
                   </div>
                   <div className={`p-4 rounded-2xl ${isDarkMode ? 'bg-gray-900/50' : 'bg-gray-50'}`}>
                     <p className="text-sm font-bold text-gray-400 uppercase mb-1">Followers</p>
@@ -167,6 +254,96 @@ const InfluencerDetailsModal = ({ influencerId, onClose, onEditCoupon, onRefresh
                 </div>
               </div>
             </div>
+            {/* Custom Commission Rate Management (Phase 4) */}
+            <div className={`mt-6 p-5 rounded-2xl border text-left transition-all ${
+              isDarkMode ? 'bg-gray-900/40 border-white/5' : 'bg-pink-50/20 border-pink-100/60'
+            }`}>
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-xl bg-primary/10 text-primary flex items-center justify-center flex-shrink-0">
+                    <Percent size={16} />
+                  </div>
+                  <div>
+                    <h3 className={`text-sm font-extrabold uppercase tracking-wider ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                      Custom Commission Rate
+                    </h3>
+                    <p className="text-xs font-medium text-gray-400">
+                      Configured per influencer. No platform default rate.
+                    </p>
+                  </div>
+                </div>
+
+                {typeof influencer.commissionRate === 'number' ? (
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 w-fit">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                    Active Rate: {influencer.commissionRate}%
+                  </span>
+                ) : (
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider bg-amber-500/10 text-amber-400 border border-amber-500/20 w-fit">
+                    <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
+                    Rate Unset — Commission Disabled
+                  </span>
+                )}
+              </div>
+
+              {typeof influencer.commissionRate !== 'number' && (
+                <div className="mb-4 p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-start gap-2.5 text-left">
+                  <AlertTriangle size={16} className="text-amber-400 flex-shrink-0 mt-0.5" />
+                  <p className="text-xs font-medium text-amber-300/90 leading-relaxed">
+                    <strong>Notice:</strong> This influencer currently has no commission rate configured. Under the strict Three-Tier contract, orders attributed to this creator will produce <strong>zero financial commission ledger records</strong> until an admin explicitly sets a rate (0–100%).
+                  </p>
+                </div>
+              )}
+
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                <div className="relative flex-1">
+                  <input
+                    type="number"
+                    min="0"
+                    max="100"
+                    step="0.1"
+                    placeholder="Enter rate (e.g. 10 or 0)"
+                    value={commissionRateInput}
+                    onChange={(e) => setCommissionRateInput(e.target.value)}
+                    disabled={isUpdatingRate}
+                    className={`w-full px-4 py-2.5 pr-10 rounded-xl text-sm font-bold outline-none border transition-all ${
+                      isDarkMode 
+                        ? 'bg-gray-900 border-gray-700 text-white focus:border-primary/60' 
+                        : 'bg-white border-gray-200 text-gray-800 focus:border-primary/40 shadow-sm'
+                    }`}
+                  />
+                  <span className="absolute right-3.5 top-1/2 -translate-y-1/2 text-xs font-black text-gray-400">
+                    %
+                  </span>
+                </div>
+
+                <button
+                  type="button"
+                  disabled={isUpdatingRate}
+                  onClick={() => handleSaveCommissionRate(false)}
+                  className="px-5 py-2.5 bg-primary hover:bg-primary/90 active:scale-95 text-white text-xs font-extrabold uppercase rounded-xl transition-all shadow-md shadow-primary/20 flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50"
+                >
+                  {isUpdatingRate ? <Loader2 size={14} className="animate-spin" /> : <Check size={14} />}
+                  Save Custom Rate
+                </button>
+
+                {typeof influencer.commissionRate === 'number' && (
+                  <button
+                    type="button"
+                    disabled={isUpdatingRate}
+                    onClick={() => handleSaveCommissionRate(true)}
+                    className={`px-4 py-2.5 rounded-xl text-xs font-bold uppercase transition-all cursor-pointer border ${
+                      isDarkMode 
+                        ? 'bg-gray-800/80 hover:bg-rose-500/10 text-gray-400 hover:text-rose-400 border-gray-700 hover:border-rose-500/30' 
+                        : 'bg-gray-100 hover:bg-rose-50 text-gray-600 hover:text-rose-600 border-gray-200 hover:border-rose-200'
+                    }`}
+                  >
+                    Unset Rate (Null)
+                  </button>
+                )}
+              </div>
+            </div>
+
             {/* Coupons */}
             <div className="mt-8 space-y-4">
               <div className="flex justify-between items-center">
@@ -207,10 +384,10 @@ const InfluencerDetailsModal = ({ influencerId, onClose, onEditCoupon, onRefresh
                 isDarkMode ? 'bg-gray-900/40 border-white/5' : 'bg-emerald-50/10 border-emerald-100/50'
               }`}>
                 <div className="flex items-center justify-between mb-4">
-                  <span className="text-sm font-black uppercase text-gray-400 tracking-wider">
+                  <span className="text-xs font-extrabold uppercase text-zinc-400 tracking-wider">
                     Influencer Wallet Summary
                   </span>
-                  <span className={`px-2 py-0.5 rounded-full text-[9px] font-bold uppercase ${
+                  <span className={`px-2.5 py-0.5 rounded-full text-xs font-bold uppercase ${
                     isDarkMode ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-emerald-100 text-emerald-800'
                   }`}>
                     Active Balance
@@ -219,14 +396,14 @@ const InfluencerDetailsModal = ({ influencerId, onClose, onEditCoupon, onRefresh
                 
                 <div className="grid grid-cols-2 gap-2">
                   <div className="flex flex-col">
-                    <span className="text-[8px] font-black text-gray-400 uppercase">Liquid Balance</span>
-                    <span className={`text-sm font-black ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                    <span className="text-xs font-bold text-zinc-400 uppercase">Liquid Balance</span>
+                    <span className={`text-base font-black ${isDarkMode ? 'text-white' : 'text-zinc-900'}`}>
                       ₹{(wallet.balance || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                     </span>
                   </div>
-                  <div className="flex flex-col border-l border-gray-100 dark:border-white/5 pl-3">
-                    <span className="text-[8px] font-black text-gray-400 uppercase">Total Earnings</span>
-                    <span className="text-sm font-bold text-emerald-500">
+                  <div className="flex flex-col border-l border-zinc-200 dark:border-zinc-800 pl-3">
+                    <span className="text-xs font-bold text-zinc-400 uppercase">Total Earnings</span>
+                    <span className="text-base font-bold text-emerald-500">
                       ₹{(wallet.totalEarnings || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                     </span>
                   </div>
@@ -236,17 +413,17 @@ const InfluencerDetailsModal = ({ influencerId, onClose, onEditCoupon, onRefresh
 
             {/* Transactions History Ledger */}
             <div className="mt-8 space-y-3">
-              <div className="flex items-center justify-between border-b pb-2 border-gray-100 dark:border-white/5">
-                <span className="text-sm font-black uppercase text-gray-400 tracking-wider">
+              <div className="flex items-center justify-between border-b pb-2 border-zinc-200 dark:border-zinc-800">
+                <span className="text-xs font-extrabold uppercase text-zinc-400 tracking-wider">
                   Transaction Audit Ledger
                 </span>
-                <span className="text-[9px] text-gray-400 font-bold uppercase">
+                <span className="text-xs text-zinc-400 font-bold uppercase">
                   {(transactions || []).length} Records
                 </span>
               </div>
               
               {(!transactions || transactions.length === 0) ? (
-                <div className="py-6 text-center text-xs font-bold text-gray-400 uppercase italic">
+                <div className="py-6 text-center text-xs font-bold text-zinc-400 uppercase italic">
                   No transactions recorded for this wallet.
                 </div>
               ) : (
@@ -254,28 +431,28 @@ const InfluencerDetailsModal = ({ influencerId, onClose, onEditCoupon, onRefresh
                   {transactions.map((tx) => (
                     <div 
                       key={tx._id}
-                      className={`p-3 rounded-xl border flex items-center justify-between gap-3 text-xs transition-all ${
+                      className={`p-3.5 rounded-xl border flex items-center justify-between gap-3 text-xs transition-all ${
                         isDarkMode 
-                          ? 'bg-gray-900/20 border-white/5 hover:border-white/10' 
-                          : 'bg-gray-50/50 border-gray-100 hover:border-gray-200 shadow-sm'
+                          ? 'bg-zinc-900 border-zinc-800 hover:border-zinc-700' 
+                          : 'bg-zinc-50 border-zinc-200 hover:border-zinc-300 shadow-sm'
                       }`}
                     >
                       <div className="flex flex-col gap-0.5 max-w-[70%] text-left">
-                        <span className={`font-bold ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>
+                        <span className={`font-bold text-xs ${isDarkMode ? 'text-zinc-200' : 'text-zinc-800'}`}>
                           {tx.description || tx.reason || 'Transaction'}
                         </span>
-                        <span className="text-[8px] text-gray-400 font-bold uppercase">
+                        <span className="text-xs text-zinc-400 font-bold uppercase">
                           {new Date(tx.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
                         </span>
                       </div>
                       
                       <div className="text-right flex flex-col items-end gap-0.5 flex-shrink-0">
-                        <span className={`font-black text-xs ${
+                        <span className={`font-black text-sm ${
                           tx.type === 'CREDIT' ? 'text-emerald-500' : 'text-rose-500'
                         }`}>
                           {tx.type === 'CREDIT' ? '+' : '-'}₹{(tx.amount || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                         </span>
-                        <span className="text-[8px] text-gray-400 font-mono font-bold uppercase">
+                        <span className="text-xs text-zinc-400 font-mono font-bold uppercase">
                           Bal: ₹{(tx.balanceAfterTransaction || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                         </span>
                       </div>
