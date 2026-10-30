@@ -54,11 +54,11 @@ const CustomerFlow = () => {
   const [activeSubTab, setActiveSubTabState] = useState(() => {
     const params = new URLSearchParams(window.location.search);
     const tabParam = params.get('tab');
-    if (tabParam && ['shop', 'cart', 'orders'].includes(tabParam)) {
+    if (tabParam && ['shop', 'cart'].includes(tabParam)) {
       return tabParam;
     }
     const saved = localStorage.getItem('quick_active_sub_tab');
-    if (saved && ['shop', 'cart', 'orders'].includes(saved)) {
+    if (saved && ['shop', 'cart'].includes(saved)) {
       return saved;
     }
     return 'shop';
@@ -79,11 +79,15 @@ const CustomerFlow = () => {
   useEffect(() => {
     const params = new URLSearchParams(urlSearch);
     const tabParam = params.get('tab');
-    if (tabParam && ['shop', 'cart', 'orders'].includes(tabParam)) {
-      setActiveSubTabState(tabParam);
-      localStorage.setItem('quick_active_sub_tab', tabParam);
+    if (tabParam === 'orders') {
+      navigate('/orders');
+      return;
     }
-  }, [urlSearch]);
+    if (tabParam === 'cart') {
+      navigate('/checkout?mode=quick');
+      return;
+    }
+  }, [urlSearch, navigate]);
 
   // Filters & Geolocation
   const [search, setSearch] = useState('');
@@ -325,15 +329,6 @@ const CustomerFlow = () => {
 
   // Cart operations
   const handleAddToCart = async (product, variant) => {
-    if (!isAuthenticated) {
-      Swal.fire({
-        icon: 'warning',
-        title: 'Authentication Required',
-        text: 'Please log in to manage your cart and place quick commerce orders!',
-        confirmButtonColor: '#ff007f'
-      });
-      return;
-    }
     const resolvedProductId = String(product._id || product.id || '');
     const rawVariantId = typeof variant === 'object' ? (variant?._id || variant?.id) : variant;
     const resolvedVariantId = String(rawVariantId || product.variants?.[0]?._id || resolvedProductId);
@@ -424,29 +419,29 @@ const CustomerFlow = () => {
                 </div>
                 <div>
                   <h3 class="text-sm sm:text-base font-black uppercase tracking-tight text-white m-0 leading-tight">Add Delivery Address</h3>
-                  <p class="text-[10px] sm:text-[11px] text-rose-100 font-medium m-0 opacity-90">10-Minute Express Delivery Destination</p>
+                  <p class="text-xs text-rose-100 font-medium m-0 opacity-90">10-Minute Express Delivery Destination</p>
                 </div>
               </div>
             </div>
 
             <div class="p-4 sm:p-5 space-y-3 bg-white text-left overflow-y-auto">
               <div>
-                <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest block mb-1.5">Address Type</label>
+                <label class="text-xs font-black text-slate-400 uppercase tracking-widest block mb-1.5">Address Type</label>
                 <div class="grid grid-cols-3 gap-2" id="swal-type-selector">
-                  <button type="button" onclick="window._setSwalAddrType('Home')" id="addr-type-Home" class="addr-type-btn py-1.5 px-2.5 rounded-lg border text-[10px] font-black uppercase transition-all flex items-center justify-center gap-1 bg-rose-50 border-primary text-primary shadow-xs">
+                  <button type="button" onclick="window._setSwalAddrType('Home')" id="addr-type-Home" class="addr-type-btn py-1.5 px-2.5 rounded-lg border text-xs font-black uppercase transition-all flex items-center justify-center gap-1 bg-rose-50 border-primary text-primary shadow-xs">
                     <span>HOME</span>
                   </button>
-                  <button type="button" onclick="window._setSwalAddrType('Work')" id="addr-type-Work" class="addr-type-btn py-1.5 px-2.5 rounded-lg border text-[10px] font-bold uppercase transition-all flex items-center justify-center gap-1 bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100">
+                  <button type="button" onclick="window._setSwalAddrType('Work')" id="addr-type-Work" class="addr-type-btn py-1.5 px-2.5 rounded-lg border text-xs font-bold uppercase transition-all flex items-center justify-center gap-1 bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100">
                     <span>WORK</span>
                   </button>
-                  <button type="button" onclick="window._setSwalAddrType('Other')" id="addr-type-Other" class="addr-type-btn py-1.5 px-2.5 rounded-lg border text-[10px] font-bold uppercase transition-all flex items-center justify-center gap-1 bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100">
+                  <button type="button" onclick="window._setSwalAddrType('Other')" id="addr-type-Other" class="addr-type-btn py-1.5 px-2.5 rounded-lg border text-xs font-bold uppercase transition-all flex items-center justify-center gap-1 bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100">
                     <span>OTHER</span>
                   </button>
                 </div>
               </div>
 
               <div>
-                <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest block mb-1">House / Flat No & Street Address*</label>
+                <label class="text-xs font-black text-slate-400 uppercase tracking-widest block mb-1">House / Flat No & Street Address*</label>
                 <div class="relative">
                   <div class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
                     <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
@@ -462,7 +457,7 @@ const CustomerFlow = () => {
 
               <div class="grid grid-cols-2 gap-2.5">
                 <div>
-                  <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest block mb-1">City*</label>
+                  <label class="text-xs font-black text-slate-400 uppercase tracking-widest block mb-1">City*</label>
                   <div class="relative">
                     <div class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
                       <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="20" x="4" y="2" rx="2" ry="2"/><path d="M9 22v-4h6v4"/><path d="M8 6h.01"/><path d="M16 6h.01"/><path d="M12 6h.01"/><path d="M12 10h.01"/><path d="M12 14h.01"/><path d="M16 10h.01"/><path d="M16 14h.01"/><path d="M8 10h.01"/><path d="M8 14h.01"/></svg>
@@ -476,7 +471,7 @@ const CustomerFlow = () => {
                   </div>
                 </div>
                 <div>
-                  <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest block mb-1">State*</label>
+                  <label class="text-xs font-black text-slate-400 uppercase tracking-widest block mb-1">State*</label>
                   <div class="relative">
                     <div class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
                       <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/><line x1="9" x2="9" y1="3" y2="18"/><line x1="15" x2="15" y1="6" y2="21"/></svg>
@@ -493,7 +488,7 @@ const CustomerFlow = () => {
 
               <div class="grid grid-cols-2 gap-2.5">
                 <div>
-                  <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest block mb-1">6-Digit Pincode*</label>
+                  <label class="text-xs font-black text-slate-400 uppercase tracking-widest block mb-1">6-Digit Pincode*</label>
                   <div class="relative">
                     <div class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
                       <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
@@ -508,7 +503,7 @@ const CustomerFlow = () => {
                   </div>
                 </div>
                 <div>
-                  <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest block mb-1">10-Digit Mobile*</label>
+                  <label class="text-xs font-black text-slate-400 uppercase tracking-widest block mb-1">10-Digit Mobile*</label>
                   <div class="relative">
                     <div class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
                       <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
@@ -620,14 +615,28 @@ const CustomerFlow = () => {
       if (result.isConfirmed) {
         const res = await placeQuickOrder(selectedAddressId, paymentMethod, appliedCoupon);
         if (res?.success) {
-          Swal.fire('Order Placed! 🥳', `Your order has been placed. Order ID: ${res.data?._id?.substring(0, 8)}`, 'success');
           setCheckout(null);
           setAppliedCoupon('');
           setCouponCode('');
-          fetchOrdersData();
-          setActiveSubTab('orders');
           fetchUserCart();
           refreshWalletBalance();
+
+          Swal.fire({
+            title: 'Order Placed! 🥳',
+            text: `Your 10-minute quick delivery order has been placed successfully! (Order ID: ${res.data?._id?.substring(0, 8)})`,
+            icon: 'success',
+            showCancelButton: true,
+            confirmButtonText: 'Track in My Orders',
+            cancelButtonText: 'Continue Shopping',
+            confirmButtonColor: '#da016a',
+            cancelButtonColor: '#64748B'
+          }).then((alertRes) => {
+            if (alertRes.isConfirmed) {
+              navigate('/orders');
+            } else {
+              setActiveSubTab('shop');
+            }
+          });
         } else {
           Swal.fire('Order Failed', res.message || 'We could not complete your order.', 'error');
         }
@@ -768,94 +777,35 @@ const CustomerFlow = () => {
   const paginatedUserOrders = filteredUserOrders.slice(userOrderStartIndex, userOrderStartIndex + orderItemsPerPage);
 
   return (
-    <div className="bg-white shadow-xl rounded-2xl sm:rounded-3xl border border-slate-100 p-3.5 sm:p-6 md:p-8">
-      {/* Sub Tab Navigation Header */}
-      <CustomerSubNav
-        activeSubTab={activeSubTab}
-        setActiveSubTab={setActiveSubTab}
-        quickCartCount={quickCart.length}
-        ordersCount={orders.length}
+    <div className="w-full">
+      {/* Quick Commerce Lightning Deals Shop */}
+      <CustomerShopView
+        category={category}
+        setCategory={setCategory}
+        dynamicCategories={dynamicCategories}
+        search={search}
+        setSearch={setSearch}
+        fetchProducts={fetchProducts}
+        locationMode={locationMode}
+        gpsLocationLabel={gpsLocationLabel}
+        pincode={pincode}
         isAuthenticated={isAuthenticated}
+        addresses={addresses}
+        selectedAddressId={selectedAddressId}
+        setSelectedAddressId={setSelectedAddressId}
+        setPincode={setPincode}
+        setLocationMode={setLocationMode}
+        setGpsLocationLabel={setGpsLocationLabel}
+        setShowLocationPromptModal={setShowLocationPromptModal}
+        loading={loading}
+        products={products}
+        quickCart={quickCart}
+        handleAddToCart={handleAddToCart}
+        handleDecreaseQuantity={handleDecreaseQuantity}
+        handleIncreaseQuantity={handleIncreaseQuantity}
+        setActiveSubTab={setActiveSubTab}
+        navigate={navigate}
       />
-
-      {/* 1. Shop Deals View */}
-      {activeSubTab === 'shop' && (
-        <CustomerShopView
-          category={category}
-          setCategory={setCategory}
-          dynamicCategories={dynamicCategories}
-          search={search}
-          setSearch={setSearch}
-          fetchProducts={fetchProducts}
-          locationMode={locationMode}
-          gpsLocationLabel={gpsLocationLabel}
-          pincode={pincode}
-          isAuthenticated={isAuthenticated}
-          addresses={addresses}
-          selectedAddressId={selectedAddressId}
-          setSelectedAddressId={setSelectedAddressId}
-          setPincode={setPincode}
-          setLocationMode={setLocationMode}
-          setGpsLocationLabel={setGpsLocationLabel}
-          setShowLocationPromptModal={setShowLocationPromptModal}
-          loading={loading}
-          products={products}
-          quickCart={quickCart}
-          handleAddToCart={handleAddToCart}
-          handleDecreaseQuantity={handleDecreaseQuantity}
-          handleIncreaseQuantity={handleIncreaseQuantity}
-          setActiveSubTab={setActiveSubTab}
-          navigate={navigate}
-        />
-      )}
-
-      {/* 2. Express Cart View */}
-      {activeSubTab === 'cart' && (
-        <CustomerCartView
-          quickCart={quickCart}
-          setActiveSubTab={setActiveSubTab}
-          handleDecreaseQuantity={handleDecreaseQuantity}
-          handleIncreaseQuantity={handleIncreaseQuantity}
-          handleRemoveItem={handleRemoveItem}
-          addresses={addresses}
-          selectedAddressId={selectedAddressId}
-          setSelectedAddressId={setSelectedAddressId}
-          handleAddNewAddress={handleAddNewAddress}
-          appliedCoupon={appliedCoupon}
-          couponCode={couponCode}
-          setCouponCode={setCouponCode}
-          handleApplyCoupon={handleApplyCoupon}
-          handleRemoveCoupon={handleRemoveCoupon}
-          paymentMethod={paymentMethod}
-          setPaymentMethod={setPaymentMethod}
-          checkout={checkout}
-          handlePlaceOrder={handlePlaceOrder}
-        />
-      )}
-
-      {/* 3. My Quick Orders View */}
-      {activeSubTab === 'orders' && (
-        <CustomerOrdersView
-          orders={orders}
-          orderSearchQuery={orderSearchQuery}
-          setOrderSearchQuery={setOrderSearchQuery}
-          orderCurrentPage={orderCurrentPage}
-          setOrderCurrentPage={setOrderCurrentPage}
-          orderItemsPerPage={orderItemsPerPage}
-          setOrderItemsPerPage={setOrderItemsPerPage}
-          paginatedUserOrders={paginatedUserOrders}
-          filteredUserOrders={filteredUserOrders}
-          userOrderTotalItems={userOrderTotalItems}
-          userOrderTotalPages={userOrderTotalPages}
-          validUserOrderPage={validUserOrderPage}
-          userOrderStartIndex={userOrderStartIndex}
-          setSelectedUserOrderModal={setSelectedUserOrderModal}
-          handleCancelOrder={handleCancelOrder}
-          getStatusBadge={getStatusBadge}
-          formatOrderDate={formatOrderDate}
-          getItemImage={getItemImage}
-        />
-      )}
 
       {/* 4. Order Details Modal */}
       <CustomerOrderDetailsModal

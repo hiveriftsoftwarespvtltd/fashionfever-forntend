@@ -165,7 +165,7 @@ const CreateServiceCategoryModal = ({ isOpen, onClose, onSuccess, initialData = 
                       Choose Image File
                       <input type="file" accept="image/*" onChange={handleFileChange} className="hidden" />
                     </label>
-                    <p className="text-[9px] font-medium text-gray-400 uppercase mt-1.5">{initialData ? 'Choose new file to replace existing image' : 'Supports PNG, JPG, JPEG. Max file size: 5MB.'}</p>
+                    <p className="text-xs font-medium text-gray-400 uppercase mt-1.5">{initialData ? 'Choose new file to replace existing image' : 'Supports PNG, JPG, JPEG. Max file size: 5MB.'}</p>
                   </div>
                 </div>
               </div>

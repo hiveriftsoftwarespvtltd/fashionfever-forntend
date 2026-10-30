@@ -4,10 +4,13 @@ import {
   User, Ticket, Wallet, ShoppingBag, Heart, CreditCard,
   LogOut, ChevronRight, Loader2, Camera, Trash2, Mail,
   Shield, Calendar, CheckCircle2, AlertTriangle, Key,
-  Pencil, Phone, X, Check, MapPin, Lock, Bell, Eye
+  Pencil, Phone, X, Check, MapPin, Lock, Bell, Eye,
+  Zap, Package, ArrowRight, Truck, Clock
 } from 'lucide-react';
 import { useUser } from '../../context/UserContext';
-import { getUserDetails, uploadUserAvatar, getUserAvatar, deleteUserAvatar, editUserDetails } from '../../api/authService';
+import { getUserDetails, uploadUserAvatar, getUserAvatar, deleteUserAvatar, editUserDetails, getUserOrders } from '../../api/authService';
+import { getQuickUserOrders } from '../../api/quickECommerceService';
+import { getImageUrl } from '../../utils/imageUrl';
 import { toast } from '../../utils/toast';
 import UserSidebar from './UserSidebar';
 
@@ -19,11 +22,14 @@ const Profile = () => {
 
   const [profileData, setProfileData]   = useState(null);
   const [avatarUrl, setAvatarUrl]       = useState(() => localStorage.getItem(AVATAR_KEY) || '');
+  const [imgError, setImgError]         = useState(false);
   const [isLoading, setIsLoading]       = useState(true);
   const [isUploading, setIsUploading]   = useState(false);
   const [isEditing, setIsEditing]       = useState(false);
   const [isSaving, setIsSaving]         = useState(false);
   const [editForm, setEditForm]         = useState({ name: '', phone: '' });
+  const [recentOrders, setRecentOrders] = useState([]);
+  const [isOrdersLoading, setIsOrdersLoading] = useState(false);
   const fileInputRef = useRef(null);
 
   // Interactive UI buttons state
@@ -61,6 +67,7 @@ const Profile = () => {
     if (url) localStorage.setItem(AVATAR_KEY, url);
     else     localStorage.removeItem(AVATAR_KEY);
     setAvatarUrl(url);
+    setImgError(false);
   };
 
   /* ─── fetch ────────────────────────────────────────────────── */
@@ -88,10 +95,64 @@ const Profile = () => {
     }
   };
 
+  const fetchRecentOrders = async () => {
+    setIsOrdersLoading(true);
+    try {
+      const [standardRes, quickRes] = await Promise.allSettled([
+        getUserOrders(),
+        getQuickUserOrders(1, 10)
+      ]);
+
+      let standardList = [];
+      if (standardRes.status === 'fulfilled' && standardRes.value?.success) {
+        const raw = standardRes.value.data?.data ?? standardRes.value.data ?? [];
+        standardList = Array.isArray(raw) ? raw.map(o => ({
+          _id: o._id,
+          orderNumber: o.orderNumber || `FF-${o._id?.toString().slice(-6)}`,
+          orderStatus: o.orderStatus || o.status || 'PENDING',
+          isQuickDelivery: false,
+          grandTotal: o.grandTotal || o.totalAmount || 0,
+          createdAt: o.createdAt,
+          itemsCount: o.items?.length || 0,
+          items: o.items || []
+        })) : [];
+      }
+
+      let quickList = [];
+      if (quickRes.status === 'fulfilled') {
+        const rawVal = quickRes.value;
+        const rawQuick = rawVal?.orders ?? rawVal?.data?.orders ?? (Array.isArray(rawVal?.data) ? rawVal?.data : []);
+        if (Array.isArray(rawQuick)) {
+          quickList = rawQuick.map(q => ({
+            _id: q._id,
+            orderNumber: q.orderNumber || `FFQ-${q._id?.toString().slice(-6)}`,
+            orderStatus: q.status || 'PROCESSING',
+            isQuickDelivery: true,
+            grandTotal: q.grandTotal || 0,
+            createdAt: q.createdAt,
+            itemsCount: q.items?.length || 0,
+            items: q.items || []
+          }));
+        }
+      }
+
+      const combined = [...standardList, ...quickList].sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+      setRecentOrders(combined);
+    } catch (err) {
+      console.error('Failed to load recent orders:', err);
+    } finally {
+      setIsOrdersLoading(false);
+    }
+  };
+
   useEffect(() => {
     if (!isAuthLoading) {
-      if (token) fetchProfileDetails();
-      else       setIsLoading(false);
+      if (token) {
+        fetchProfileDetails();
+        fetchRecentOrders();
+      } else {
+        setIsLoading(false);
+      }
     }
   }, [isAuthLoading, token]);
 
@@ -176,6 +237,10 @@ const Profile = () => {
 
   /* ─── derived ──────────────────────────────────────────────── */
   const nameLetter = profileData?.name?.charAt(0)?.toUpperCase() || 'U';
+  const activeQuickOrder = recentOrders.find(o => 
+    o.isQuickDelivery && ['PENDING', 'ACCEPTED', 'PROCESSING', 'PACKED', 'OUT_FOR_DELIVERY'].includes((o.orderStatus || '').toUpperCase())
+  );
+  const quickCount = recentOrders.filter(o => o.isQuickDelivery).length;
 
   /* ─── loading skeleton ─────────────────────────────────────── */
   if (isLoading) {
@@ -221,8 +286,13 @@ const Profile = () => {
                   {/* Avatar */}
                   <div className="relative group w-28 h-28 rounded-2xl overflow-hidden bg-white p-1 shadow-xl border border-gray-100 flex-shrink-0">
                     <div className="w-full h-full rounded-xl overflow-hidden bg-gray-50 relative flex items-center justify-center">
-                      {avatarUrl ? (
-                        <img src={avatarUrl} alt={profileData?.name} className="w-full h-full object-cover" />
+                      {avatarUrl && !imgError ? (
+                        <img 
+                          src={getImageUrl(avatarUrl)} 
+                          alt={profileData?.name || 'User'} 
+                          className="w-full h-full object-cover" 
+                          onError={() => setImgError(true)}
+                        />
                       ) : (
                         <div className="w-full h-full bg-primary flex items-center justify-center text-white text-3xl font-extrabold">
                           {nameLetter}
@@ -375,6 +445,163 @@ const Profile = () => {
                     </p>
                   </div>
                 </div>
+              </div>
+            </div>
+
+            {/* Recent Orders & Quick Deliveries Card */}
+            <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden text-left">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-6 border-b border-gray-100 gap-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-rose-50 border border-rose-100 flex items-center justify-center text-primary flex-shrink-0">
+                    <Package size={20} />
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <h2 className="text-sm font-extrabold text-gray-900 uppercase">Recent Orders & Quick Deliveries</h2>
+                      {quickCount > 0 && (
+                        <span className="bg-amber-100 text-amber-800 text-xs font-black uppercase px-2 py-0.5 rounded-full flex items-center gap-1">
+                          <Zap size={10} className="fill-amber-500 text-amber-500" /> {quickCount} Quick
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-xs text-gray-400 font-medium mt-0.5">Track your 10-minute deliveries & standard orders</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 w-full sm:w-auto">
+                  <Link
+                    to="/orders?tab=quick"
+                    className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 text-xs font-bold uppercase text-amber-700 bg-amber-50 hover:bg-amber-100 border border-amber-200/80 px-3.5 py-2 rounded-xl transition-all cursor-pointer"
+                  >
+                    <Zap size={13} className="fill-amber-500 text-amber-500" /> Quick Orders
+                  </Link>
+                  <Link
+                    to="/orders"
+                    className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 text-xs font-bold uppercase text-primary bg-primary/5 hover:bg-primary/10 border border-primary/20 px-3.5 py-2 rounded-xl transition-all cursor-pointer"
+                  >
+                    View All <ArrowRight size={13} />
+                  </Link>
+                </div>
+              </div>
+
+              {/* Active Quick Order Banner */}
+              {activeQuickOrder && (
+                <div className="mx-6 mt-6 p-4 rounded-2xl bg-gradient-to-r from-amber-500/10 via-rose-50 to-amber-500/5 border border-amber-200/80 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                  <div className="flex items-start sm:items-center gap-3">
+                    <div className="w-9 h-9 rounded-xl bg-amber-500 text-white flex items-center justify-center flex-shrink-0 shadow-xs">
+                      <Zap size={18} className="fill-white" />
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs font-black uppercase text-amber-900 tracking-wide">⚡ Live Quick Delivery in Progress</span>
+                        <span className="bg-amber-500 text-white text-xs font-black uppercase px-2 py-0.5 rounded-full">
+                          {activeQuickOrder.orderStatus}
+                        </span>
+                      </div>
+                      <p className="text-xs font-bold text-gray-700 mt-0.5">
+                        Order #{activeQuickOrder.orderNumber} &bull; ₹{activeQuickOrder.grandTotal} ({activeQuickOrder.itemsCount} {activeQuickOrder.itemsCount === 1 ? 'item' : 'items'})
+                      </p>
+                    </div>
+                  </div>
+                  <Link
+                    to="/orders?tab=quick"
+                    className="bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold uppercase px-4 py-2 rounded-xl shadow-xs transition-all flex items-center gap-1.5 flex-shrink-0 cursor-pointer"
+                  >
+                    Track Live Delivery <ArrowRight size={12} />
+                  </Link>
+                </div>
+              )}
+
+              {/* Orders List / Empty State */}
+              <div className="p-6">
+                {isOrdersLoading ? (
+                  <div className="py-8 flex flex-col items-center justify-center gap-2">
+                    <Loader2 size={24} className="animate-spin text-primary" />
+                    <span className="text-xs font-bold text-gray-400 uppercase">Loading orders...</span>
+                  </div>
+                ) : recentOrders.length > 0 ? (
+                  <div className="space-y-3">
+                    {recentOrders.slice(0, 3).map((order) => {
+                      const isQuick = order.isQuickDelivery;
+                      return (
+                        <div
+                          key={order._id}
+                          className={`p-4 rounded-xl border transition-all flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 ${
+                            isQuick ? 'bg-amber-50/20 border-amber-200/70 hover:border-amber-300' : 'bg-gray-50/50 border-gray-100 hover:border-gray-200'
+                          }`}
+                        >
+                          <div className="flex items-center gap-3">
+                            <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${
+                              isQuick ? 'bg-amber-100 text-amber-700' : 'bg-gray-100 text-gray-600'
+                            }`}>
+                              {isQuick ? <Zap size={18} className="fill-amber-500 text-amber-500" /> : <Package size={18} />}
+                            </div>
+                            <div>
+                              <div className="flex items-center gap-2 flex-wrap">
+                                <span className="text-xs font-extrabold text-gray-900 uppercase">#{order.orderNumber}</span>
+                                {isQuick ? (
+                                  <span className="bg-amber-100 text-amber-800 text-xs font-black uppercase px-2 py-0.5 rounded-full flex items-center gap-1">
+                                    <Zap size={9} className="fill-amber-500 text-amber-500" /> 10-Min Quick
+                                  </span>
+                                ) : (
+                                  <span className="bg-slate-100 text-slate-700 text-xs font-black uppercase px-2 py-0.5 rounded-full flex items-center gap-1">
+                                    <Truck size={9} /> Standard
+                                  </span>
+                                )}
+                                <span className={`text-xs font-bold px-2 py-0.5 rounded-full uppercase ${
+                                  order.orderStatus?.toUpperCase() === 'DELIVERED'
+                                    ? 'bg-green-50 text-green-700 border border-green-200'
+                                    : order.orderStatus?.toUpperCase() === 'CANCELLED'
+                                    ? 'bg-red-50 text-red-600 border border-red-200'
+                                    : 'bg-blue-50 text-blue-700 border border-blue-200'
+                                }`}>
+                                  {order.orderStatus}
+                                </span>
+                              </div>
+                              <div className="flex items-center gap-3 text-xs text-gray-500 mt-1">
+                                <span>{order.createdAt ? new Date(order.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'Recent'}</span>
+                                <span>&bull;</span>
+                                <span>{order.itemsCount} {order.itemsCount === 1 ? 'item' : 'items'}</span>
+                                <span>&bull;</span>
+                                <span className="font-extrabold text-gray-900">₹{order.grandTotal}</span>
+                              </div>
+                            </div>
+                          </div>
+
+                          <Link
+                            to={isQuick ? '/orders?tab=quick' : '/orders'}
+                            className="self-end sm:self-center text-xs font-bold uppercase text-primary hover:text-primary-hover flex items-center gap-1 px-3 py-1.5 rounded-lg bg-white border border-gray-200 hover:border-primary/30 shadow-2xs transition-all cursor-pointer"
+                          >
+                            View Order <ChevronRight size={13} />
+                          </Link>
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <div className="py-8 text-center flex flex-col items-center justify-center">
+                    <div className="w-12 h-12 rounded-2xl bg-rose-50 border border-rose-100 flex items-center justify-center text-primary mb-3">
+                      <ShoppingBag size={22} />
+                    </div>
+                    <p className="text-sm font-bold text-gray-800 uppercase">No orders placed yet</p>
+                    <p className="text-xs text-gray-400 mt-1 max-w-sm">
+                      Get your favourite beauty & cosmetics products delivered in 10 minutes with Quick Commerce!
+                    </p>
+                    <div className="flex items-center gap-3 mt-4">
+                      <Link
+                        to="/quick-commerce"
+                        className="flex items-center gap-1.5 text-xs font-bold uppercase text-white bg-primary hover:bg-primary-hover px-4 py-2 rounded-xl transition-all shadow-sm cursor-pointer"
+                      >
+                        <Zap size={13} className="fill-white" /> Quick Commerce (10-Min)
+                      </Link>
+                      <Link
+                        to="/shop"
+                        className="text-xs font-bold uppercase text-gray-700 bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-xl transition-all cursor-pointer"
+                      >
+                        Explore Shop
+                      </Link>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
 

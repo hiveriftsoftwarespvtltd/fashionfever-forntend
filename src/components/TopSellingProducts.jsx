@@ -111,7 +111,7 @@ const TopSellingProducts = () => {
           {/* Header */}
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-6 sm:mb-8 pb-4 border-b border-slate-100">
             <div>
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 text-amber-600 text-[10px] sm:text-xs font-black uppercase tracking-widest border border-amber-200/80 mb-2 shadow-2xs">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 text-amber-600 text-xs font-black uppercase tracking-widest border border-amber-200/80 mb-2 shadow-2xs">
                 <Flame size={13} className="text-amber-500 fill-amber-500" /> CUSTOMER FAVORITES
               </span>
               <h2 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-slate-900 leading-tight tracking-tight font-serif">

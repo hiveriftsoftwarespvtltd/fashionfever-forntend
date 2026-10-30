@@ -115,7 +115,7 @@ const AcademySection = () => {
           {/* Header */}
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-6 sm:mb-8 pb-4 border-b border-slate-100">
             <div>
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-50 text-purple-600 text-[10px] sm:text-xs font-black uppercase tracking-widest border border-purple-200/80 mb-2 shadow-2xs">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-50 text-purple-600 text-xs font-black uppercase tracking-widest border border-purple-200/80 mb-2 shadow-2xs">
                 <GraduationCap size={14} className="text-purple-600" /> LEARN BEAUTY & MAKEUP
               </span>
               <h2 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-slate-900 leading-tight tracking-tight font-serif">
@@ -176,7 +176,7 @@ const AcademySection = () => {
                         onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=600&h=600&fit=crop'; }}
                       />
                       {course.discount && (
-                        <span className="absolute top-1.5 left-1.5 bg-[#ff4d6d] text-white text-[8px] sm:text-[9px] font-extrabold uppercase px-1.5 py-0.5 rounded-xs tracking-wider shadow-2xs">
+                        <span className="absolute top-1.5 left-1.5 bg-[#ff4d6d] text-white text-[11px] sm:text-xs font-extrabold uppercase px-1.5 py-0.5 rounded-xs tracking-wider shadow-2xs">
                           {course.discount}
                         </span>
                       )}
@@ -186,7 +186,7 @@ const AcademySection = () => {
                     <div className="flex flex-col flex-grow text-left min-w-0">
                       
                       {/* Category Tag */}
-                      <span className="text-[9px] sm:text-[10px] font-black uppercase text-gray-500 tracking-wider truncate mb-0.5">
+                      <span className="text-xs font-black uppercase text-gray-500 tracking-wider truncate mb-0.5">
                         {course.category}
                       </span>
                       
@@ -196,18 +196,18 @@ const AcademySection = () => {
                       </h3>
 
                       {/* Instructor / Educator Name */}
-                      <p className="text-[10px] sm:text-xs text-gray-700 font-bold truncate mb-0.5">
+                      <p className="text-xs text-gray-700 font-bold truncate mb-0.5">
                         {course.instructor}
                       </p>
 
                       {/* Rating & Students */}
-                      <div className="flex items-center gap-1 text-[9px] sm:text-[10px] font-bold text-amber-500 mb-0.5">
+                      <div className="flex items-center gap-1 text-xs font-bold text-amber-500 mb-0.5">
                         <Star size={10} className="fill-amber-400 text-amber-400 shrink-0" />
                         <span className="text-gray-700 font-bold">{course.rating} ({course.students})</span>
                       </div>
 
                       {/* Duration & Mode */}
-                      <p className="text-[9px] sm:text-[10px] text-gray-500 font-medium mb-1.5 truncate flex items-center gap-1">
+                      <p className="text-xs text-gray-500 font-medium mb-1.5 truncate flex items-center gap-1">
                         <GraduationCap size={11} /> {course.duration} • {course.mode}
                       </p>
 
@@ -216,7 +216,7 @@ const AcademySection = () => {
                         <div className="flex items-baseline gap-1">
                           <span className="text-xs sm:text-base font-black text-gray-900">₹{course.price}</span>
                           {course.originalPrice > course.price && (
-                            <span className="text-[10px] sm:text-xs text-gray-400 line-through font-medium">₹{course.originalPrice}</span>
+                            <span className="text-xs text-gray-400 line-through font-medium">₹{course.originalPrice}</span>
                           )}
                         </div>
                       </div>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useUser } from '../context/UserContext';
 import { Mail, Lock, User, ArrowRight, Eye, EyeOff, Loader2, ShieldCheck, KeyRound, Phone, ChevronDown, Tag } from 'lucide-react';
 import { registerUser, verifyEmail, loginUser, verifyLoginOtp, sendForgotPasswordOtp, verifyForgotPasswordOtp, sendVerifyEmailOtp } from '../api/authService';
@@ -7,6 +7,7 @@ import { getStoredReferralCode, clearStoredReferralCode } from '../utils/referra
 
 const Auth = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { login } = useUser();
   const [isLogin, setIsLogin] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
@@ -87,6 +88,13 @@ const Auth = () => {
           login(sessionData);
 
           setTimeout(() => {
+            const redirectParam = searchParams.get('redirect') || sessionStorage.getItem('redirect_after_login');
+            if (redirectParam) {
+              sessionStorage.removeItem('redirect_after_login');
+              navigate(redirectParam);
+              return;
+            }
+
             const user = result.data.safeUser;
             const rolesList = Array.isArray(user.roles) ? user.roles : (user.role ? [user.role] : ['user']);
             const roleStatuses = typeof user.roleStatus === 'object' && user.roleStatus ? user.roleStatus : {};
@@ -201,6 +209,13 @@ const Auth = () => {
           login(sessionData);
 
           setTimeout(() => {
+            const redirectParam = searchParams.get('redirect') || sessionStorage.getItem('redirect_after_login');
+            if (redirectParam) {
+              sessionStorage.removeItem('redirect_after_login');
+              navigate(redirectParam);
+              return;
+            }
+
             const user = result.data.safeUser;
             const rolesList = Array.isArray(user.roles) ? user.roles : (user.role ? [user.role] : ['user']);
             let role = user.role || (Array.isArray(user.roles) ? (user.roles.find(r => r !== 'user') || 'user') : 'user');

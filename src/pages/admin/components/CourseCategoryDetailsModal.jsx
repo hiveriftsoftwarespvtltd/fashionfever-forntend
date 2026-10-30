@@ -3,6 +3,7 @@ import { Loader2, X, BookOpen, Clock, Sparkles } from 'lucide-react';
 import { toast } from '../../../utils/toast';
 import { getCourseCategoryDetails } from '../../../api/adminService';
 import { useTheme } from '../../../context/ThemeContext';
+import { getImageUrl } from '../../../utils/imageUrl';
 
 /**
  * Course Category Details Modal
@@ -49,12 +50,29 @@ const CourseCategoryDetailsModal = ({ courseCategoryId, onClose }) => {
             {/* Modal Header */}
             <div className="flex justify-between items-start">
               <div className="flex items-center gap-4">
-                <div className={`w-16 h-16 rounded-2xl overflow-hidden flex items-center justify-center font-bold border shadow-inner ${isDarkMode ? 'bg-gray-900 border-white/5' : 'bg-gray-50 border-gray-100'}`}>
-                  {category.icon?.url || category.icon ? (
-                    <img src={category.icon?.url || category.icon} alt={category.label} className="w-full h-full object-cover" />
-                  ) : (
-                    <BookOpen className="text-primary" size={24} />
-                  )}
+                <div className={`w-16 h-16 rounded-2xl overflow-hidden flex items-center justify-center font-bold border shadow-inner flex-shrink-0 ${isDarkMode ? 'bg-zinc-900 border-zinc-700' : 'bg-gray-50 border-gray-100'}`}>
+                  {(() => {
+                    const rawIcon = category.icon?.url || category.icon;
+                    const iconUrl = rawIcon ? getImageUrl(rawIcon) : null;
+                    return (
+                      <>
+                        {iconUrl ? (
+                          <img
+                            src={iconUrl}
+                            alt={category.label || category.name || 'Category'}
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              e.target.style.display = 'none';
+                              if (e.target.nextSibling) e.target.nextSibling.style.display = 'flex';
+                            }}
+                          />
+                        ) : null}
+                        <div className={`w-full h-full items-center justify-center ${iconUrl ? 'hidden' : 'flex'}`}>
+                          <BookOpen className="text-primary" size={24} />
+                        </div>
+                      </>
+                    );
+                  })()}
                 </div>
                 <div>
                   <h2 className={`text-xl font-bold leading-tight ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>{category.label || category.name}</h2>

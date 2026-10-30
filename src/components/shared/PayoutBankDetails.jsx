@@ -239,7 +239,7 @@ const PayoutBankDetails = ({ isDarkMode, role = null, ownerId = null }) => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               {/* Account Holder Name */}
               <div className="space-y-1">
-                <label className={`text-[10px] font-black uppercase tracking-wider block ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                <label className={`text-xs font-black uppercase tracking-wider block ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
                   Account Holder Name
                 </label>
                 <input
@@ -258,7 +258,7 @@ const PayoutBankDetails = ({ isDarkMode, role = null, ownerId = null }) => {
 
               {/* Bank Name */}
               <div className="space-y-1">
-                <label className={`text-[10px] font-black uppercase tracking-wider block ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                <label className={`text-xs font-black uppercase tracking-wider block ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
                   Bank Name
                 </label>
                 <input
@@ -277,7 +277,7 @@ const PayoutBankDetails = ({ isDarkMode, role = null, ownerId = null }) => {
 
               {/* Account Number */}
               <div className="space-y-1">
-                <label className={`text-[10px] font-black uppercase tracking-wider block ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                <label className={`text-xs font-black uppercase tracking-wider block ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
                   Account Number
                 </label>
                 <input
@@ -296,7 +296,7 @@ const PayoutBankDetails = ({ isDarkMode, role = null, ownerId = null }) => {
 
               {/* IFSC Code */}
               <div className="space-y-1">
-                <label className={`text-[10px] font-black uppercase tracking-wider block ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                <label className={`text-xs font-black uppercase tracking-wider block ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
                   IFSC Code
                 </label>
                 <input
@@ -315,7 +315,7 @@ const PayoutBankDetails = ({ isDarkMode, role = null, ownerId = null }) => {
 
               {/* Account Type */}
               <div className="space-y-1">
-                <label className={`text-[10px] font-black uppercase tracking-wider block ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                <label className={`text-xs font-black uppercase tracking-wider block ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
                   Account Type
                 </label>
                 <select
@@ -380,7 +380,7 @@ const PayoutBankDetails = ({ isDarkMode, role = null, ownerId = null }) => {
                 <p className={`text-xs font-black uppercase tracking-wider ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>
                   No Bank Accounts Found
                 </p>
-                <p className="text-[10px] text-gray-450 font-bold uppercase mt-1">
+                <p className="text-xs text-gray-450 font-bold uppercase mt-1">
                   Add your bank details to get payouts from your balance.
                 </p>
               </div>
@@ -415,7 +415,7 @@ const PayoutBankDetails = ({ isDarkMode, role = null, ownerId = null }) => {
                           <h4 className={`text-xs font-black uppercase tracking-wider ${isDarkMode ? 'text-white' : 'text-gray-950'}`}>
                             {acc.bankName || 'Partner Bank'}
                           </h4>
-                          <span className="text-[9px] font-bold text-gray-400 uppercase tracking-widest">
+                          <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">
                             IFSC: {acc.ifscCode}
                           </span>
                         </div>
@@ -440,14 +440,14 @@ const PayoutBankDetails = ({ isDarkMode, role = null, ownerId = null }) => {
                         >
                           <Trash2 size={12} />
                         </button>
-                        <span className={`px-2 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-widest ${getStatusColor(acc.status)}`}>
+                        <span className={`px-2 py-0.5 rounded-lg text-xs font-black uppercase tracking-widest ${getStatusColor(acc.status)}`}>
                           {acc.status || 'PENDING'}
                         </span>
                       </div>
                     </div>
 
                     <div className="space-y-1">
-                      <p className={`text-[10px] font-bold tracking-wider ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                      <p className={`text-xs font-bold tracking-wider ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
                         ACCOUNT HOLDER
                       </p>
                       <p className={`text-xs font-black uppercase ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>
@@ -460,13 +460,13 @@ const PayoutBankDetails = ({ isDarkMode, role = null, ownerId = null }) => {
                     <div className="flex items-center gap-1.5 text-xs font-black text-gray-500 dark:text-gray-400">
                       <CreditCard size={14} className="text-gray-450" />
                       <span>•••• {acc.accountNumber?.slice(-4) || '1234'}</span>
-                      <span className="text-[9px] font-bold bg-gray-100 dark:bg-white/5 px-2 py-0.5 rounded-md uppercase ml-2 text-gray-400">
+                      <span className="text-xs font-bold bg-gray-100 dark:bg-white/5 px-2 py-0.5 rounded-md uppercase ml-2 text-gray-400">
                         {acc.accountType}
                       </span>
                     </div>
 
                     {acc.isPrimary && (
-                      <span className="flex items-center gap-1 text-[9px] font-black text-emerald-500 uppercase">
+                      <span className="flex items-center gap-1 text-xs font-black text-emerald-500 uppercase">
                         <CheckCircle2 size={12} /> Primary
                       </span>
                     )}

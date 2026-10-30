@@ -402,7 +402,7 @@ const Shop = () => {
 
           {/* Text Overlay Content */}
           <div className="relative z-10 max-w-lg text-left py-2">
-            <span className="text-[#ff4d6d] font-black uppercase tracking-wider text-[9px] sm:text-[11px] mb-1 block">
+            <span className="text-[#ff4d6d] font-black uppercase tracking-wider text-xs mb-1 block">
               NEW ARRIVALS 2024
             </span>
 
@@ -422,8 +422,8 @@ const Shop = () => {
         <div className="flex flex-col lg:flex-row gap-8 items-start">
 
           {/* Desktop Filters Sidebar */}
-          <aside className="hidden lg:block w-[280px] flex-shrink-0 sticky top-24 self-start">
-            <div className="bg-white rounded-2xl border border-gray-100 p-6 xl:p-8 shadow-sm max-h-[calc(100vh-120px)] overflow-y-auto custom-scrollbar">
+          <aside className="hidden lg:block w-[280px] flex-shrink-0 sticky top-[165px] self-start z-20">
+            <div className="bg-white rounded-2xl border border-gray-100 p-6 xl:p-8 shadow-sm max-h-[calc(100vh-185px)] overflow-y-auto custom-scrollbar">
               <FilterContent />
             </div>
           </aside>

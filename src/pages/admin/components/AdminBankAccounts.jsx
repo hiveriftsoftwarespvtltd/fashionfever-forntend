@@ -166,7 +166,7 @@ const AdminBankAccounts = ({ isDarkMode }) => {
         <div className={`p-5 rounded-3xl border transition-all ${isDarkMode ? 'bg-gray-900 border-white/5' : 'bg-white border-gray-150 shadow-sm'}`}>
           <div className="flex items-center gap-2.5 text-gray-400 mb-2">
             <Landmark size={15} />
-            <span className="text-[10px] font-black uppercase tracking-widest">Total Accounts</span>
+            <span className="text-xs font-black uppercase tracking-widest">Total Accounts</span>
           </div>
           <span className={`text-2xl font-black ${isDarkMode ? 'text-white' : 'text-gray-950'}`}>{totalCount}</span>
         </div>
@@ -174,7 +174,7 @@ const AdminBankAccounts = ({ isDarkMode }) => {
         <div className={`p-5 rounded-3xl border transition-all ${isDarkMode ? 'bg-gray-900 border-white/5' : 'bg-white border-gray-150 shadow-sm'}`}>
           <div className="flex items-center gap-2.5 text-amber-500 mb-2">
             <Clock size={15} />
-            <span className="text-[10px] font-black uppercase tracking-widest">Pending Verification</span>
+            <span className="text-xs font-black uppercase tracking-widest">Pending Verification</span>
           </div>
           <span className={`text-2xl font-black ${isDarkMode ? 'text-white' : 'text-gray-950'}`}>{pendingCount}</span>
         </div>
@@ -182,7 +182,7 @@ const AdminBankAccounts = ({ isDarkMode }) => {
         <div className={`p-5 rounded-3xl border transition-all ${isDarkMode ? 'bg-gray-900 border-white/5' : 'bg-white border-gray-150 shadow-sm'}`}>
           <div className="flex items-center gap-2.5 text-emerald-500 mb-2">
             <ShieldCheck size={15} />
-            <span className="text-[10px] font-black uppercase tracking-widest">Verified Accounts</span>
+            <span className="text-xs font-black uppercase tracking-widest">Verified Accounts</span>
           </div>
           <span className={`text-2xl font-black ${isDarkMode ? 'text-white' : 'text-gray-950'}`}>{verifiedCount}</span>
         </div>
@@ -190,7 +190,7 @@ const AdminBankAccounts = ({ isDarkMode }) => {
         <div className={`p-5 rounded-3xl border transition-all ${isDarkMode ? 'bg-gray-900 border-white/5' : 'bg-white border-gray-150 shadow-sm'}`}>
           <div className="flex items-center gap-2.5 text-rose-500 mb-2">
             <XCircle size={15} />
-            <span className="text-[10px] font-black uppercase tracking-widest">Rejected Accounts</span>
+            <span className="text-xs font-black uppercase tracking-widest">Rejected Accounts</span>
           </div>
           <span className={`text-2xl font-black ${isDarkMode ? 'text-white' : 'text-gray-950'}`}>{rejectedCount}</span>
         </div>
@@ -222,7 +222,7 @@ const AdminBankAccounts = ({ isDarkMode }) => {
             <button
               key={filter}
               onClick={() => setStatusFilter(filter)}
-              className={`px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-wider cursor-pointer transition-all ${
+              className={`px-4 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider cursor-pointer transition-all ${
                 statusFilter === filter
                   ? 'bg-primary text-white shadow-md shadow-primary/20'
                   : isDarkMode
@@ -241,7 +241,7 @@ const AdminBankAccounts = ({ isDarkMode }) => {
         <div className="overflow-x-auto">
           <table className="w-full text-xs text-left border-collapse">
             <thead>
-              <tr className={`border-b text-[10px] font-black uppercase tracking-widest ${isDarkMode ? 'border-white/5 bg-gray-950/40 text-gray-400' : 'border-gray-100 bg-gray-50 text-gray-500'}`}>
+              <tr className={`border-b text-xs font-black uppercase tracking-widest ${isDarkMode ? 'border-white/5 bg-gray-950/40 text-gray-400' : 'border-gray-100 bg-gray-50 text-gray-500'}`}>
                 <th className="px-6 py-4">Account Holder & Bank</th>
                 <th className="px-6 py-4">Account Number</th>
                 <th className="px-6 py-4">IFSC Code</th>
@@ -257,7 +257,7 @@ const AdminBankAccounts = ({ isDarkMode }) => {
                   <td colSpan="7" className="px-6 py-16 text-center">
                     <div className="flex flex-col items-center gap-3">
                       <RefreshCw className="animate-spin text-primary" size={24} />
-                      <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest animate-pulse">Loading accounts log...</span>
+                      <span className="text-xs font-black text-gray-400 uppercase tracking-widest animate-pulse">Loading accounts log...</span>
                     </div>
                   </td>
                 </tr>
@@ -272,7 +272,7 @@ const AdminBankAccounts = ({ isDarkMode }) => {
                   <tr key={acc._id} className={`hover:bg-gray-50/50 dark:hover:bg-white/5 transition-all`}>
                     <td className="px-6 py-4">
                       <div className="font-black text-gray-800 dark:text-white uppercase">{acc.accountHolderName}</div>
-                      <div className="text-[10px] font-semibold text-gray-400 uppercase mt-0.5">{acc.bankName}</div>
+                      <div className="text-xs font-semibold text-gray-400 uppercase mt-0.5">{acc.bankName}</div>
                     </td>
                     <td className="px-6 py-4 font-bold tracking-wider text-gray-600 dark:text-gray-300">
                       {acc.accountNumber}
@@ -281,26 +281,26 @@ const AdminBankAccounts = ({ isDarkMode }) => {
                       {acc.ifscCode}
                     </td>
                     <td className="px-6 py-4">
-                      <span className="text-[9px] font-black uppercase tracking-widest bg-gray-100 dark:bg-white/5 px-2 py-0.5 rounded-md text-gray-500">
+                      <span className="text-xs font-black uppercase tracking-widest bg-gray-100 dark:bg-white/5 px-2 py-0.5 rounded-md text-gray-500">
                         {acc.accountType}
                       </span>
                     </td>
                     <td className="px-6 py-4">
                       {acc.isPrimary ? (
-                        <span className="text-[9px] font-black text-emerald-500 uppercase tracking-widest">Primary</span>
+                        <span className="text-xs font-black text-emerald-500 uppercase tracking-widest">Primary</span>
                       ) : (
-                        <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest">-</span>
+                        <span className="text-xs font-black text-gray-400 uppercase tracking-widest">-</span>
                       )}
                     </td>
                     <td className="px-6 py-4">
-                      <span className={`px-2.5 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-widest ${getStatusBadge(acc.status)}`}>
+                      <span className={`px-2.5 py-0.5 rounded-lg text-xs font-black uppercase tracking-widest ${getStatusBadge(acc.status)}`}>
                         {acc.status || 'PENDING'}
                       </span>
                     </td>
                     <td className="px-6 py-4 text-center">
                       <button
                         onClick={() => loadDetails(acc._id)}
-                        className={`flex items-center justify-center gap-1.5 mx-auto px-3.5 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all cursor-pointer ${
+                        className={`flex items-center justify-center gap-1.5 mx-auto px-3.5 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all cursor-pointer ${
                           isDarkMode
                             ? 'bg-gray-800 hover:bg-gray-700 text-white'
                             : 'bg-gray-100 hover:bg-primary hover:text-white text-gray-700'
@@ -331,7 +331,7 @@ const AdminBankAccounts = ({ isDarkMode }) => {
                 </div>
                 <div>
                   <h3 className="text-sm font-black uppercase tracking-wider">Account Audit File</h3>
-                  <p className="text-[9px] font-bold text-gray-450 uppercase mt-0.5">ID: {selectedAccountId}</p>
+                  <p className="text-xs font-bold text-gray-450 uppercase mt-0.5">ID: {selectedAccountId}</p>
                 </div>
               </div>
               <button
@@ -346,7 +346,7 @@ const AdminBankAccounts = ({ isDarkMode }) => {
             {loadingDetails ? (
               <div className="py-20 flex flex-col items-center justify-center gap-3">
                 <RefreshCw className="animate-spin text-primary" size={30} />
-                <p className="text-[10px] font-black uppercase tracking-widest text-gray-450 animate-pulse">Inspecting details...</p>
+                <p className="text-xs font-black uppercase tracking-widest text-gray-450 animate-pulse">Inspecting details...</p>
               </div>
             ) : accountDetails ? (
               <div className="p-6 space-y-6 max-h-[60vh] overflow-y-auto scrollbar-thin scrollbar-thumb-primary/10">
@@ -359,15 +359,15 @@ const AdminBankAccounts = ({ isDarkMode }) => {
                   <div className="flex items-start justify-between z-10">
                     <div>
                       <h4 className="text-xs font-black uppercase tracking-wider">{accountDetails.bankName}</h4>
-                      <span className="text-[9px] font-bold text-gray-400 uppercase tracking-widest">IFSC: {accountDetails.ifscCode}</span>
+                      <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">IFSC: {accountDetails.ifscCode}</span>
                     </div>
-                    <span className={`px-2.5 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-widest ${getStatusBadge(accountDetails.status)}`}>
+                    <span className={`px-2.5 py-0.5 rounded-lg text-xs font-black uppercase tracking-widest ${getStatusBadge(accountDetails.status)}`}>
                       {accountDetails.status || 'PENDING'}
                     </span>
                   </div>
 
                   <div className="space-y-1 mt-4 z-10">
-                    <span className="text-[9px] font-bold text-gray-400 uppercase tracking-widest block">Account Holder</span>
+                    <span className="text-xs font-bold text-gray-400 uppercase tracking-widest block">Account Holder</span>
                     <span className="text-xs font-black uppercase">{accountDetails.accountHolderName}</span>
                   </div>
 
@@ -376,7 +376,7 @@ const AdminBankAccounts = ({ isDarkMode }) => {
                       <CreditCard size={14} className="text-gray-400" />
                       {accountDetails.accountNumber}
                     </span>
-                    <span className="text-[9px] font-black bg-primary/10 text-primary px-2 py-0.5 rounded-md uppercase">
+                    <span className="text-xs font-black bg-primary/10 text-primary px-2 py-0.5 rounded-md uppercase">
                       {accountDetails.accountType}
                     </span>
                   </div>
@@ -385,12 +385,12 @@ const AdminBankAccounts = ({ isDarkMode }) => {
                 {/* Audit Grid */}
                 <div className="grid grid-cols-2 gap-5 text-xs">
                   <div className="space-y-1">
-                    <span className="text-[9px] font-black text-gray-450 uppercase block">Owner type</span>
+                    <span className="text-xs font-black text-gray-450 uppercase block">Owner type</span>
                     <span className="font-bold uppercase">{accountDetails.ownerType || 'USER'}</span>
                   </div>
 
                   <div className="space-y-1">
-                    <span className="text-[9px] font-black text-gray-450 uppercase block">Registered on</span>
+                    <span className="text-xs font-black text-gray-450 uppercase block">Registered on</span>
                     <span className="font-bold flex items-center gap-1">
                       <Calendar size={13} className="text-gray-400" />
                       {accountDetails.createdAt ? new Date(accountDetails.createdAt).toLocaleDateString() : 'N/A'}
@@ -398,15 +398,15 @@ const AdminBankAccounts = ({ isDarkMode }) => {
                   </div>
 
                   <div className="space-y-1 col-span-2">
-                    <span className="text-[9px] font-black text-gray-450 uppercase block">Owner Database ID</span>
-                    <span className="font-mono text-[10px] break-all bg-gray-100 dark:bg-white/5 p-2 rounded-xl block">
+                    <span className="text-xs font-black text-gray-450 uppercase block">Owner Database ID</span>
+                    <span className="font-mono text-xs break-all bg-gray-100 dark:bg-white/5 p-2 rounded-xl block">
                       {accountDetails.ownerId}
                     </span>
                   </div>
 
                   {accountDetails.verifiedAt && (
                     <div className="space-y-1 col-span-2">
-                      <span className="text-[9px] font-black text-gray-450 uppercase block">Verified At</span>
+                      <span className="text-xs font-black text-gray-450 uppercase block">Verified At</span>
                       <span className="font-bold flex items-center gap-1">
                         <Calendar size={13} className="text-gray-400" />
                         {new Date(accountDetails.verifiedAt).toLocaleString()}
@@ -416,7 +416,7 @@ const AdminBankAccounts = ({ isDarkMode }) => {
 
                   {accountDetails.verificationReference && (
                     <div className="space-y-1 col-span-2">
-                      <span className="text-[9px] font-black text-gray-450 uppercase block">Verification Reference</span>
+                      <span className="text-xs font-black text-gray-450 uppercase block">Verification Reference</span>
                       <span className="font-semibold italic text-gray-500">
                         {accountDetails.verificationReference}
                       </span>
@@ -426,19 +426,19 @@ const AdminBankAccounts = ({ isDarkMode }) => {
 
                 {/* Verification Control Console */}
                 <div className={`p-4 rounded-3xl border ${isDarkMode ? 'bg-gray-955 border-white/5' : 'bg-gray-50 border-gray-200'}`}>
-                  <p className="text-[10px] font-black uppercase tracking-wider text-gray-400 mb-3">Verification Actions</p>
+                  <p className="text-xs font-black uppercase tracking-wider text-gray-400 mb-3">Verification Actions</p>
                   
                   {decision === null ? (
                     <div className="flex gap-3">
                       <button
                         onClick={() => setDecision('VERIFIED')}
-                        className="flex-1 py-2.5 rounded-2xl text-[10px] font-black uppercase text-white bg-emerald-500 hover:bg-emerald-600 transition-all cursor-pointer text-center"
+                        className="flex-1 py-2.5 rounded-2xl text-xs font-black uppercase text-white bg-emerald-500 hover:bg-emerald-600 transition-all cursor-pointer text-center"
                       >
                         Verify / Approve
                       </button>
                       <button
                         onClick={() => setDecision('REJECTED')}
-                        className="flex-1 py-2.5 rounded-2xl text-[10px] font-black uppercase text-white bg-rose-500 hover:bg-rose-600 transition-all cursor-pointer text-center"
+                        className="flex-1 py-2.5 rounded-2xl text-xs font-black uppercase text-white bg-rose-500 hover:bg-rose-600 transition-all cursor-pointer text-center"
                       >
                         Reject Account
                       </button>
@@ -447,7 +447,7 @@ const AdminBankAccounts = ({ isDarkMode }) => {
                     <div className="space-y-4">
                       {decision === 'VERIFIED' ? (
                         <div className="space-y-2">
-                          <label className="text-[9px] font-black uppercase tracking-wider text-gray-400 block">Verification Reference (Optional)</label>
+                          <label className="text-xs font-black uppercase tracking-wider text-gray-400 block">Verification Reference (Optional)</label>
                           <input
                             type="text"
                             placeholder="e.g. Transaction Ref, Bank Confirmation No."
@@ -462,7 +462,7 @@ const AdminBankAccounts = ({ isDarkMode }) => {
                         </div>
                       ) : (
                         <div className="space-y-2">
-                          <label className="text-[9px] font-black uppercase tracking-wider text-gray-400 block font-bold text-rose-500">Rejection Reason</label>
+                          <label className="text-xs font-black uppercase tracking-wider text-gray-400 block font-bold text-rose-500">Rejection Reason</label>
                           <input
                             type="text"
                             placeholder="e.g. Invalid IFSC Code, Name mismatch"
@@ -481,7 +481,7 @@ const AdminBankAccounts = ({ isDarkMode }) => {
                         <button
                           type="button"
                           onClick={() => setDecision(null)}
-                          className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase cursor-pointer ${
+                          className={`px-4 py-2 rounded-xl text-xs font-black uppercase cursor-pointer ${
                             isDarkMode ? 'bg-gray-800 hover:bg-gray-700 text-white' : 'bg-gray-250 hover:bg-gray-200 text-gray-700'
                           }`}
                         >
@@ -491,7 +491,7 @@ const AdminBankAccounts = ({ isDarkMode }) => {
                           type="button"
                           onClick={handleStatusSubmit}
                           disabled={updatingStatus || (decision === 'REJECTED' && !rejectionReason)}
-                          className="flex items-center gap-1.5 px-6 py-2 rounded-xl text-[10px] font-black uppercase text-white bg-primary hover:bg-primary/95 transition-all cursor-pointer disabled:opacity-50"
+                          className="flex items-center gap-1.5 px-6 py-2 rounded-xl text-xs font-black uppercase text-white bg-primary hover:bg-primary/95 transition-all cursor-pointer disabled:opacity-50"
                         >
                           {updatingStatus && <RefreshCw size={10} className="animate-spin" />}
                           Confirm Decision

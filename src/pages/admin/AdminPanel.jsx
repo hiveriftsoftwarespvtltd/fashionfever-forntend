@@ -128,6 +128,7 @@ const AdminPanel = () => {
 
   // Admin and sub-admin granular module permissions states
   const [adminAccess, setAdminAccess] = useState([]);
+  const [allowedTabs, setAllowedTabs] = useState([]);
   const [isSuperAdmin, setIsSuperAdmin] = useState(false);
   const [profileLoading, setProfileLoading] = useState(true);
 
@@ -135,15 +136,21 @@ const AdminPanel = () => {
   const hasAccessToTab = (tab) => {
     if (profileLoading) return true;
     if (isSuperAdmin) return true;
-    if (tab === 'profile' || tab === 'dashboard') return true;
+    if (tab === 'profile') return true;
+    if (tab === 'sub-admins') return false; // strictly only super_admin
+
+    // If granular allowedTabs are configured for this sub-admin
+    if (Array.isArray(allowedTabs) && allowedTabs.length > 0) {
+      return allowedTabs.includes(tab);
+    }
 
     // Check which module corresponds to the tab
     const tabModuleMap = {
+      'dashboard': 'DASHBOARD',
       'users': 'USERS',
       'service-providers': 'SERVICE_PROVIDERS',
       'educators': 'COURSES',
       'all-educators': 'COURSES',
-      'sub-admins': 'NONE', // only super_admin can access sub-admins list
       'vendors': 'VENDORS',
       'pending': 'VENDORS',
       'vendor-payouts': 'VENDORS',
@@ -151,25 +158,56 @@ const AdminPanel = () => {
       'influencers': 'INFLUENCERS',
       'commission-slabs': 'INFLUENCERS',
       'influencer-commissions': 'INFLUENCERS',
-      'categories': 'COURSES',
+      'categories': ['COURSES', 'VENDORS'],
       'course-categories': 'COURSES',
       'products': 'VENDORS',
       'coupons': 'INFLUENCERS',
       'subscription-plans': 'SERVICE_PROVIDERS',
-      'orders': 'VENDORS',
+      'orders': ['VENDORS', 'SERVICE_PROVIDERS'],
       'beauty-services': 'SERVICE_PROVIDERS',
       'service-categories': 'SERVICE_PROVIDERS',
       'admin-service-leads': 'SERVICE_PROVIDERS',
       'home-content': 'HOME_CONTENT',
-      'cashback-slabs': 'FINANCE',
+      'home-booking-cards': 'HOME_CONTENT',
+      'cashback-slabs': ['FINANCE', 'USERS'],
       'wallet-balances': 'FINANCE',
+      'bank-accounts': 'FINANCE',
       'tickets': 'TICKETS',
       'notifications': 'NOTIFICATION'
     };
 
-    const requiredModule = tabModuleMap[tab];
-    if (!requiredModule) return true; // general fallback
-    return adminAccess.some(item => item.module === requiredModule);
+    const required = tabModuleMap[tab];
+    if (!required) return false;
+    const requiredModules = Array.isArray(required) ? required : [required];
+    return adminAccess.some(item => {
+      const mod = typeof item === 'string' ? item : item?.module;
+      if (!requiredModules.includes(mod)) return false;
+      if (item?.access && Array.isArray(item.access)) {
+        return item.access.length > 0;
+      }
+      return true;
+    });
+  };
+
+  const getFirstAccessibleTab = () => {
+    if (isSuperAdmin || hasAccessToTab('dashboard')) return 'dashboard';
+    const tabPriority = [
+      'users',
+      'vendors',
+      'service-providers',
+      'educators',
+      'affiliate-dashboard',
+      'categories',
+      'orders',
+      'home-content',
+      'wallet-balances',
+      'tickets',
+      'notifications'
+    ];
+    for (const t of tabPriority) {
+      if (hasAccessToTab(t)) return t;
+    }
+    return 'profile';
   };
 
   useEffect(() => {
@@ -179,6 +217,7 @@ const AdminPanel = () => {
         const response = await getAdminProfile();
         if (response.success && response.data) {
           setAdminAccess(response.data.adminAccess || response.data.moduleAccess || []);
+          setAllowedTabs(response.data.allowedTabs || []);
           setIsSuperAdmin(response.data.user?.roles?.includes('super_admin') || false);
         }
       } catch (err) {
@@ -192,14 +231,10 @@ const AdminPanel = () => {
 
   useEffect(() => {
     if (!profileLoading && !hasAccessToTab(activeTab)) {
-      // Find a safe tab they do have access to, or default to profile
-      if (isSuperAdmin || adminAccess.some(item => item.module === 'DASHBOARD')) {
-        setSearchParams({ tab: 'dashboard' });
-      } else {
-        setSearchParams({ tab: 'profile' });
-      }
+      const fallbackTab = getFirstAccessibleTab();
+      setSearchParams({ tab: fallbackTab });
     }
-  }, [activeTab, profileLoading, isSuperAdmin, adminAccess]);
+  }, [activeTab, profileLoading, isSuperAdmin, adminAccess, allowedTabs]);
 
   useEffect(() => {
     if (containerRef.current) {
@@ -324,16 +359,16 @@ const AdminPanel = () => {
   };
 
   useEffect(() => {
-    if (activeTab === 'dashboard') {
+    if (!profileLoading && activeTab === 'dashboard' && hasAccessToTab('dashboard')) {
       fetchMonthlyData(selectedYear);
     }
-  }, [selectedYear, activeTab]);
+  }, [selectedYear, activeTab, profileLoading, isSuperAdmin, adminAccess, allowedTabs]);
 
   useEffect(() => {
-    if (activeTab === 'dashboard') {
+    if (!profileLoading && activeTab === 'dashboard' && hasAccessToTab('dashboard')) {
       fetchOverview();
     }
-  }, [activeTab]);
+  }, [activeTab, profileLoading, isSuperAdmin, adminAccess, allowedTabs]);
 
   const setActiveTab = (tab) => {
     setSearchParams({ tab });
@@ -348,6 +383,7 @@ const AdminPanel = () => {
   };
 
   const fetchData = async () => {
+    if (!hasAccessToTab(activeTab)) return;
     setLoading(true);
     try {
       let response;
@@ -389,7 +425,10 @@ const AdminPanel = () => {
         } else if (activeTab === 'categories' || activeTab === 'orders' || activeTab === 'products' || activeTab === 'home-content' || activeTab === 'educators' || activeTab === 'all-educators' || activeTab === 'cashback-slabs') {
           list = response.data?.data || response.data || [];
         } else {
-          list = response.data?.users || response.data?.vendors || response.data?.influencers || response.data?.coupons || response.data?.data || response.data || [];
+          list = response.data?.users || response.data?.vendors || response.data?.influencers || response.data?.coupons || response.data?.data || (Array.isArray(response.data) ? response.data : []);
+        }
+        if (!Array.isArray(list)) {
+          list = [];
         }
         if (activeTab === 'vendors') {
           list = list.filter(u => u.roles?.includes('vendor') || u.role === 'vendor' || u.vendorId || u.businessName);
@@ -399,15 +438,21 @@ const AdminPanel = () => {
           list = [...list].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
         }
         setDataList(list);
-        setPagination(prev => ({ ...prev, total: response.data?.total || list.length }));
+        setPagination(prev => ({ ...prev, total: response.data?.total !== undefined ? response.data.total : list.length }));
       }
     } catch (error) { toast.error('Data sync failed'); }
     finally { setLoading(false); }
   };
 
   useEffect(() => {
-    if (['users', 'vendors', 'pending', 'influencers', 'commission-slabs', 'coupons', 'categories', 'course-categories', 'orders', 'products', 'home-content', 'educators', 'all-educators', 'cashback-slabs'].includes(activeTab)) fetchData();
-  }, [activeTab, pagination.page, filters.role]);
+    if (
+      !profileLoading &&
+      ['users', 'vendors', 'pending', 'influencers', 'commission-slabs', 'coupons', 'categories', 'course-categories', 'orders', 'products', 'home-content', 'educators', 'all-educators', 'cashback-slabs'].includes(activeTab) &&
+      hasAccessToTab(activeTab)
+    ) {
+      fetchData();
+    }
+  }, [activeTab, pagination.page, filters.role, profileLoading, isSuperAdmin, adminAccess, allowedTabs]);
 
   const handleDeleteConfirm = async () => {
     if (!itemToDelete) return;
@@ -545,32 +590,62 @@ const AdminPanel = () => {
   const userColumns = [
     {
       header: 'User Profile',
-      render: (user) => (
-        <div className="flex items-center gap-3.5 text-left">
-          <div className={`w-11 h-11 rounded-xl flex items-center justify-center font-black text-sm flex-shrink-0 border ${
-            isDarkMode ? 'bg-zinc-800 border-zinc-700 text-zinc-100' : 'bg-zinc-100 border-zinc-200 text-zinc-800 shadow-sm'
-          }`}>
-            {user.name?.charAt(0).toUpperCase() || 'U'}
+      render: (user) => {
+        const avatarUrl = user.avatar?.url || user.avatar;
+        const resolvedAvatar = avatarUrl ? getImageUrl(avatarUrl) : null;
+        return (
+          <div className="flex items-center gap-3.5 text-left">
+            <div className={`w-11 h-11 rounded-xl overflow-hidden flex items-center justify-center font-black text-sm flex-shrink-0 border ${
+              isDarkMode ? 'bg-zinc-800 border-zinc-700 text-zinc-100' : 'bg-zinc-100 border-zinc-200 text-zinc-800 shadow-sm'
+            }`}>
+              {resolvedAvatar ? (
+                <img
+                  src={resolvedAvatar}
+                  alt={user.name || 'User'}
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                    if (e.target.nextSibling) e.target.nextSibling.style.display = 'flex';
+                  }}
+                />
+              ) : null}
+              <div
+                style={{ display: resolvedAvatar ? 'none' : 'flex' }}
+                className="w-full h-full items-center justify-center text-primary font-black text-sm"
+              >
+                {user.name?.charAt(0).toUpperCase() || 'U'}
+              </div>
+            </div>
+            <div className="flex flex-col">
+              <span className={`text-sm font-extrabold ${isDarkMode ? 'text-zinc-100' : 'text-zinc-900'}`}>{user.name || 'User'}</span>
+              <span className={`text-xs font-semibold ${isDarkMode ? 'text-zinc-400' : 'text-zinc-500'}`}>{user.email}</span>
+              {user.phone && <span className={`text-[11px] font-medium ${isDarkMode ? 'text-zinc-500' : 'text-zinc-400'}`}>📞 {user.phone}</span>}
+            </div>
           </div>
-          <div className="flex flex-col">
-            <span className={`text-sm font-extrabold ${isDarkMode ? 'text-zinc-100' : 'text-zinc-900'}`}>{user.name}</span>
-            <span className={`text-xs font-semibold ${isDarkMode ? 'text-zinc-400' : 'text-zinc-500'}`}>{user.email}</span>
-          </div>
-        </div>
-      )
+        );
+      }
     },
     { 
       header: 'System Role', 
-      render: (user) => (
-        <span className="px-2.5 py-1 rounded-lg bg-primary/10 text-primary text-xs font-black uppercase tracking-wider border border-primary/20">
-          {user.role}
-        </span>
-      ) 
+      render: (user) => {
+        const rolesList = Array.isArray(user.roles) && user.roles.length > 0
+          ? user.roles
+          : (user.role ? [user.role] : ['user']);
+        return (
+          <div className="flex flex-wrap gap-1">
+            {rolesList.map((r, idx) => (
+              <span key={idx} className="px-2.5 py-1 rounded-lg bg-primary/10 text-primary text-xs font-black uppercase tracking-wider border border-primary/20">
+                {r}
+              </span>
+            ))}
+          </div>
+        );
+      } 
     },
     {
       header: 'Status',
       render: (user) => {
-        const isActive = user.isActive && !user.isDeleted;
+        const isActive = user.isActive !== false && !user.isDeleted;
         return (
           <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-black uppercase tracking-wide border ${
             isActive 
@@ -588,7 +663,7 @@ const AdminPanel = () => {
       render: (user) => (
         <div className="flex flex-col text-left">
           <span className={`text-xs font-extrabold ${isDarkMode ? 'text-zinc-200' : 'text-zinc-800'}`}>
-            {new Date(user.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}
+            {user.createdAt ? new Date(user.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : 'N/A'}
           </span>
           <span className="text-xs uppercase font-bold text-zinc-400 mt-0.5">Onboarded</span>
         </div>
@@ -801,7 +876,7 @@ const AdminPanel = () => {
             <span className="px-2.5 py-1 rounded-lg bg-pink-500/10 text-pink-500 text-xs font-black uppercase border border-pink-500/20 inline-flex items-center gap-1">
               {inf.commissionRate}%
               {inf.commissionRate === 0 && (
-                <span className="text-[10px] text-zinc-400 font-semibold">(0%)</span>
+                <span className="text-xs text-zinc-400 font-semibold">(0%)</span>
               )}
             </span>
           );
@@ -1205,23 +1280,42 @@ const AdminPanel = () => {
   const categoryColumns = [
     {
       header: 'Category',
-      render: (cat) => (
-        <div className="flex items-center gap-3 text-left">
-          <div className={`w-10 h-10 rounded-xl overflow-hidden flex items-center justify-center font-bold border flex-shrink-0 ${
-            isDarkMode ? 'bg-zinc-800 border-zinc-700' : 'bg-zinc-100 border-zinc-200'
-          }`}>
-            {cat.image?.url ? (
-              <img src={cat.image.url} alt={cat.label} className="w-full h-full object-cover" />
-            ) : (
-              <span className="text-primary font-black text-sm">{cat.label?.charAt(0) || 'C'}</span>
-            )}
+      render: (cat) => {
+        const rawImg = cat.image?.url || cat.image || cat.icon?.url || cat.icon;
+        const logo = rawImg ? getImageUrl(rawImg) : null;
+        const initial = (cat.label || cat.name || 'C').charAt(0).toUpperCase();
+
+        return (
+          <div className="flex items-center gap-3 text-left">
+            <div className={`w-10 h-10 rounded-xl overflow-hidden flex items-center justify-center font-bold border flex-shrink-0 ${
+              isDarkMode ? 'bg-zinc-800 border-zinc-700 text-zinc-100' : 'bg-zinc-100 border-zinc-200 text-zinc-800'
+            }`}>
+              {logo ? (
+                <img
+                  src={logo}
+                  alt={cat.label || 'Category'}
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                    if (e.target.nextSibling) e.target.nextSibling.style.display = 'flex';
+                  }}
+                />
+              ) : null}
+              <div
+                className={`w-full h-full items-center justify-center text-sm font-black ${logo ? 'hidden' : 'flex'} ${
+                  isDarkMode ? 'bg-zinc-800 text-primary' : 'bg-primary/10 text-primary'
+                }`}
+              >
+                {initial}
+              </div>
+            </div>
+            <div className="flex flex-col">
+              <span className={`text-sm font-extrabold ${isDarkMode ? 'text-zinc-100' : 'text-zinc-900'}`}>{cat.label}</span>
+              <span className="text-xs font-mono font-bold text-zinc-400 lowercase">/{cat.slug}</span>
+            </div>
           </div>
-          <div className="flex flex-col">
-            <span className={`text-sm font-extrabold ${isDarkMode ? 'text-zinc-100' : 'text-zinc-900'}`}>{cat.label}</span>
-            <span className="text-xs font-mono font-bold text-zinc-400 lowercase">/{cat.slug}</span>
-          </div>
-        </div>
-      )
+        );
+      }
     },
     { 
       header: 'Description', 
@@ -1320,17 +1414,33 @@ const AdminPanel = () => {
     {
       header: 'Course Category',
       render: (cat) => {
-        const logo = cat.icon?.url || cat.icon || '';
+        const rawIcon = cat.icon?.url || cat.icon || '';
+        const logo = rawIcon ? getImageUrl(rawIcon) : null;
+        const initial = (cat.label || cat.name || 'C').charAt(0).toUpperCase();
+
         return (
           <div className="flex items-center gap-3 text-left">
             <div className={`w-10 h-10 rounded-xl overflow-hidden flex items-center justify-center font-bold border flex-shrink-0 ${
-              isDarkMode ? 'bg-zinc-800 border-zinc-700' : 'bg-zinc-100 border-zinc-200'
+              isDarkMode ? 'bg-zinc-800 border-zinc-700 text-zinc-100' : 'bg-zinc-100 border-zinc-200 text-zinc-800'
             }`}>
               {logo ? (
-                <img src={logo} alt={cat.label} className="w-full h-full object-cover" />
-              ) : (
-                <span className="text-primary font-black text-sm">{cat.label?.charAt(0).toUpperCase()}</span>
-              )}
+                <img
+                  src={logo}
+                  alt={cat.label || cat.name || 'Category'}
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                    if (e.target.nextSibling) e.target.nextSibling.style.display = 'flex';
+                  }}
+                />
+              ) : null}
+              <div
+                className={`w-full h-full items-center justify-center text-sm font-black ${logo ? 'hidden' : 'flex'} ${
+                  isDarkMode ? 'bg-zinc-800 text-primary' : 'bg-primary/10 text-primary'
+                }`}
+              >
+                {initial}
+              </div>
             </div>
             <div className="flex flex-col">
               <span className={`text-sm font-extrabold ${isDarkMode ? 'text-zinc-100' : 'text-zinc-900'}`}>{cat.label}</span>
@@ -1532,23 +1642,42 @@ const AdminPanel = () => {
   const productColumns = [
     {
       header: 'Product Details',
-      render: (product) => (
-        <div className="flex items-center gap-3 text-left">
-          <div className={`w-10 h-10 rounded-xl overflow-hidden flex items-center justify-center font-bold border flex-shrink-0 ${
-            isDarkMode ? 'bg-zinc-800 border-zinc-700' : 'bg-zinc-100 border-zinc-200'
-          }`}>
-            {product.image?.url || (product.images && product.images[0]?.url) ? (
-              <img src={product.image?.url || product.images[0].url} alt={product.name} className="w-full h-full object-cover" />
-            ) : (
-              <span className="text-primary font-black text-sm">{product.name?.charAt(0).toUpperCase()}</span>
-            )}
+      render: (product) => {
+        const rawImg = product.image?.url || product.image || (product.images && product.images[0]?.url) || (product.images && product.images[0]);
+        const logo = rawImg ? getImageUrl(rawImg) : null;
+        const initial = (product.name || 'P').charAt(0).toUpperCase();
+
+        return (
+          <div className="flex items-center gap-3 text-left">
+            <div className={`w-10 h-10 rounded-xl overflow-hidden flex items-center justify-center font-bold border flex-shrink-0 ${
+              isDarkMode ? 'bg-zinc-800 border-zinc-700 text-zinc-100' : 'bg-zinc-100 border-zinc-200 text-zinc-800'
+            }`}>
+              {logo ? (
+                <img
+                  src={logo}
+                  alt={product.name || 'Product'}
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                    if (e.target.nextSibling) e.target.nextSibling.style.display = 'flex';
+                  }}
+                />
+              ) : null}
+              <div
+                className={`w-full h-full items-center justify-center text-sm font-black ${logo ? 'hidden' : 'flex'} ${
+                  isDarkMode ? 'bg-zinc-800 text-primary' : 'bg-primary/10 text-primary'
+                }`}
+              >
+                {initial}
+              </div>
+            </div>
+            <div className="flex flex-col">
+              <span className={`text-sm font-extrabold max-w-xs truncate ${isDarkMode ? 'text-zinc-100' : 'text-zinc-900'}`}>{product.name}</span>
+              <span className="text-xs font-mono font-bold text-zinc-400 uppercase">ID: {product._id?.substring(18)}</span>
+            </div>
           </div>
-          <div className="flex flex-col">
-            <span className={`text-sm font-extrabold max-w-xs truncate ${isDarkMode ? 'text-zinc-100' : 'text-zinc-900'}`}>{product.name}</span>
-            <span className="text-xs font-mono font-bold text-zinc-400 uppercase">ID: {product._id?.substring(18)}</span>
-          </div>
-        </div>
-      )
+        );
+      }
     },
     { 
       header: 'Price', 
@@ -1673,17 +1802,33 @@ const AdminPanel = () => {
       header: 'Educator Profile',
       render: (item) => {
         const userDetails = item.userId || {};
-        const logo = item.profileImage?.url || item.profileImage || userDetails.avatar;
+        const rawImage = item.profileImage?.url || item.profileImage || userDetails.avatar?.url || userDetails.avatar;
+        const logo = rawImage ? getImageUrl(rawImage) : null;
+        const initial = (userDetails.name || 'Educator').charAt(0).toUpperCase();
+
         return (
           <div className="flex items-center gap-3 text-left">
             <div className={`w-10 h-10 rounded-xl overflow-hidden flex items-center justify-center font-bold border flex-shrink-0 ${
-              isDarkMode ? 'bg-zinc-800 border-zinc-700' : 'bg-zinc-100 border-zinc-200'
+              isDarkMode ? 'bg-zinc-800 border-zinc-700 text-zinc-100' : 'bg-zinc-100 border-zinc-200 text-zinc-800'
             }`}>
               {logo ? (
-                <img src={logo} alt={userDetails.name} className="w-full h-full object-cover" />
-              ) : (
-                <span className="text-primary font-black text-sm">{userDetails.name?.charAt(0).toUpperCase() || 'E'}</span>
-              )}
+                <img
+                  src={logo}
+                  alt={userDetails.name || 'Educator'}
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                    if (e.target.nextSibling) e.target.nextSibling.style.display = 'flex';
+                  }}
+                />
+              ) : null}
+              <div
+                className={`w-full h-full items-center justify-center text-sm font-black ${logo ? 'hidden' : 'flex'} ${
+                  isDarkMode ? 'bg-zinc-800 text-primary' : 'bg-primary/10 text-primary'
+                }`}
+              >
+                {initial}
+              </div>
             </div>
             <div className="flex flex-col">
               <span className={`text-sm font-extrabold ${isDarkMode ? 'text-zinc-100' : 'text-zinc-900'}`}>{userDetails.name || 'Educator Partner'}</span>
@@ -1918,6 +2063,7 @@ const AdminPanel = () => {
         handleLogout={handleLogout}
         role={role}
         adminAccess={adminAccess}
+        allowedTabs={allowedTabs}
         isSuperAdmin={isSuperAdmin}
       />
 
@@ -1944,307 +2090,345 @@ const AdminPanel = () => {
 
         <main className="p-4 lg:p-8 space-y-6 lg:space-y-8 flex-grow">
           {/* Shared directories block */}
-          <div className={['users', 'vendors', 'pending', 'influencers', 'commission-slabs', 'coupons', 'categories', 'course-categories', 'orders', 'products', 'educators', 'all-educators', 'cashback-slabs'].includes(activeTab) ? 'block animate-in fade-in duration-300' : 'hidden'}>
-            <div className="space-y-6">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div>
-                  <h2 className={`text-xl lg:text-2xl font-black uppercase tracking-tight ${isDarkMode ? 'text-zinc-100' : 'text-zinc-900'}`}>{activeTab.replace('-', ' ')} Directory</h2>
-                  <p className="text-xs font-semibold uppercase text-zinc-400 tracking-wider mt-0.5">Oversee and manage platform records</p>
+          {['users', 'vendors', 'pending', 'influencers', 'commission-slabs', 'coupons', 'categories', 'course-categories', 'orders', 'products', 'educators', 'all-educators', 'cashback-slabs'].includes(activeTab) && hasAccessToTab(activeTab) && (
+            <div className="block animate-in fade-in duration-300">
+              <div className="space-y-6">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  <div>
+                    <h2 className={`text-xl lg:text-2xl font-black uppercase tracking-tight ${isDarkMode ? 'text-zinc-100' : 'text-zinc-900'}`}>
+                      {activeTab === 'users' ? 'Customer Users' : activeTab.replace('-', ' ')} Directory
+                    </h2>
+                    <p className="text-xs font-semibold uppercase text-zinc-400 tracking-wider mt-0.5">
+                      {activeTab === 'users' ? 'Oversee and manage registered customer accounts' : 'Oversee and manage platform records'}
+                    </p>
+                  </div>
+                  <div className={`px-5 py-3 rounded-2xl border transition-all ${isDarkMode ? 'bg-zinc-900/90 border-zinc-800' : 'bg-white border-zinc-200 shadow-sm'}`}>
+                    <p className="text-xs font-bold uppercase text-zinc-400 tracking-wider mb-0.5">Total Records</p>
+                    <p className={`text-xl lg:text-2xl font-black tracking-tight ${isDarkMode ? 'text-zinc-100' : 'text-zinc-900'}`}>{pagination.total || 0}</p>
+                  </div>
                 </div>
-                <div className={`px-5 py-3 rounded-2xl border transition-all ${isDarkMode ? 'bg-zinc-900/90 border-zinc-800' : 'bg-white border-zinc-200 shadow-sm'}`}>
-                  <p className="text-xs font-bold uppercase text-zinc-400 tracking-wider mb-0.5">Total Records</p>
-                  <p className={`text-xl lg:text-2xl font-black tracking-tight ${isDarkMode ? 'text-zinc-100' : 'text-zinc-900'}`}>{pagination.total || 0}</p>
-                </div>
-              </div>
 
-              {activeTab === 'influencers' && (
-                <div className="flex">
-                  <button
-                    onClick={() => { setIsSendLinkOpen(true); }}
-                    className="flex items-center justify-center gap-2 px-5 py-2.5 bg-primary hover:bg-primary/90 text-white rounded-xl font-bold text-xs uppercase shadow-lg shadow-primary/20 transition-all cursor-pointer"
-                  >
-                    <Sparkles size={16} />
-                    Send Invitation Link
-                  </button>
-                </div>
-              )}
+                {activeTab === 'influencers' && (
+                  <div className="flex">
+                    <button
+                      onClick={() => { setIsSendLinkOpen(true); }}
+                      className="flex items-center justify-center gap-2 px-5 py-2.5 bg-primary hover:bg-primary/90 text-white rounded-xl font-bold text-xs uppercase shadow-lg shadow-primary/20 transition-all cursor-pointer"
+                    >
+                      <Sparkles size={16} />
+                      Send Invitation Link
+                    </button>
+                  </div>
+                )}
 
-              {activeTab === 'commission-slabs' && (
-                <div className="flex">
-                  <button
-                    onClick={() => setIsCreateSlabOpen(true)}
-                    className="flex items-center justify-center gap-2 px-5 py-2.5 bg-primary hover:bg-primary/90 text-white rounded-xl font-bold text-xs uppercase shadow-lg shadow-primary/20 transition-all cursor-pointer"
-                  >
-                    <Plus size={16} />
-                    Create Slab
-                  </button>
-                </div>
-              )}
+                {activeTab === 'commission-slabs' && (
+                  <div className="flex">
+                    <button
+                      onClick={() => setIsCreateSlabOpen(true)}
+                      className="flex items-center justify-center gap-2 px-5 py-2.5 bg-primary hover:bg-primary/90 text-white rounded-xl font-bold text-xs uppercase shadow-lg shadow-primary/20 transition-all cursor-pointer"
+                    >
+                      <Plus size={16} />
+                      Create Slab
+                    </button>
+                  </div>
+                )}
 
-              {activeTab === 'categories' && (
-                <div className="flex">
-                  <button
-                    onClick={() => setIsCreateCategoryOpen(true)}
-                    className="flex items-center justify-center gap-2 px-5 py-2.5 bg-primary hover:bg-primary/90 text-white rounded-xl font-bold text-xs uppercase shadow-lg shadow-primary/20 transition-all cursor-pointer"
-                  >
-                    <Plus size={16} />
-                    Create Category
-                  </button>
-                </div>
-              )}
+                {activeTab === 'categories' && (
+                  <div className="flex">
+                    <button
+                      onClick={() => setIsCreateCategoryOpen(true)}
+                      className="flex items-center justify-center gap-2 px-5 py-2.5 bg-primary hover:bg-primary/90 text-white rounded-xl font-bold text-xs uppercase shadow-lg shadow-primary/20 transition-all cursor-pointer"
+                    >
+                      <Plus size={16} />
+                      Create Category
+                    </button>
+                  </div>
+                )}
 
-              {activeTab === 'course-categories' && (
-                <div className="flex">
-                  <button
-                    onClick={() => setIsCreateCourseCategoryOpen(true)}
-                    className="flex items-center justify-center gap-2 px-5 py-2.5 bg-primary hover:bg-primary/90 text-white rounded-xl font-bold text-xs uppercase shadow-lg shadow-primary/20 transition-all cursor-pointer"
-                  >
-                    <Plus size={16} />
-                    Create Course Category
-                  </button>
-                </div>
-              )}
+                {activeTab === 'course-categories' && (
+                  <div className="flex">
+                    <button
+                      onClick={() => setIsCreateCourseCategoryOpen(true)}
+                      className="flex items-center justify-center gap-2 px-5 py-2.5 bg-primary hover:bg-primary/90 text-white rounded-xl font-bold text-xs uppercase shadow-lg shadow-primary/20 transition-all cursor-pointer"
+                    >
+                      <Plus size={16} />
+                      Create Course Category
+                    </button>
+                  </div>
+                )}
 
-              {activeTab === 'cashback-slabs' && (
-                <div className="flex">
-                  <button
-                    onClick={() => { setEditingCashbackSlab(null); setIsCreateCashbackSlabOpen(true); }}
-                    className="flex items-center justify-center gap-2 px-5 py-2.5 bg-primary hover:bg-primary/90 text-white rounded-xl font-bold text-xs uppercase shadow-lg shadow-primary/20 transition-all cursor-pointer"
-                  >
-                    <Plus size={16} />
-                    Create Cashback Slab
-                  </button>
-                </div>
-              )}
+                {activeTab === 'cashback-slabs' && (
+                  <div className="flex">
+                    <button
+                      onClick={() => { setEditingCashbackSlab(null); setIsCreateCashbackSlabOpen(true); }}
+                      className="flex items-center justify-center gap-2 px-5 py-2.5 bg-primary hover:bg-primary/90 text-white rounded-xl font-bold text-xs uppercase shadow-lg shadow-primary/20 transition-all cursor-pointer"
+                    >
+                      <Plus size={16} />
+                      Create Cashback Slab
+                    </button>
+                  </div>
+                )}
 
-              {activeTab === 'products' && (
-                <div className="flex">
-                  <button
-                    onClick={() => {
-                      Swal.fire({
-                        title: 'Delete All Products?',
-                        text: 'Are you sure you want to delete all products? This action is irreversible!',
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonColor: '#ef4444',
-                        cancelButtonColor: '#71717a',
-                        confirmButtonText: 'Yes, Delete All',
-                        cancelButtonText: 'Cancel',
-                        background: isDarkMode ? '#18181b' : '#ffffff',
-                        color: isDarkMode ? '#ffffff' : '#18181b',
-                        borderRadius: '20px',
-                        customClass: {
-                          popup: 'rounded-3xl border-none',
-                          confirmButton: 'rounded-xl font-bold uppercase text-xs px-5 py-2.5 text-white cursor-pointer',
-                          cancelButton: 'rounded-xl font-bold uppercase text-xs px-5 py-2.5 cursor-pointer'
-                        }
-                      }).then(async (result) => {
-                        if (result.isConfirmed) {
-                          const loadingToast = toast.loading('Deleting all products...');
-                          try {
-                            const res = await deleteAllProducts();
-                            toast.dismiss(loadingToast);
-                            if (res.success) {
-                              toast.success(res.message || 'All products deleted successfully!');
-                              fetchData();
-                            } else {
-                              toast.error(res.message || 'Failed to delete products.');
-                            }
-                          } catch (err) {
-                            toast.dismiss(loadingToast);
-                            toast.error('Something went wrong during deletion.');
+                {activeTab === 'products' && (
+                  <div className="flex">
+                    <button
+                      onClick={() => {
+                        Swal.fire({
+                          title: 'Delete All Products?',
+                          text: 'Are you sure you want to delete all products? This action is irreversible!',
+                          icon: 'warning',
+                          showCancelButton: true,
+                          confirmButtonColor: '#ef4444',
+                          cancelButtonColor: '#71717a',
+                          confirmButtonText: 'Yes, Delete All',
+                          cancelButtonText: 'Cancel',
+                          background: isDarkMode ? '#18181b' : '#ffffff',
+                          color: isDarkMode ? '#ffffff' : '#18181b',
+                          borderRadius: '20px',
+                          customClass: {
+                            popup: 'rounded-3xl border-none',
+                            confirmButton: 'rounded-xl font-bold uppercase text-xs px-5 py-2.5 text-white cursor-pointer',
+                            cancelButton: 'rounded-xl font-bold uppercase text-xs px-5 py-2.5 cursor-pointer'
                           }
-                        }
-                      });
-                    }}
-                    className="flex items-center justify-center gap-2 px-5 py-2.5 bg-rose-500 hover:bg-rose-600 text-white rounded-xl font-bold text-xs uppercase shadow-lg shadow-rose-500/20 transition-all cursor-pointer"
+                        }).then(async (result) => {
+                          if (result.isConfirmed) {
+                            const loadingToast = toast.loading('Deleting all products...');
+                            try {
+                              const res = await deleteAllProducts();
+                              toast.dismiss(loadingToast);
+                              if (res.success) {
+                                toast.success(res.message || 'All products deleted successfully!');
+                                fetchData();
+                              } else {
+                                toast.error(res.message || 'Failed to delete products.');
+                              }
+                            } catch (err) {
+                              toast.dismiss(loadingToast);
+                              toast.error('Something went wrong during deletion.');
+                            }
+                          }
+                        });
+                      }}
+                      className="flex items-center justify-center gap-2 px-5 py-2.5 bg-rose-500 hover:bg-rose-600 text-white rounded-xl font-bold text-xs uppercase shadow-lg shadow-rose-500/20 transition-all cursor-pointer"
+                    >
+                      <Trash2 size={16} />
+                      Delete All Products
+                    </button>
+                  </div>
+                )}
+
+                <DataTable
+                  columns={
+                    activeTab === 'users'
+                      ? userColumns
+                      : activeTab === 'influencers'
+                        ? influencerColumns
+                        : activeTab === 'commission-slabs'
+                          ? commissionSlabColumns
+                          : activeTab === 'cashback-slabs'
+                            ? cashbackSlabColumns
+                            : activeTab === 'coupons'
+                              ? couponColumns
+                              : activeTab === 'categories'
+                                ? categoryColumns
+                                : activeTab === 'course-categories'
+                                  ? courseCategoryColumns
+                                  : activeTab === 'orders'
+                                    ? orderColumns
+                                    : activeTab === 'products'
+                                      ? productColumns
+                                      : activeTab === 'educators' || activeTab === 'all-educators'
+                                        ? educatorColumns
+                                        : vendorColumns
+                  }
+                  data={dataList}
+                  loading={loading}
+                  onRowClick={(item) => {
+                    if (activeTab === 'users') setSelectedUserId(item._id);
+                    else if (activeTab === 'educators' || activeTab === 'all-educators') setSelectedEducatorId(item._id);
+                    else if (activeTab === 'influencers') setSelectedUserId(item.userId?._id || item.userId);
+                    else if (activeTab === 'categories') setSelectedCategoryId(item._id);
+                    else if (activeTab === 'orders') setSelectedOrderId(item._id);
+                    else if (activeTab === 'commission-slabs' || activeTab === 'products') { /* no-op */ }
+                    else if (activeTab === 'cashback-slabs') setSelectedCashbackSlab(item);
+                    else if (activeTab === 'course-categories') setSelectedCourseCategoryId(item._id);
+                    else setSelectedVendorId(item.vendorId?._id || item._id);
+                  }}
+                />
+                <div className="flex justify-center items-center gap-2 pt-2">
+                  <button 
+                    onClick={() => setPagination(p => ({ ...p, page: p.page - 1 }))} 
+                    disabled={pagination.page === 1} 
+                    className={`w-11 h-11 flex items-center justify-center rounded-xl border transition-all disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer ${
+                      isDarkMode ? 'bg-zinc-900 border-zinc-800 text-zinc-300 hover:border-zinc-700 hover:text-white' : 'bg-white border-zinc-200 text-zinc-700 hover:bg-zinc-100'
+                    }`}
                   >
-                    <Trash2 size={16} />
-                    Delete All Products
+                    <ChevronLeft size={18} />
+                  </button>
+                  <div className="w-11 h-11 flex items-center justify-center bg-primary text-white rounded-xl font-black text-sm shadow-md shadow-primary/20">
+                    {pagination.page}
+                  </div>
+                  <button 
+                    onClick={() => setPagination(p => ({ ...p, page: p.page + 1 }))} 
+                    disabled={dataList.length < pagination.limit} 
+                    className={`w-11 h-11 flex items-center justify-center rounded-xl border transition-all disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer ${
+                      isDarkMode ? 'bg-zinc-900 border-zinc-800 text-zinc-300 hover:border-zinc-700 hover:text-white' : 'bg-white border-zinc-200 text-zinc-700 hover:bg-zinc-100'
+                    }`}
+                  >
+                    <ChevronRight size={18} />
                   </button>
                 </div>
-              )}
-
-              <DataTable
-                columns={
-                  activeTab === 'users'
-                    ? userColumns
-                    : activeTab === 'influencers'
-                      ? influencerColumns
-                      : activeTab === 'commission-slabs'
-                        ? commissionSlabColumns
-                        : activeTab === 'cashback-slabs'
-                          ? cashbackSlabColumns
-                          : activeTab === 'coupons'
-                            ? couponColumns
-                            : activeTab === 'categories'
-                              ? categoryColumns
-                              : activeTab === 'course-categories'
-                                ? courseCategoryColumns
-                                : activeTab === 'orders'
-                                  ? orderColumns
-                                  : activeTab === 'products'
-                                    ? productColumns
-                                    : activeTab === 'educators' || activeTab === 'all-educators'
-                                      ? educatorColumns
-                                      : vendorColumns
-                }
-                data={dataList}
-                loading={loading}
-                onRowClick={(item) => {
-                  if (activeTab === 'users') setSelectedUserId(item._id);
-                  else if (activeTab === 'educators' || activeTab === 'all-educators') setSelectedEducatorId(item._id);
-                  else if (activeTab === 'influencers') setSelectedUserId(item.userId?._id || item.userId);
-                  else if (activeTab === 'categories') setSelectedCategoryId(item._id);
-                  else if (activeTab === 'orders') setSelectedOrderId(item._id);
-                  else if (activeTab === 'commission-slabs' || activeTab === 'products') { /* no-op */ }
-                  else if (activeTab === 'cashback-slabs') setSelectedCashbackSlab(item);
-                  else if (activeTab === 'course-categories') setSelectedCourseCategoryId(item._id);
-                  else setSelectedVendorId(item.vendorId?._id || item._id);
-                }}
-              />
-              <div className="flex justify-center items-center gap-2 pt-2">
-                <button 
-                  onClick={() => setPagination(p => ({ ...p, page: p.page - 1 }))} 
-                  disabled={pagination.page === 1} 
-                  className={`w-11 h-11 flex items-center justify-center rounded-xl border transition-all disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer ${
-                    isDarkMode ? 'bg-zinc-900 border-zinc-800 text-zinc-300 hover:border-zinc-700 hover:text-white' : 'bg-white border-zinc-200 text-zinc-700 hover:bg-zinc-100'
-                  }`}
-                >
-                  <ChevronLeft size={18} />
-                </button>
-                <div className="w-11 h-11 flex items-center justify-center bg-primary text-white rounded-xl font-black text-sm shadow-md shadow-primary/20">
-                  {pagination.page}
-                </div>
-                <button 
-                  onClick={() => setPagination(p => ({ ...p, page: p.page + 1 }))} 
-                  disabled={dataList.length < pagination.limit} 
-                  className={`w-11 h-11 flex items-center justify-center rounded-xl border transition-all disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer ${
-                    isDarkMode ? 'bg-zinc-900 border-zinc-800 text-zinc-300 hover:border-zinc-700 hover:text-white' : 'bg-white border-zinc-200 text-zinc-700 hover:bg-zinc-100'
-                  }`}
-                >
-                  <ChevronRight size={18} />
-                </button>
               </div>
             </div>
-          </div>
+          )}
 
           {/* Vendor Payouts */}
-          <div className={activeTab === 'vendor-payouts' ? 'block animate-in fade-in duration-300' : 'hidden'}>
-            <VendorPayouts isDarkMode={isDarkMode} />
-          </div>
+          {activeTab === 'vendor-payouts' && hasAccessToTab('vendor-payouts') && (
+            <div className="block animate-in fade-in duration-300">
+              <VendorPayouts isDarkMode={isDarkMode} />
+            </div>
+          )}
 
           {/* Influencer Commissions */}
-          <div className={activeTab === 'influencer-commissions' ? 'block animate-in fade-in duration-300' : 'hidden'}>
-            <InfluencerCommissions isDarkMode={isDarkMode} />
-          </div>
+          {activeTab === 'influencer-commissions' && hasAccessToTab('influencer-commissions') && (
+            <div className="block animate-in fade-in duration-300">
+              <InfluencerCommissions isDarkMode={isDarkMode} />
+            </div>
+          )}
 
           {/* Affiliate Dashboard */}
-          <div className={activeTab === 'affiliate-dashboard' ? 'block animate-in fade-in duration-300' : 'hidden'}>
-            <AdminAffiliateDashboard isDarkMode={isDarkMode} />
-          </div>
+          {activeTab === 'affiliate-dashboard' && hasAccessToTab('affiliate-dashboard') && (
+            <div className="block animate-in fade-in duration-300">
+              <AdminAffiliateDashboard isDarkMode={isDarkMode} />
+            </div>
+          )}
 
           {/* Beauty Services (Subscription Plans) */}
-          <div className={activeTab === 'beauty-services' ? 'block animate-in fade-in duration-300' : 'hidden'}>
-            <SubscriptionPlans isDarkMode={isDarkMode} />
-          </div>
+          {activeTab === 'beauty-services' && hasAccessToTab('beauty-services') && (
+            <div className="block animate-in fade-in duration-300">
+              <SubscriptionPlans isDarkMode={isDarkMode} />
+            </div>
+          )}
 
           {/* Service Manager */}
-          <div className={activeTab === 'subscription-plans' ? 'block animate-in fade-in duration-300' : 'hidden'}>
-            <AdminServiceManager isDarkMode={isDarkMode} />
-          </div>
+          {activeTab === 'subscription-plans' && hasAccessToTab('subscription-plans') && (
+            <div className="block animate-in fade-in duration-300">
+              <AdminServiceManager isDarkMode={isDarkMode} />
+            </div>
+          )}
 
           {/* Service Categories */}
-          <div className={activeTab === 'service-categories' ? 'block animate-in fade-in duration-300' : 'hidden'}>
-            <ServiceCategories isDarkMode={isDarkMode} />
-          </div>
+          {activeTab === 'service-categories' && hasAccessToTab('service-categories') && (
+            <div className="block animate-in fade-in duration-300">
+              <ServiceCategories isDarkMode={isDarkMode} />
+            </div>
+          )}
 
           {/* Dedicated Home Booking Cards Manager (Super Admin Tab) */}
-          <div className={activeTab === 'home-booking-cards' ? 'block animate-in fade-in duration-300' : 'hidden'}>
-            <HomeBookingCardsManager isDarkMode={isDarkMode} />
-          </div>
+          {activeTab === 'home-booking-cards' && hasAccessToTab('home-booking-cards') && (
+            <div className="block animate-in fade-in duration-300">
+              <HomeBookingCardsManager isDarkMode={isDarkMode} />
+            </div>
+          )}
 
           {/* Service Providers */}
-          <div className={activeTab === 'service-providers' ? 'block animate-in fade-in duration-300' : 'hidden'}>
-            <ServiceProviders isDarkMode={isDarkMode} />
-          </div>
+          {activeTab === 'service-providers' && hasAccessToTab('service-providers') && (
+            <div className="block animate-in fade-in duration-300">
+              <ServiceProviders isDarkMode={isDarkMode} />
+            </div>
+          )}
 
           {/* Wallet Balances Console */}
-          <div className={activeTab === 'wallet-balances' ? 'block animate-in fade-in duration-300' : 'hidden'}>
-            <AdminWalletBalances isDarkMode={isDarkMode} />
-          </div>
+          {activeTab === 'wallet-balances' && hasAccessToTab('wallet-balances') && (
+            <div className="block animate-in fade-in duration-300">
+              <AdminWalletBalances isDarkMode={isDarkMode} />
+            </div>
+          )}
 
           {/* Bank Accounts Console */}
-          <div className={activeTab === 'bank-accounts' ? 'block animate-in fade-in duration-300' : 'hidden'}>
-            <AdminBankAccounts isDarkMode={isDarkMode} />
-          </div>
+          {activeTab === 'bank-accounts' && hasAccessToTab('bank-accounts') && (
+            <div className="block animate-in fade-in duration-300">
+              <AdminBankAccounts isDarkMode={isDarkMode} />
+            </div>
+          )}
 
           {/* Support Tickets Console */}
-          <div className={activeTab === 'tickets' ? 'block animate-in fade-in duration-300' : 'hidden'}>
-            <SupportTickets isDarkMode={isDarkMode} />
-          </div>
+          {activeTab === 'tickets' && hasAccessToTab('tickets') && (
+            <div className="block animate-in fade-in duration-300">
+              <SupportTickets isDarkMode={isDarkMode} />
+            </div>
+          )}
 
-          {/* Sub-Admins Management Console */}
-          {(role === 'super_admin' || role === 'admin') && (
-            <div className={activeTab === 'sub-admins' ? 'block animate-in fade-in duration-300' : 'hidden'}>
+          {/* Sub-Admins Management Console (Super Admin Exclusive) */}
+          {isSuperAdmin && activeTab === 'sub-admins' && (
+            <div className="block animate-in fade-in duration-300">
               <SubAdminsManager isDarkMode={isDarkMode} />
             </div>
           )}
 
           {/* Home Content Manager */}
-          <div className={activeTab === 'home-content' ? 'block animate-in fade-in duration-300' : 'hidden'}>
-            <HomeContentList
-              isDarkMode={isDarkMode}
-              homeContents={dataList}
-              loading={loading}
-              onCreateTrigger={() => setShowHomeContentModal(true)}
-              onEditTrigger={(item) => {
-                setEditingHomeContent(item);
-                setShowHomeContentModal(true);
-              }}
-              onViewTrigger={(item) => setSelectedHomeContentId(item._id)}
-              onDeleteSuccess={fetchData}
-            />
-          </div>
+          {activeTab === 'home-content' && hasAccessToTab('home-content') && (
+            <div className="block animate-in fade-in duration-300">
+              <HomeContentList
+                isDarkMode={isDarkMode}
+                homeContents={dataList}
+                loading={loading}
+                onCreateTrigger={() => setShowHomeContentModal(true)}
+                onEditTrigger={(item) => {
+                  setEditingHomeContent(item);
+                  setShowHomeContentModal(true);
+                }}
+                onViewTrigger={(item) => setSelectedHomeContentId(item._id)}
+                onDeleteSuccess={fetchData}
+              />
+            </div>
+          )}
 
           {/* Notifications Management Console */}
-          <div className={activeTab === 'notifications' ? 'block animate-in fade-in duration-300' : 'hidden'}>
-            <NotificationsManager isDarkMode={isDarkMode} />
-          </div>
+          {activeTab === 'notifications' && hasAccessToTab('notifications') && (
+            <div className="block animate-in fade-in duration-300">
+              <NotificationsManager isDarkMode={isDarkMode} />
+            </div>
+          )}
 
           {/* Admin Service Leads Manager */}
-          <div className={activeTab === 'admin-service-leads' ? 'block animate-in fade-in duration-300' : 'hidden'}>
-            <AdminServiceLeads isDarkMode={isDarkMode} />
-          </div>
+          {activeTab === 'admin-service-leads' && hasAccessToTab('admin-service-leads') && (
+            <div className="block animate-in fade-in duration-300">
+              <AdminServiceLeads isDarkMode={isDarkMode} />
+            </div>
+          )}
 
           {/* Profile Console */}
-          <div className={activeTab === 'profile' ? 'block animate-in fade-in duration-300' : 'hidden'}>
-            <AdminProfile isDarkMode={isDarkMode} />
-          </div>
+          {activeTab === 'profile' && (
+            <div className="block animate-in fade-in duration-300">
+              <AdminProfile isDarkMode={isDarkMode} />
+            </div>
+          )}
 
           {/* Dashboard Overview */}
-          <div className={activeTab === 'dashboard' ? 'block animate-in fade-in duration-300' : 'hidden'}>
-            <AdminDashboard
-              isOverviewLoading={isOverviewLoading}
-              overviewData={overviewData}
-              revenueTrend={revenueTrend}
-              topCategories={topCategories}
-              orderStatusAnalytics={orderStatusAnalytics}
-              categoryDistribution={categoryDistribution}
-              orderStatusGraph={orderStatusGraph}
-              monthlyAnalytics={monthlyAnalytics}
-              yearlyAnalytics={yearlyAnalytics}
-              analyticsGraph={analyticsGraph}
-              topVendorsGraph={topVendorsGraph}
-              isDarkMode={isDarkMode}
-              setActiveTab={setActiveTab}
-              selectedYear={selectedYear}
-              setSelectedYear={setSelectedYear}
-              activeMonthlyMetric={activeMonthlyMetric}
-              setActiveMonthlyMetric={setActiveMonthlyMetric}
-              fetchMonthlyData={fetchMonthlyData}
-            />
-          </div>
+          {activeTab === 'dashboard' && hasAccessToTab('dashboard') && (
+            <div className="block animate-in fade-in duration-300">
+              <AdminDashboard
+                isOverviewLoading={isOverviewLoading}
+                overviewData={overviewData}
+                revenueTrend={revenueTrend}
+                topCategories={topCategories}
+                orderStatusAnalytics={orderStatusAnalytics}
+                categoryDistribution={categoryDistribution}
+                orderStatusGraph={orderStatusGraph}
+                monthlyAnalytics={monthlyAnalytics}
+                yearlyAnalytics={yearlyAnalytics}
+                analyticsGraph={analyticsGraph}
+                topVendorsGraph={topVendorsGraph}
+                isDarkMode={isDarkMode}
+                setActiveTab={setActiveTab}
+                selectedYear={selectedYear}
+                setSelectedYear={setSelectedYear}
+                activeMonthlyMetric={activeMonthlyMetric}
+                setActiveMonthlyMetric={setActiveMonthlyMetric}
+                fetchMonthlyData={fetchMonthlyData}
+              />
+            </div>
+          )}
         </main>
       </div>
 

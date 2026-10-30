@@ -1,5 +1,6 @@
 import React from 'react';
 import { User, BookOpen } from 'lucide-react';
+import { getImageUrl } from '../../../utils/imageUrl';
 
 const EducatorOverview = ({
   user,
@@ -44,16 +45,29 @@ const EducatorOverview = ({
         {/* Profile Card */}
         <div className={`border p-6 rounded-[2rem] shadow-sm space-y-6 ${isDarkMode ? 'bg-zinc-900 border-zinc-800' : 'bg-white border-zinc-200'}`}>
           <div className="text-center space-y-4">
-            <div className={`w-20 h-20 sm:w-24 sm:h-24 rounded-2xl mx-auto overflow-hidden border shadow-inner flex items-center justify-center ${isDarkMode ? 'bg-zinc-950 border-zinc-800' : 'bg-zinc-100 border-zinc-200'}`}>
-              {profile?.profileImage || profile?.userId?.avatar ? (
-                <img 
-                  src={profile.profileImage?.url || profile.profileImage || profile.userId?.avatar} 
-                  alt="Profile" 
-                  className="w-full h-full object-cover" 
-                />
-              ) : (
-                <User size={36} className="text-primary" />
-              )}
+            <div className={`w-20 h-20 sm:w-24 sm:h-24 rounded-2xl mx-auto overflow-hidden border shadow-inner flex items-center justify-center flex-shrink-0 ${isDarkMode ? 'bg-zinc-950 border-zinc-800' : 'bg-zinc-100 border-zinc-200'}`}>
+              {(() => {
+                const rawImg = profile?.profileImage?.url || profile?.profileImage || profile?.userId?.avatar?.url || profile?.userId?.avatar;
+                const imgUrl = rawImg ? getImageUrl(rawImg) : null;
+                return (
+                  <>
+                    {imgUrl ? (
+                      <img 
+                        src={imgUrl} 
+                        alt="Profile" 
+                        className="w-full h-full object-cover" 
+                        onError={(e) => {
+                          e.target.style.display = 'none';
+                          if (e.target.nextSibling) e.target.nextSibling.style.display = 'flex';
+                        }}
+                      />
+                    ) : null}
+                    <div className={`w-full h-full items-center justify-center ${imgUrl ? 'hidden' : 'flex'}`}>
+                      <User size={36} className="text-primary" />
+                    </div>
+                  </>
+                );
+              })()}
             </div>
             <div>
               <h3 className={`text-base font-extrabold uppercase tracking-tight ${isDarkMode ? 'text-white' : 'text-zinc-900'}`}>

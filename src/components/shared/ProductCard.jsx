@@ -3,7 +3,7 @@ import { ShoppingBag, Heart, Star, Truck, Plus, Minus } from 'lucide-react';
 import { useCart } from '../../context/CartContext';
 import { useNavigate } from 'react-router-dom';
 import { toast } from '../../utils/toast';
-import { getImageUrl } from '../../utils/imageUrl';
+import { getImageUrl, handleImageError } from '../../utils/imageUrl';
 
 const ProductCard = ({ product, isWishlisted, onWishlistToggle }) => {
   const navigate = useNavigate();
@@ -81,7 +81,7 @@ const ProductCard = ({ product, isWishlisted, onWishlistToggle }) => {
       <div className="relative w-full h-[150px] sm:h-[180px] bg-white rounded-xl overflow-hidden flex items-center justify-center p-2 mb-2 shrink-0">
 
         {/* Discount Badge on Top Left */}
-        <span className="absolute top-1.5 left-1.5 z-10 bg-[#ff4d6d] text-white text-[9px] sm:text-[10px] font-black uppercase px-2 py-0.5 rounded-md shadow-2xs tracking-wider">
+        <span className="absolute top-1.5 left-1.5 z-10 bg-[#ff4d6d] text-white text-xs font-black uppercase px-2 py-0.5 rounded-md shadow-2xs tracking-wider">
           {discountPercent}% OFF
         </span>
 
@@ -102,10 +102,10 @@ const ProductCard = ({ product, isWishlisted, onWishlistToggle }) => {
             src={imageUrl}
             alt={name}
             className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
-            onError={(e) => { e.target.style.opacity = '0.3'; }}
+            onError={handleImageError}
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center bg-gray-50 text-gray-300 font-bold uppercase text-[9px]">
+          <div className="w-full h-full flex items-center justify-center bg-gray-50 text-gray-300 font-bold uppercase text-xs">
             No Image
           </div>
         )}
@@ -115,12 +115,12 @@ const ProductCard = ({ product, isWishlisted, onWishlistToggle }) => {
       <div className="flex flex-col flex-grow text-left min-w-0">
 
         {/* Category Name */}
-        <span className="text-[9px] sm:text-[10px] font-bold uppercase text-gray-400 tracking-wider truncate mb-0.5">
+        <span className="text-xs font-bold uppercase text-gray-400 tracking-wider truncate mb-0.5">
           {categoryName}
         </span>
 
         {/* Brand / Vendor Name */}
-        <p className="text-[10px] sm:text-xs text-gray-700 font-bold truncate mb-0.5">
+        <p className="text-xs text-gray-700 font-bold truncate mb-0.5">
           {vendorName}
         </p>
 
@@ -130,7 +130,7 @@ const ProductCard = ({ product, isWishlisted, onWishlistToggle }) => {
         </h3>
 
         {/* Rating Stars & Reviews */}
-        <div className="flex items-center gap-1 text-[9px] sm:text-[10px] font-semibold text-gray-400 mb-1">
+        <div className="flex items-center gap-1 text-xs font-semibold text-gray-400 mb-1">
           <div className="flex items-center text-amber-400">
             <Star size={10} className="fill-amber-400" />
             <Star size={10} className="fill-amber-400" />
@@ -148,11 +148,11 @@ const ProductCard = ({ product, isWishlisted, onWishlistToggle }) => {
           <div className="flex items-baseline gap-1.5 min-w-0">
             <span className="text-sm sm:text-base font-black text-gray-900">₹{offeredPrice}</span>
             {salesPrice > offeredPrice && (
-              <span className="text-[10px] sm:text-xs text-gray-400 line-through font-medium truncate">₹{salesPrice}</span>
+              <span className="text-xs text-gray-400 line-through font-medium truncate">₹{salesPrice}</span>
             )}
           </div>
 
-          <span className={`text-[9px] sm:text-[10px] font-extrabold shrink-0 ${stock > 0 ? (stock < 10 ? 'text-[#ff4d6d]' : 'text-emerald-600') : 'text-rose-600'}`}>
+          <span className={`text-xs font-extrabold shrink-0 ${stock > 0 ? (stock < 10 ? 'text-[#ff4d6d]' : 'text-emerald-600') : 'text-rose-600'}`}>
             {stock > 10 ? 'In Stock' : stock > 0 ? 'Few Left' : 'Out of Stock'}
           </span>
         </div>

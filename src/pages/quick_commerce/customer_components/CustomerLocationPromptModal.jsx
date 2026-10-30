@@ -67,7 +67,7 @@ const CustomerLocationPromptModal = ({
 
           <div className="relative flex py-2 items-center">
             <div className="flex-grow border-t border-slate-150"></div>
-            <span className="flex-shrink mx-4 text-[9px] font-bold text-slate-400 uppercase tracking-widest">or enter manually</span>
+            <span className="flex-shrink mx-4 text-xs font-bold text-slate-400 uppercase tracking-widest">or enter manually</span>
             <div className="flex-grow border-t border-slate-150"></div>
           </div>
 
@@ -92,7 +92,7 @@ const CustomerLocationPromptModal = ({
           </form>
 
           {locationError && (
-            <p className="text-[10px] font-bold text-rose-500 mt-1 uppercase flex items-center justify-center gap-1">
+            <p className="text-xs font-bold text-rose-500 mt-1 uppercase flex items-center justify-center gap-1">
               <AlertCircle size={10} />
               <span>{locationError}</span>
             </p>
@@ -101,7 +101,7 @@ const CustomerLocationPromptModal = ({
           {/* Option C: Saved Addresses */}
           {isAuthenticated && addresses.length > 0 && (
             <div className="mt-4 text-left border-t border-slate-100 pt-4">
-              <p className="text-[10px] font-black text-slate-400 uppercase tracking-wider mb-2">Or select saved address</p>
+              <p className="text-xs font-black text-slate-400 uppercase tracking-wider mb-2">Or select saved address</p>
               <div className="flex flex-col gap-2 max-h-[150px] overflow-y-auto pr-1 scrollbar-thin">
                 {addresses.map((addr) => (
                   <button
@@ -122,7 +122,7 @@ const CustomerLocationPromptModal = ({
                   >
                     <MapPin size={14} className="text-primary flex-shrink-0 mt-0.5" />
                     <div className="truncate">
-                      <p className="font-extrabold uppercase text-[10px] text-slate-800">{addr.addressType || 'Address'}</p>
+                      <p className="font-extrabold uppercase text-xs text-slate-800">{addr.addressType || 'Address'}</p>
                       <p className="truncate text-slate-500">{addr.streetAddress || addr.line1}, {addr.city} ({addr.pincode})</p>
                     </div>
                   </button>

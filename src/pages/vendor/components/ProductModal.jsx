@@ -390,13 +390,27 @@ const ProductModal = ({ isOpen, onClose, isEditing, isViewing, productId, catego
                           <div className={`w-24 h-24 rounded-2xl flex-shrink-0 overflow-hidden border ${
                             isDarkMode ? 'bg-gray-950 border-white/5' : 'bg-gray-100 border-gray-100'
                           }`}>
-                            <img src={getImageUrl(v.thumbnail)} alt="thumb" className="w-full h-full object-cover" />
+                            <img
+                              src={getImageUrl(v.thumbnail)}
+                              alt="thumb"
+                              className="w-full h-full object-cover"
+                              onError={(e) => {
+                                e.target.style.display = 'none';
+                              }}
+                            />
                           </div>
                           {(v.images || []).map((img, i) => (
                             <div key={i} className={`w-24 h-24 rounded-2xl flex-shrink-0 overflow-hidden border ${
                               isDarkMode ? 'bg-gray-950 border-white/5' : 'bg-gray-100 border-gray-100'
                             }`}>
-                              <img src={getImageUrl(img)} alt="gal" className="w-full h-full object-cover" />
+                              <img
+                                src={getImageUrl(img)}
+                                alt="gal"
+                                className="w-full h-full object-cover"
+                                onError={(e) => {
+                                  e.target.style.display = 'none';
+                                }}
+                              />
                             </div>
                           ))}
                         </div>
@@ -728,6 +742,9 @@ const ProductModal = ({ isOpen, onClose, isEditing, isViewing, productId, catego
                                   src={getImageUrl(variant.thumbnail)} 
                                   alt="preview" 
                                   className="w-full h-full object-cover"
+                                  onError={(e) => {
+                                    e.target.style.display = 'none';
+                                  }}
                                 />
                                 <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                                   <span className="text-sm font-bold text-white uppercase bg-primary px-3 py-1.5 rounded-lg">Change</span>
@@ -757,7 +774,14 @@ const ProductModal = ({ isOpen, onClose, isEditing, isViewing, productId, catego
                                   <div key={i} className={`aspect-square rounded-lg overflow-hidden border relative group/img ${
                                     isDarkMode ? 'bg-gray-950 border-white/5' : 'bg-gray-50 border-gray-100'
                                   }`}>
-                                    <img src={getImageUrl(img)} alt="gal" className="w-full h-full object-cover" />
+                                    <img
+                                      src={getImageUrl(img)}
+                                      alt="gal"
+                                      className="w-full h-full object-cover"
+                                      onError={(e) => {
+                                        e.target.style.display = 'none';
+                                      }}
+                                    />
                                   </div>
                                 ))}
                                 <div className={`aspect-square rounded-lg flex items-center justify-center border-2 border-dashed relative ${

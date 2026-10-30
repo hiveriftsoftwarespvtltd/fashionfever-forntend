@@ -129,7 +129,7 @@ const HomeContentList = ({
           <span className={`text-xs font-bold ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
             Page {item.page || '1'}
           </span>
-          <span className="text-[9px] font-medium text-gray-400">Order: {item.displayOrder || '1'}</span>
+          <span className="text-xs font-medium text-gray-400">Order: {item.displayOrder || '1'}</span>
         </div>
       )
     },
@@ -158,7 +158,7 @@ const HomeContentList = ({
     {
       header: 'Featured',
       render: (item) => (
-        <span className={`px-2 py-0.5 rounded text-[9px] font-bold uppercase ${
+        <span className={`px-2 py-0.5 rounded text-xs font-bold uppercase ${
           item.isFeatured 
             ? 'bg-amber-500/10 text-amber-500 border border-amber-500/25' 
             : 'bg-gray-100 dark:bg-white/5 text-gray-400 border border-transparent'
@@ -185,7 +185,7 @@ const HomeContentList = ({
         return (
           <div className="flex flex-col">
             <span className={`text-sm uppercase font-bold text-gray-700 dark:text-gray-300`}>{label}</span>
-            {detail && <span className="text-[8px] text-gray-400 truncate max-w-[120px]">{detail}</span>}
+            {detail && <span className="text-[11px] text-gray-400 truncate max-w-[120px]">{detail}</span>}
           </div>
         );
       }

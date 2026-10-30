@@ -30,6 +30,7 @@ import { useTheme } from '../../context/ThemeContext';
 import { toast } from '../../utils/toast';
 import Swal from 'sweetalert2';
 import config from '../../config/config';
+import { getImageUrl } from '../../utils/imageUrl';
 
 // Import modular sub-components
 import EducatorSidebar from './components/EducatorSidebar';
@@ -58,15 +59,14 @@ const EducatorDashboard = () => {
 
     // Check if thumbnail is a populated object
     if (thumbnail.url && typeof thumbnail.url === 'string') {
-      return thumbnail.url;
+      return getImageUrl(thumbnail.url);
     }
     
     // Check if thumbnail is a direct URL string or base64 data
     if (typeof thumbnail === 'string') {
       if (thumbnail.startsWith('http://') || thumbnail.startsWith('https://') || thumbnail.startsWith('data:')) {
-        return thumbnail;
+        return getImageUrl(thumbnail);
       }
-      // If it looks like a Mongo ID or filename, resolve via backend file retrieval route
       return `${config.API_URL}/file/get-file/${thumbnail}`;
     }
     
@@ -131,7 +131,8 @@ const EducatorDashboard = () => {
           setProfile(profileData);
           setEditBio(profileData.bio || '');
           setEditExpertise(profileData.expertise && profileData.expertise.length > 0 ? profileData.expertise : ['']);
-          setEditImagePreview(profileData.profileImage?.url || profileData.profileImage);
+          const rawPhoto = profileData.profileImage?.url || profileData.profileImage || profileData.userId?.avatar?.url || profileData.userId?.avatar;
+          setEditImagePreview(rawPhoto ? getImageUrl(rawPhoto) : '');
           
           if (!profileData || !profileData.isApproved) {
             navigate('/educator/onboard');
@@ -168,12 +169,22 @@ const EducatorDashboard = () => {
   useEffect(() => {
     const fetchCoursesList = async () => {
       if (activeTab !== 'courses' && activeTab !== 'manage-sections') return;
+      const eduId = profile?._id || user?.educatorId;
       setCoursesLoading(true);
       try {
-        const res = await getPublicUserCourseList();
+        const params = eduId ? { educatorId: eduId } : {};
+        const res = await getPublicUserCourseList(params);
         if (res?.success) {
           const coursesPayload = res.data?.courses ?? res.data?.data?.courses ?? res.data ?? [];
-          setCourses(Array.isArray(coursesPayload) ? coursesPayload : []);
+          const list = Array.isArray(coursesPayload) ? coursesPayload : [];
+          // Ensure only courses created by this educator are displayed
+          const filtered = eduId
+            ? list.filter(c => {
+                const cEduId = c.educatorId?._id || c.educatorId;
+                return !cEduId || cEduId.toString() === eduId.toString();
+              })
+            : list;
+          setCourses(filtered);
         } else {
           toast.error(res?.message || 'Failed to fetch course catalogs.');
         }
@@ -185,7 +196,7 @@ const EducatorDashboard = () => {
       }
     };
     fetchCoursesList();
-  }, [activeTab, refreshCoursesTrigger]);
+  }, [activeTab, refreshCoursesTrigger, profile?._id, user?.educatorId]);
 
   const handleAddExpertise = () => {
     setEditExpertise([...editExpertise, '']);

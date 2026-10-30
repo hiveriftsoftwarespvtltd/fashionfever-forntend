@@ -125,11 +125,11 @@ const VendorOrders = ({
                           {order.orderStatus || 'pending'}
                         </span>
                         {order.deliveryPersonId ? (
-                          <span className="inline-flex items-center gap-1 text-[10px] font-bold text-green-500">
+                          <span className="inline-flex items-center gap-1 text-xs font-bold text-green-500">
                             <UserCheck size={11} /> {typeof order.deliveryPersonId === 'object' ? (order.deliveryPersonId.name || 'Rider Assigned') : 'Rider Assigned'}
                           </span>
                         ) : (
-                          <span className="inline-flex items-center gap-1 text-[10px] font-medium text-amber-500/80">
+                          <span className="inline-flex items-center gap-1 text-xs font-medium text-amber-500/80">
                             <Bike size={11} /> Rider Unassigned
                           </span>
                         )}

@@ -58,7 +58,7 @@ const SendInvitationModal = ({ isOpen, onClose, isDarkMode }) => {
                 <div className="w-8 h-8 rounded-xl bg-primary/10 flex items-center justify-center">
                   <Sparkles size={16} className="text-primary" />
                 </div>
-                <span className="text-[9px] font-black text-primary uppercase tracking-widest">Influencer Outreach</span>
+                <span className="text-xs font-black text-primary uppercase tracking-widest">Influencer Outreach</span>
               </div>
               <h2 className={`text-xl font-black uppercase ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>
                 Send Invitation Link

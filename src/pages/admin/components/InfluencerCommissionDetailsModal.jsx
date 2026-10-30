@@ -118,19 +118,19 @@ export const InfluencerCommissionDetailsModal = ({ influencerId, onClose, initia
               isDarkMode ? 'bg-gray-900/50 border-white/5' : 'bg-gray-50 border-gray-100'
             }`}>
               <div>
-                <p className="text-[8px] font-black text-gray-400 uppercase">Creator</p>
+                <p className="text-[11px] font-black text-gray-400 uppercase">Creator</p>
                 <p className="text-sm font-bold text-primary">{details.influencer.name}</p>
               </div>
               <div>
-                <p className="text-[8px] font-black text-gray-400 uppercase">Total Orders</p>
+                <p className="text-[11px] font-black text-gray-400 uppercase">Total Orders</p>
                 <p className={`text-sm font-bold ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>{details.influencer.totalOrders}</p>
               </div>
               <div>
-                <p className="text-[8px] font-black text-gray-400 uppercase">Lifetime Sales</p>
+                <p className="text-[11px] font-black text-gray-400 uppercase">Lifetime Sales</p>
                 <p className={`text-sm font-bold ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>₹{details.influencer.totalSales?.toLocaleString('en-IN')}</p>
               </div>
               <div>
-                <p className="text-[8px] font-black text-gray-400 uppercase">Paid / Pending Earnings</p>
+                <p className="text-[11px] font-black text-gray-400 uppercase">Paid / Pending Earnings</p>
                 <p className={`text-sm font-bold ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>
                   ₹{details.influencer.paidCommission || 0} / ₹{details.influencer.pendingCommission || 0}
                 </p>
@@ -201,7 +201,7 @@ export const InfluencerCommissionDetailsModal = ({ influencerId, onClose, initia
                       : isDarkMode ? 'bg-gray-900/30 border-white/5' : 'bg-gray-50 border-gray-100'
                   }`}>
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-[8px] font-black text-gray-400 uppercase tracking-wider">{stat.label}</span>
+                      <span className="text-[11px] font-black text-gray-400 uppercase tracking-wider">{stat.label}</span>
                       {stat.icon}
                     </div>
                     <p className={`text-base font-black ${stat.highlight ? 'text-primary' : isDarkMode ? 'text-white' : 'text-gray-800'}`}>
@@ -235,7 +235,7 @@ export const InfluencerCommissionDetailsModal = ({ influencerId, onClose, initia
                 ) : (
                   <div className="py-4 text-center">
                     <p className="text-xs font-bold text-gray-400 uppercase">No target slab achieved for this month</p>
-                    <p className="text-[9px] text-gray-400 uppercase mt-0.5">Sales generated are lower than the minimum slab requirement</p>
+                    <p className="text-xs text-gray-400 uppercase mt-0.5">Sales generated are lower than the minimum slab requirement</p>
                   </div>
                 )}
               </div>
@@ -249,7 +249,7 @@ export const InfluencerCommissionDetailsModal = ({ influencerId, onClose, initia
                   <div className="overflow-x-auto rounded-2xl border border-gray-100 dark:border-white/5">
                     <table className="w-full text-left border-collapse">
                       <thead>
-                        <tr className={`text-[9px] font-black uppercase tracking-wider border-b ${
+                        <tr className={`text-xs font-black uppercase tracking-wider border-b ${
                           isDarkMode ? 'bg-gray-900/50 border-white/5 text-gray-400' : 'bg-gray-50 border-gray-100 text-gray-500'
                         }`}>
                           <th className="py-3 px-4">Order ID</th>
@@ -264,7 +264,7 @@ export const InfluencerCommissionDetailsModal = ({ influencerId, onClose, initia
                             <td className="py-3 px-4 font-mono text-sm text-gray-400">{comm.orderId || 'N/A'}</td>
                             <td className="py-3 px-4 text-right">₹{(comm.salesAmount || 0).toLocaleString()}</td>
                             <td className="py-3 px-4 text-right text-primary font-bold">₹{(comm.earnedAmount || 0).toLocaleString()}</td>
-                            <td className="py-3 px-4 text-center uppercase text-[9px] font-black">
+                            <td className="py-3 px-4 text-center uppercase text-xs font-black">
                               <span className={comm.isSettled ? 'text-green-500' : 'text-amber-500'}>
                                 {comm.isSettled ? 'Settled' : 'Pending'}
                               </span>

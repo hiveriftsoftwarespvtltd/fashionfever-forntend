@@ -25,6 +25,7 @@ import {
 } from '../../../api/quickECommerceService';
 import { toast } from '../../../utils/toast';
 import Swal from 'sweetalert2';
+import { getImageUrl as defaultGetImageUrl, handleImageError } from '../../../utils/imageUrl';
 
 const VendorRiders = ({ isDarkMode, getImageUrl }) => {
   const [riders, setRiders] = useState([]);
@@ -98,7 +99,7 @@ const VendorRiders = ({ isDarkMode, getImageUrl }) => {
       vehicleNumber: rider.vehicleNumber || '',
       profilePhoto: null
     });
-    setPhotoPreview(getImageUrl ? getImageUrl(rider.profilePhoto) : '');
+    setPhotoPreview((getImageUrl || defaultGetImageUrl)(rider.profilePhoto) || '');
     setShowModal(true);
   };
 
@@ -282,14 +283,19 @@ const VendorRiders = ({ isDarkMode, getImageUrl }) => {
                             isDarkMode ? 'bg-primary/20 text-primary' : 'bg-primary/10 text-primary'
                           }`}>
                             {rider.profilePhoto ? (
-                              <img src={getImageUrl ? getImageUrl(rider.profilePhoto) : rider.profilePhoto} alt={rider.name} className="w-full h-full object-cover" />
+                              <img
+                                src={(getImageUrl || defaultGetImageUrl)(rider.profilePhoto)}
+                                alt={rider.name}
+                                className="w-full h-full object-cover"
+                                onError={handleImageError}
+                              />
                             ) : (
                               rider.name ? rider.name.charAt(0) : 'R'
                             )}
                           </div>
                           <div>
                             <p className={`font-bold text-sm ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>{rider.name}</p>
-                            <span className="text-[10px] font-mono text-gray-400">ID: {rider._id?.slice(-6)}</span>
+                            <span className="text-xs font-mono text-gray-400">ID: {rider._id?.slice(-6)}</span>
                           </div>
                         </div>
                       </td>
@@ -312,14 +318,14 @@ const VendorRiders = ({ isDarkMode, getImageUrl }) => {
                           <span className={`font-bold uppercase ${isDarkMode ? 'text-gray-300' : 'text-gray-800'}`}>
                             {rider.vehicleType || 'Bike'}
                           </span>
-                          <span className="text-[10px] font-mono text-gray-400 uppercase">
+                          <span className="text-xs font-mono text-gray-400 uppercase">
                             {rider.vehicleNumber || 'N/A'}
                           </span>
                         </div>
                       </td>
 
                       <td className="px-6 py-4">
-                        <span className={`px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${statusBg}`}>
+                        <span className={`px-2.5 py-1 rounded-full text-xs font-black uppercase tracking-wider ${statusBg}`}>
                           {rider.status || 'AVAILABLE'}
                         </span>
                       </td>
@@ -483,7 +489,7 @@ const VendorRiders = ({ isDarkMode, getImageUrl }) => {
                 <label className="block mb-1 text-gray-400">Profile Photo</label>
                 <div className="flex items-center gap-4">
                   {photoPreview && (
-                    <img src={photoPreview} alt="Preview" className="w-12 h-12 rounded-full object-cover border" />
+                    <img src={photoPreview} alt="Preview" className="w-12 h-12 rounded-full object-cover border" onError={handleImageError} />
                   )}
                   <label className={`flex-1 border-2 border-dashed rounded-2xl p-3 flex items-center justify-center gap-2 cursor-pointer transition-all ${
                     isDarkMode ? 'border-white/10 hover:border-primary/50 bg-gray-900' : 'border-gray-200 hover:border-primary/50 bg-gray-50'

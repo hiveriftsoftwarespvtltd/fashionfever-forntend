@@ -6,6 +6,7 @@ import {
   getEducatorWalletTransactions
 } from '../../../api/adminService';
 import { useTheme } from '../../../context/ThemeContext';
+import { getImageUrl } from '../../../utils/imageUrl';
 
 /**
  * Educator Details Modal
@@ -56,7 +57,7 @@ const EducatorDetailsModal = ({ educatorId, onClose }) => {
         {icon}
       </div>
       <div>
-        <span className="text-[9px] font-black text-gray-400 uppercase block tracking-wider leading-none mb-1">{label}</span>
+        <span className="text-xs font-black text-gray-400 uppercase block tracking-wider leading-none mb-1">{label}</span>
         <span className={`text-xs font-bold ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>{value || '—'}</span>
       </div>
     </div>
@@ -76,16 +77,31 @@ const EducatorDetailsModal = ({ educatorId, onClose }) => {
             {/* Modal Header */}
             <div className="flex justify-between items-start">
               <div className="flex items-center gap-4">
-                <div className="w-16 h-16 rounded-2xl overflow-hidden border shadow-inner flex items-center justify-center bg-gray-50 flex-shrink-0">
-                  {details.profileImage?.url || details.profileImage ? (
-                    <img 
-                      src={details.profileImage?.url || details.profileImage} 
-                      alt="Profile" 
-                      className="w-full h-full object-cover" 
-                    />
-                  ) : (
-                    <User size={28} className="text-primary" />
-                  )}
+                <div className={`w-16 h-16 rounded-2xl overflow-hidden border shadow-inner flex items-center justify-center flex-shrink-0 ${
+                  isDarkMode ? 'bg-zinc-800 border-zinc-700' : 'bg-gray-50 border-gray-200'
+                }`}>
+                  {(() => {
+                    const rawImg = details.profileImage?.url || details.profileImage || details.userId?.avatar?.url || details.userId?.avatar;
+                    const imgUrl = rawImg ? getImageUrl(rawImg) : null;
+                    return (
+                      <>
+                        {imgUrl ? (
+                          <img 
+                            src={imgUrl} 
+                            alt={details.userId?.name || 'Profile'} 
+                            className="w-full h-full object-cover" 
+                            onError={(e) => {
+                              e.target.style.display = 'none';
+                              if (e.target.nextSibling) e.target.nextSibling.style.display = 'flex';
+                            }}
+                          />
+                        ) : null}
+                        <div className={`w-full h-full items-center justify-center ${imgUrl ? 'hidden' : 'flex'}`}>
+                          <User size={28} className="text-primary" />
+                        </div>
+                      </>
+                    );
+                  })()}
                 </div>
                 <div>
                   <h2 className={`text-xl font-bold leading-tight ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
@@ -93,12 +109,12 @@ const EducatorDetailsModal = ({ educatorId, onClose }) => {
                   </h2>
                   <p className="text-sm font-bold text-primary uppercase mt-1">Certified Academy Educator</p>
                   <div className="flex items-center gap-2 mt-1.5">
-                    <span className={`px-2.5 py-0.5 rounded-full text-[8px] font-black uppercase tracking-wider ${
+                    <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-black uppercase tracking-wider ${
                       details.isApproved ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20' : 'bg-amber-500/10 text-amber-500 border border-amber-500/20'
                     }`}>
                       {details.isApproved ? 'Approved' : 'Pending Approval'}
                     </span>
-                    <span className={`px-2.5 py-0.5 rounded-full text-[8px] font-black uppercase tracking-wider ${
+                    <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-black uppercase tracking-wider ${
                       details.isActive ? 'bg-green-500/10 text-green-500 border border-green-500/20' : 'bg-red-500/10 text-red-500 border border-red-500/20'
                     }`}>
                       {details.isActive ? 'Active' : 'Inactive'}
@@ -148,17 +164,17 @@ const EducatorDetailsModal = ({ educatorId, onClose }) => {
                 <h3 className={`text-sm font-black uppercase tracking-wider pb-2 border-b ${isDarkMode ? 'text-gray-400 border-white/5' : 'text-gray-500 border-gray-100'}`}>Profile Bio & Expertise</h3>
                 <div className={`p-4 rounded-2xl border space-y-4 ${isDarkMode ? 'bg-gray-900/10 border-white/5' : 'bg-gray-50/30 border-gray-100'}`}>
                   <div className="space-y-1">
-                    <span className="text-[9px] font-black text-gray-400 uppercase block tracking-wider leading-none">Biography</span>
+                    <span className="text-xs font-black text-gray-400 uppercase block tracking-wider leading-none">Biography</span>
                     <p className={`text-xs font-semibold leading-relaxed ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
                       {details.bio || 'No bio submitted.'}
                     </p>
                   </div>
                   <div className="space-y-1.5">
-                    <span className="text-[9px] font-black text-gray-400 uppercase block tracking-wider leading-none">Expertise Areas</span>
+                    <span className="text-xs font-black text-gray-400 uppercase block tracking-wider leading-none">Expertise Areas</span>
                     <div className="flex flex-wrap gap-1.5">
                       {details.expertise && details.expertise.length > 0 ? (
                         details.expertise.map((exp, idx) => (
-                          <span key={idx} className="px-2.5 py-0.5 bg-primary/5 text-primary border border-primary/10 rounded-full text-[9px] font-bold uppercase tracking-wider">
+                          <span key={idx} className="px-2.5 py-0.5 bg-primary/5 text-primary border border-primary/10 rounded-full text-xs font-bold uppercase tracking-wider">
                             {exp}
                           </span>
                         ))
@@ -186,18 +202,18 @@ const EducatorDetailsModal = ({ educatorId, onClose }) => {
                         </div>
                         <div>
                           <h4 className="text-xs font-bold leading-tight uppercase">{course.title}</h4>
-                          <p className="text-[9px] font-semibold text-gray-400 uppercase mt-0.5 line-clamp-1">{course.subtitle || 'No subtitle'}</p>
-                          <div className="flex items-center gap-3 mt-1 text-[8px] font-black text-gray-400 uppercase tracking-wider">
+                          <p className="text-xs font-semibold text-gray-400 uppercase mt-0.5 line-clamp-1">{course.subtitle || 'No subtitle'}</p>
+                          <div className="flex items-center gap-3 mt-1 text-[11px] font-black text-gray-400 uppercase tracking-wider">
                             <span className="flex items-center gap-1"><Clock size={10} /> {course.totalDurationInMinutes ?? 0} mins</span>
                             <span>{course.totalLessons ?? 0} lessons</span>
                           </div>
                         </div>
                       </div>
                       <div className="text-right">
-                        <span className="text-[8px] font-black text-primary bg-primary/10 px-2 py-0.5 rounded-full uppercase tracking-wider">
+                        <span className="text-[11px] font-black text-primary bg-primary/10 px-2 py-0.5 rounded-full uppercase tracking-wider">
                           {course.isFree ? 'Free' : `₹${course.sellingPrice}`}
                         </span>
-                        <p className="text-[9px] font-bold text-gray-400 uppercase mt-1 tracking-tight">{course.status}</p>
+                        <p className="text-xs font-bold text-gray-400 uppercase mt-1 tracking-tight">{course.status}</p>
                       </div>
                     </div>
                   ))
@@ -218,7 +234,7 @@ const EducatorDetailsModal = ({ educatorId, onClose }) => {
                   <span className="text-sm font-black uppercase text-gray-400 tracking-wider">
                     Educator Wallet Ledger
                   </span>
-                  <span className={`px-2 py-0.5 rounded-full text-[9px] font-bold uppercase ${
+                  <span className={`px-2 py-0.5 rounded-full text-xs font-bold uppercase ${
                     isDarkMode ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-emerald-100 text-emerald-800'
                   }`}>
                     Payout Ready
@@ -227,19 +243,19 @@ const EducatorDetailsModal = ({ educatorId, onClose }) => {
                 
                 <div className="grid grid-cols-3 gap-2">
                   <div className="flex flex-col">
-                    <span className="text-[8px] font-black text-gray-400 uppercase">Liquid Balance</span>
+                    <span className="text-[11px] font-black text-gray-400 uppercase">Liquid Balance</span>
                     <span className={`text-sm font-black ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
                       ₹{(wallet.balance || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                     </span>
                   </div>
                   <div className="flex flex-col border-l border-gray-100 dark:border-white/5 pl-3">
-                    <span className="text-[8px] font-black text-gray-400 uppercase">Pending Escrow</span>
+                    <span className="text-[11px] font-black text-gray-400 uppercase">Pending Escrow</span>
                     <span className="text-sm font-bold text-amber-500">
                       ₹{(wallet.pendingBalance || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                     </span>
                   </div>
                   <div className="flex flex-col border-l border-gray-100 dark:border-white/5 pl-3">
-                    <span className="text-[8px] font-black text-gray-400 uppercase">Total Earnings</span>
+                    <span className="text-[11px] font-black text-gray-400 uppercase">Total Earnings</span>
                     <span className="text-sm font-bold text-emerald-500">
                       ₹{(wallet.totalEarnings || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                     </span>
@@ -254,7 +270,7 @@ const EducatorDetailsModal = ({ educatorId, onClose }) => {
                 <span className="text-sm font-black uppercase text-gray-400 tracking-wider">
                   Transaction Audit Ledger
                 </span>
-                <span className="text-[9px] text-gray-400 font-bold uppercase">
+                <span className="text-xs text-gray-400 font-bold uppercase">
                   {(transactions || []).length} Records
                 </span>
               </div>
@@ -278,7 +294,7 @@ const EducatorDetailsModal = ({ educatorId, onClose }) => {
                         <span className={`font-bold ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>
                           {tx.description || tx.reason || 'Transaction'}
                         </span>
-                        <span className="text-[8px] text-gray-400 font-bold uppercase">
+                        <span className="text-[11px] text-gray-400 font-bold uppercase">
                           {new Date(tx.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
                         </span>
                       </div>
@@ -289,7 +305,7 @@ const EducatorDetailsModal = ({ educatorId, onClose }) => {
                         }`}>
                           {tx.type === 'CREDIT' ? '+' : '-'}₹{(tx.amount || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                         </span>
-                        <span className="text-[8px] text-gray-400 font-mono font-bold uppercase">
+                        <span className="text-[11px] text-gray-400 font-mono font-bold uppercase">
                           Bal: ₹{(tx.balanceAfterTransaction || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                         </span>
                       </div>
@@ -302,13 +318,13 @@ const EducatorDetailsModal = ({ educatorId, onClose }) => {
             {/* Timestamps */}
             <div className={`p-4 rounded-2xl border space-y-2 text-xs ${isDarkMode ? 'bg-gray-900/20 border-white/5 text-gray-400' : 'bg-gray-50 border-gray-100 text-gray-500'}`}>
               <div className="flex justify-between items-center">
-                <span className="text-[9px] font-black uppercase text-gray-400 tracking-wider">Joined Academy On</span>
+                <span className="text-xs font-black uppercase text-gray-400 tracking-wider">Joined Academy On</span>
                 <span className="font-bold">
                   {details.createdAt ? new Date(details.createdAt).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' }) : '—'}
                 </span>
               </div>
               <div className="flex justify-between items-center border-t border-gray-100/50 dark:border-white/5 pt-2">
-                <span className="text-[9px] font-black uppercase text-gray-400 tracking-wider">Last Profile Update</span>
+                <span className="text-xs font-black uppercase text-gray-400 tracking-wider">Last Profile Update</span>
                 <span className="font-bold">
                   {details.updatedAt ? new Date(details.updatedAt).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' }) : '—'}
                 </span>

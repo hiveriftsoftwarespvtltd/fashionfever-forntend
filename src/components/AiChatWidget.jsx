@@ -107,7 +107,7 @@ const AiChatWidget = () => {
               </div>
               <div>
                 <h3 className="text-xs font-black uppercase tracking-wider">Beauty AI Assistant</h3>
-                <span className="text-[10px] text-pink-100 font-semibold uppercase tracking-wider block">Online & Ready</span>
+                <span className="text-xs text-pink-100 font-semibold uppercase tracking-wider block">Online & Ready</span>
               </div>
             </div>
             <button 
@@ -134,7 +134,7 @@ const AiChatWidget = () => {
                 >
                   {msg.text}
                 </div>
-                <span className="text-[9px] text-gray-400 font-bold uppercase tracking-wider mt-1 px-1">
+                <span className="text-xs text-gray-400 font-bold uppercase tracking-wider mt-1 px-1">
                   {msg.timestamp.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true })}
                 </span>
               </div>
@@ -181,9 +181,9 @@ const AiChatWidget = () => {
       {/* Floating Action Button */}
       <button 
         onClick={() => setIsOpen(!isOpen)}
-        className="w-14 h-14 bg-gradient-to-r from-primary to-pink-500 text-white rounded-full shadow-[0_10px_30px_rgba(252,155,201,0.4)] flex items-center justify-center hover:scale-110 active:scale-95 transition-all cursor-pointer group relative"
+        className="w-11 h-11 sm:w-14 sm:h-14 bg-gradient-to-r from-primary to-pink-500 text-white rounded-full shadow-[0_8px_25px_rgba(252,155,201,0.35)] flex items-center justify-center hover:scale-105 active:scale-95 transition-all cursor-pointer group relative"
       >
-        {isOpen ? <X size={24} /> : <MessageSquare size={24} />}
+        {isOpen ? <X size={18} className="sm:w-6 sm:h-6" /> : <MessageSquare size={18} className="sm:w-6 sm:h-6" />}
         
         {/* Glow pulsing ring when closed */}
         {!isOpen && (
@@ -192,7 +192,7 @@ const AiChatWidget = () => {
         
         {/* Tooltip helper when closed */}
         {!isOpen && (
-          <div className="absolute right-full mr-4 bg-white px-3 py-2 rounded-xl shadow-xl text-[10px] font-black uppercase text-gray-800 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none border border-gray-150 tracking-wider">
+          <div className="absolute right-full mr-4 bg-white px-3 py-2 rounded-xl shadow-xl text-xs font-black uppercase text-gray-800 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none border border-gray-150 tracking-wider">
             Chat with Beauty AI
           </div>
         )}

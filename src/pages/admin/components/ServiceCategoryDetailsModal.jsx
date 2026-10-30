@@ -111,7 +111,7 @@ const ServiceCategoryDetailsModal = ({ categoryId, onClose }) => {
                   <p className="text-sm font-bold text-gray-400 uppercase mb-2">Cover Image File Info</p>
                   <div className={`p-4 rounded-2xl border space-y-2 text-xs ${isDarkMode ? 'bg-gray-900/20 border-white/5 text-gray-400' : 'bg-gray-50 border-gray-100 text-gray-600'}`}>
                     <div className="flex justify-between items-center">
-                      <span className="flex items-center gap-1.5 font-bold uppercase text-[9px] text-gray-400">
+                      <span className="flex items-center gap-1.5 font-bold uppercase text-xs text-gray-400">
                         <Image size={12} /> File Name
                       </span>
                       <span className="font-bold truncate max-w-[200px]" title={category.image.originalName}>
@@ -119,7 +119,7 @@ const ServiceCategoryDetailsModal = ({ categoryId, onClose }) => {
                       </span>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="flex items-center gap-1.5 font-bold uppercase text-[9px] text-gray-400">
+                      <span className="flex items-center gap-1.5 font-bold uppercase text-xs text-gray-400">
                         <Database size={12} /> Storage Size
                       </span>
                       <span className="font-bold">
@@ -127,7 +127,7 @@ const ServiceCategoryDetailsModal = ({ categoryId, onClose }) => {
                       </span>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="flex items-center gap-1.5 font-bold uppercase text-[9px] text-gray-400">
+                      <span className="flex items-center gap-1.5 font-bold uppercase text-xs text-gray-400">
                         <User size={12} /> Uploaded By (User ID)
                       </span>
                       <span className="font-bold font-mono text-sm">
@@ -135,7 +135,7 @@ const ServiceCategoryDetailsModal = ({ categoryId, onClose }) => {
                       </span>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="flex items-center gap-1.5 font-bold uppercase text-[9px] text-gray-400">
+                      <span className="flex items-center gap-1.5 font-bold uppercase text-xs text-gray-400">
                         <ShieldAlert size={12} /> Folder & Provider
                       </span>
                       <span className="font-bold">

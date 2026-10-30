@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useEffect } from 'react';
 import { Calendar as CalendarIcon, Clock, Loader2, Sparkles, User } from 'lucide-react';
 import StylistSelector from './StylistSelector';
 
@@ -60,6 +60,36 @@ const DateTimeSlotSelector = ({
     }
   };
 
+  // Helper to determine if slot has already passed for today
+  const isSlotInPast = (slot) => {
+    if (!slot) return false;
+    if (slot.isPast === true) return true;
+
+    const now = new Date();
+    const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+    
+    if (selectedDate !== todayStr) return false;
+
+    if (slot.utcStartTime) {
+      return new Date(slot.utcStartTime).getTime() <= now.getTime();
+    }
+
+    const raw = String(slot.startTime || '').trim();
+    if (!raw) return false;
+    const isPM = raw.toUpperCase().includes('PM');
+    const isAM = raw.toUpperCase().includes('AM');
+    const clean = raw.replace(/AM|PM/i, '').trim();
+    const [hStr, mStr] = clean.split(':');
+    let hours = parseInt(hStr, 10) || 0;
+    const mins = parseInt(mStr, 10) || 0;
+    if (isPM && hours < 12) hours += 12;
+    if (isAM && hours === 12) hours = 0;
+
+    const slotDate = new Date();
+    slotDate.setHours(hours, mins, 0, 0);
+    return slotDate.getTime() <= now.getTime();
+  };
+
   // Filter slots if a specific stylist is selected
   const availableSlots = useMemo(() => {
     if (!slots || slots.length === 0) return [];
@@ -68,6 +98,13 @@ const DateTimeSlotSelector = ({
       return slot.availableStaff && slot.availableStaff.some(st => st?._id === selectedStaff._id);
     });
   }, [slots, selectedStaff]);
+
+  // Auto-deselect slot if it is in the past for today
+  useEffect(() => {
+    if (selectedSlot && isSlotInPast(selectedSlot)) {
+      setSelectedSlot(null);
+    }
+  }, [selectedDate, selectedSlot]);
 
   return (
     <div ref={scheduleRef} className="space-y-6 text-left py-2">
@@ -134,7 +171,7 @@ const DateTimeSlotSelector = ({
                         : 'bg-white border-gray-200 text-gray-700 hover:border-gray-300 hover:bg-gray-50'
                     }`}
                   >
-                    <span className={`text-[10px] font-bold uppercase tracking-wider ${
+                    <span className={`text-xs font-bold uppercase tracking-wider ${
                       isSel ? 'text-white/80' : 'text-gray-400'
                     }`}>
                       {d.isToday ? 'Today' : d.dayName}
@@ -144,7 +181,7 @@ const DateTimeSlotSelector = ({
                       {d.dayNum}
                     </span>
 
-                    <span className={`text-[10px] font-medium ${
+                    <span className={`text-xs font-medium ${
                       isSel ? 'text-white/90' : 'text-gray-500'
                     }`}>
                       {d.monthName}
@@ -184,24 +221,39 @@ const DateTimeSlotSelector = ({
             ) : availableSlots.length > 0 ? (
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
                 {availableSlots.map((slot, idx) => {
-                  const isSel = selectedSlot?.startTime === slot.startTime;
-                  const isAvail = slot.isAvailable !== false;
+                  const isPast = isSlotInPast(slot);
+                  const isAvail = slot.isAvailable !== false && !isPast;
+                  const isSel = selectedSlot?.startTime === slot.startTime && !isPast;
 
                   return (
                     <button
                       key={idx}
                       type="button"
                       disabled={!isAvail}
-                      onClick={() => setSelectedSlot(slot)}
-                      className={`py-3 px-4 rounded-xl border text-center transition-all cursor-pointer font-bold text-sm ${
-                        isSel
-                          ? 'bg-primary border-primary text-white shadow-sm ring-1 ring-primary'
+                      onClick={() => {
+                        if (isAvail) setSelectedSlot(slot);
+                      }}
+                      title={isPast ? 'This time slot has already passed' : !isAvail ? 'Slot unavailable' : 'Select slot'}
+                      className={`py-3 px-3 sm:px-4 rounded-xl border text-center transition-all font-bold text-xs sm:text-sm relative ${
+                        isPast
+                          ? 'bg-gray-100/90 border-gray-200 text-gray-400 cursor-not-allowed opacity-60'
+                          : isSel
+                          ? 'bg-primary border-primary text-white shadow-sm ring-1 ring-primary cursor-pointer'
                           : isAvail
-                          ? 'bg-white border-gray-200 text-gray-800 hover:border-primary hover:text-primary hover:bg-pink-50/20'
+                          ? 'bg-white border-gray-200 text-gray-800 hover:border-primary hover:text-primary hover:bg-pink-50/20 cursor-pointer'
                           : 'bg-gray-100 border-gray-200 text-gray-400 cursor-not-allowed'
                       }`}
                     >
-                      {formatSlotTime(slot.startTime)}
+                      <div className="flex items-center justify-center gap-1.5 flex-wrap">
+                        <span className={isPast ? 'line-through text-gray-400' : ''}>
+                          {formatSlotTime(slot.startTime)}
+                        </span>
+                        {isPast && (
+                          <span className="text-xs font-semibold text-gray-400 bg-gray-200 px-1.5 py-0.5 rounded leading-none">
+                            Passed
+                          </span>
+                        )}
+                      </div>
                     </button>
                   );
                 })}

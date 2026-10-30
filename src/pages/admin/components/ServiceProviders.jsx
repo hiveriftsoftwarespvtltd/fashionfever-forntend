@@ -157,7 +157,7 @@ const ServiceProviders = ({ isDarkMode }) => {
     {
       header: 'Verification',
       render: (prov) => (
-        <span className={`px-2.5 py-1 rounded-xl text-[9px] font-black uppercase tracking-wider ${
+        <span className={`px-2.5 py-1 rounded-xl text-xs font-black uppercase tracking-wider ${
           prov.verificationStatus === 'APPROVED' 
             ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20' 
             : 'bg-amber-500/10 text-amber-500 border border-amber-500/20'

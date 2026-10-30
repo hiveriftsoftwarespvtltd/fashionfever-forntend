@@ -147,7 +147,7 @@ const CreateCourseCategoryModal = ({ isOpen, onClose, onSuccess }) => {
                       Choose Icon Image
                       <input type="file" accept="image/*" onChange={handleFileChange} className="hidden" required />
                     </label>
-                    <p className="text-[9px] font-medium text-gray-400 uppercase mt-1.5">Supports PNG, JPG, JPEG. Max file size: 5MB.</p>
+                    <p className="text-xs font-medium text-gray-400 uppercase mt-1.5">Supports PNG, JPG, JPEG. Max file size: 5MB.</p>
                   </div>
                 </div>
               </div>

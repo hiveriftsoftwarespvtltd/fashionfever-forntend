@@ -3,6 +3,7 @@ import { X, Upload, Plus, AlertCircle } from 'lucide-react';
 import { getCourseCategories, addCourse, updateCourse } from '../../../api/educatorService';
 import { toast } from '../../../utils/toast';
 import config from '../../../config/config';
+import { getImageUrl } from '../../../utils/imageUrl';
 
 const CreateCourseModal = ({ isOpen, onClose, onCourseCreated, isDarkMode, editCourseData }) => {
   const [categories, setCategories] = useState([]);
@@ -43,15 +44,7 @@ const CreateCourseModal = ({ isOpen, onClose, onCourseCreated, isDarkMode, editC
         setFile(null);
         let thumbUrl = null;
         if (editCourseData.thumbnail) {
-          if (editCourseData.thumbnail.url) {
-            thumbUrl = editCourseData.thumbnail.url;
-          } else if (typeof editCourseData.thumbnail === 'string') {
-            if (editCourseData.thumbnail.startsWith('http') || editCourseData.thumbnail.startsWith('data:')) {
-              thumbUrl = editCourseData.thumbnail;
-            } else {
-              thumbUrl = `${config.API_URL}/file/get-file/${editCourseData.thumbnail}`;
-            }
-          }
+          thumbUrl = getImageUrl(editCourseData.thumbnail);
         }
         setImagePreview(thumbUrl);
         setStatus(editCourseData.status || 'DRAFT');
@@ -135,9 +128,7 @@ const CreateCourseModal = ({ isOpen, onClose, onCourseCreated, isDarkMode, editC
       formData.append('costPrice', isFree ? '0' : costPrice || '0');
       formData.append('sellingPrice', isFree ? '0' : sellingPrice || '0');
       formData.append('offeredPrice', isFree ? '0' : offeredPrice || '0');
-      if (editCourseData) {
-        formData.append('status', status);
-      }
+      formData.append('status', status || 'PUBLISHED');
       
       if (file) {
         formData.append('file', file);
@@ -185,7 +176,7 @@ const CreateCourseModal = ({ isOpen, onClose, onCourseCreated, isDarkMode, editC
     setTags(['']);
     setFile(null);
     setImagePreview(null);
-    setStatus('DRAFT');
+    setStatus('PUBLISHED');
   };
 
   if (!isOpen) return null;
@@ -288,7 +279,15 @@ const CreateCourseModal = ({ isOpen, onClose, onCourseCreated, isDarkMode, editC
                   isDarkMode ? 'bg-zinc-950 border-zinc-800' : 'bg-zinc-100 border-zinc-200'
                 }`}>
                   {imagePreview ? (
-                    <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
+                    <img 
+                      src={imagePreview} 
+                      alt="Preview" 
+                      className="w-full h-full object-cover" 
+                      onError={(e) => {
+                        e.currentTarget.onerror = null;
+                        setImagePreview(null);
+                      }}
+                    />
                   ) : (
                     <Upload size={18} className="text-zinc-400" />
                   )}
@@ -345,23 +344,20 @@ const CreateCourseModal = ({ isOpen, onClose, onCourseCreated, isDarkMode, editC
               </select>
             </div>
 
-            {editCourseData && (
-              <div className="space-y-1.5">
-                <label className="text-xs font-bold uppercase tracking-wider text-zinc-400">Course Status</label>
-                <select
-                  value={status}
-                  onChange={(e) => setStatus(e.target.value)}
-                  className={`block w-full px-4 py-3 border rounded-xl font-semibold leading-normal outline-none transition-all ${
-                    isDarkMode ? 'bg-zinc-900 border-zinc-800 text-white' : 'bg-white border-zinc-200 text-zinc-800'
-                  }`}
-                >
-                  <option value="DRAFT" className={isDarkMode ? 'bg-zinc-900 text-white' : 'bg-white text-zinc-800'}>Draft</option>
-                  <option value="PUBLISHED" className={isDarkMode ? 'bg-zinc-900 text-white' : 'bg-white text-zinc-800'}>Published</option>
-                  <option value="REJECTED" className={isDarkMode ? 'bg-zinc-900 text-white' : 'bg-white text-zinc-800'}>Rejected</option>
-                  <option value="ARCHIVED" className={isDarkMode ? 'bg-zinc-900 text-white' : 'bg-white text-zinc-800'}>Archived</option>
-                </select>
-              </div>
-            )}
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold uppercase tracking-wider text-zinc-400">Course Status</label>
+              <select
+                value={status}
+                onChange={(e) => setStatus(e.target.value)}
+                className={`block w-full px-4 py-3 border rounded-xl font-semibold leading-normal outline-none transition-all ${
+                  isDarkMode ? 'bg-zinc-900 border-zinc-800 text-white' : 'bg-white border-zinc-200 text-zinc-800'
+                }`}
+              >
+                <option value="PUBLISHED" className={isDarkMode ? 'bg-zinc-900 text-white' : 'bg-white text-zinc-800'}>Published</option>
+                <option value="DRAFT" className={isDarkMode ? 'bg-zinc-900 text-white' : 'bg-white text-zinc-800'}>Draft</option>
+                <option value="ARCHIVED" className={isDarkMode ? 'bg-zinc-900 text-white' : 'bg-white text-zinc-800'}>Archived</option>
+              </select>
+            </div>
 
             <div className="space-y-1.5">
               <label className="text-xs font-bold uppercase tracking-wider text-zinc-400">Access Mode</label>

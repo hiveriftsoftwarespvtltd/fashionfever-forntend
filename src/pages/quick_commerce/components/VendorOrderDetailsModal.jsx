@@ -1,5 +1,6 @@
 import React from 'react';
 import { X, User, MapPin, CreditCard, Truck, Package, Phone, Mail, Calendar, ShoppingBag } from 'lucide-react';
+import { handleImageError } from '../../../utils/imageUrl';
 
 const VendorOrderDetailsModal = ({
   selectedOrderModal,
@@ -127,6 +128,7 @@ const VendorOrderDetailsModal = ({
                               src={getItemImage(item)}
                               alt={item.productName}
                               className="w-10 h-10 object-cover rounded-xl border border-slate-200"
+                              onError={handleImageError}
                             />
                           ) : (
                             <div className="w-10 h-10 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-400 font-bold text-xs">

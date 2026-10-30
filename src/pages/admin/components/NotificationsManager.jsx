@@ -843,7 +843,7 @@ const NotificationsManager = ({ isDarkMode }) => {
                     <button
                       type="button"
                       onClick={handleAddParam}
-                      className="text-[10px] font-black uppercase text-primary hover:underline cursor-pointer flex items-center gap-1"
+                      className="text-xs font-black uppercase text-primary hover:underline cursor-pointer flex items-center gap-1"
                     >
                       <Plus size={11} /> Add Parameter
                     </button>

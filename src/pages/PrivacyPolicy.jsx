@@ -327,21 +327,21 @@ const PrivacyPolicy = () => {
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs sm:text-sm">
                 <div className="p-4 bg-white/10 rounded-2xl border border-white/10 space-y-1">
-                  <span className="text-[10px] font-black uppercase text-rose-300 block">Email Us</span>
+                  <span className="text-xs font-black uppercase text-rose-300 block">Email Us</span>
                   <a href="mailto:privacy@fashionfever.in" className="font-bold hover:underline block text-white">
                     privacy@fashionfever.in
                   </a>
                 </div>
 
                 <div className="p-4 bg-white/10 rounded-2xl border border-white/10 space-y-1">
-                  <span className="text-[10px] font-black uppercase text-rose-300 block">Call Support</span>
+                  <span className="text-xs font-black uppercase text-rose-300 block">Call Support</span>
                   <a href="tel:+919999988888" className="font-bold hover:underline block text-white">
                     +91 99999 88888
                   </a>
                 </div>
 
                 <div className="p-4 bg-white/10 rounded-2xl border border-white/10 space-y-1">
-                  <span className="text-[10px] font-black uppercase text-rose-300 block">Office Address</span>
+                  <span className="text-xs font-black uppercase text-rose-300 block">Office Address</span>
                   <span className="font-semibold block text-gray-200">
                     Saket, New Delhi 110017
                   </span>

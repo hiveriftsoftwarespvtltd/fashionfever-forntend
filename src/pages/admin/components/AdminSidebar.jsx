@@ -120,18 +120,105 @@ const AdminSidebar = ({
   handleLogout,
   role,
   adminAccess = [],
+  allowedTabs = [],
   isSuperAdmin = false
 }) => {
   // Access check helper based on granular permissions list
-  const hasAccess = (moduleName) => {
+  const hasAccess = useCallback((moduleName) => {
     if (isSuperAdmin) return true;
-    return adminAccess.some(item => item.module === moduleName);
-  };
+    if (!Array.isArray(adminAccess) || adminAccess.length === 0) return false;
+    return adminAccess.some(item => {
+      const mod = typeof item === 'string' ? item : item?.module;
+      if (mod !== moduleName) return false;
+      if (item?.access && Array.isArray(item.access)) {
+        return item.access.length > 0;
+      }
+      return true;
+    });
+  }, [isSuperAdmin, adminAccess]);
 
-  // Group visibility calculations
-  const showPeopleSection = hasAccess('USERS') || hasAccess('SERVICE_PROVIDERS') || hasAccess('COURSES') || hasAccess('VENDORS') || hasAccess('INFLUENCERS') || isSuperAdmin;
-  const showCatalogSection = hasAccess('COURSES') || hasAccess('VENDORS') || hasAccess('INFLUENCERS') || hasAccess('SERVICE_PROVIDERS');
-  const showOperationsSection = hasAccess('VENDORS') || hasAccess('SERVICE_PROVIDERS') || hasAccess('HOME_CONTENT') || hasAccess('FINANCE') || hasAccess('TICKETS') || hasAccess('USERS') || hasAccess('NOTIFICATION');
+  // Tab-level granular access check helper
+  const hasTabAccess = useCallback((tabId) => {
+    if (isSuperAdmin) return true;
+    if (Array.isArray(allowedTabs) && allowedTabs.length > 0) {
+      return allowedTabs.includes(tabId);
+    }
+    // Fallback mapping for legacy sub-admins without allowedTabs
+    const fallbackMap = {
+      'dashboard': 'DASHBOARD',
+      'users': 'USERS',
+      'service-providers': 'SERVICE_PROVIDERS',
+      'educators': 'COURSES',
+      'all-educators': 'COURSES',
+      'vendors': 'VENDORS',
+      'pending': 'VENDORS',
+      'vendor-payouts': 'VENDORS',
+      'affiliate-dashboard': 'INFLUENCERS',
+      'influencers': 'INFLUENCERS',
+      'commission-slabs': 'INFLUENCERS',
+      'influencer-commissions': 'INFLUENCERS',
+      'categories': ['VENDORS', 'COURSES'],
+      'course-categories': 'COURSES',
+      'products': 'VENDORS',
+      'coupons': 'INFLUENCERS',
+      'subscription-plans': 'SERVICE_PROVIDERS',
+      'orders': ['VENDORS', 'SERVICE_PROVIDERS'],
+      'beauty-services': 'SERVICE_PROVIDERS',
+      'service-categories': 'SERVICE_PROVIDERS',
+      'admin-service-leads': 'SERVICE_PROVIDERS',
+      'home-content': 'HOME_CONTENT',
+      'home-booking-cards': 'HOME_CONTENT',
+      'cashback-slabs': ['FINANCE', 'USERS'],
+      'wallet-balances': 'FINANCE',
+      'bank-accounts': 'FINANCE',
+      'tickets': 'TICKETS',
+      'notifications': 'NOTIFICATION',
+    };
+    const mod = fallbackMap[tabId];
+    if (!mod) return false;
+    const modules = Array.isArray(mod) ? mod : [mod];
+    return modules.some(m => hasAccess(m));
+  }, [isSuperAdmin, allowedTabs, hasAccess]);
+
+  const showVendorGroup = isSuperAdmin ||
+    hasTabAccess('vendors') ||
+    hasTabAccess('pending') ||
+    hasTabAccess('vendor-payouts');
+
+  const showInfluencerGroup = isSuperAdmin ||
+    hasTabAccess('affiliate-dashboard') ||
+    hasTabAccess('influencers') ||
+    hasTabAccess('commission-slabs') ||
+    hasTabAccess('influencer-commissions');
+
+  // Section visibility calculations: visible ONLY if at least one item inside is permitted
+  const showPeopleSection = isSuperAdmin ||
+    hasTabAccess('users') ||
+    hasTabAccess('service-providers') ||
+    hasTabAccess('educators') ||
+    hasTabAccess('all-educators') ||
+    showVendorGroup ||
+    showInfluencerGroup;
+
+  const showCatalogSection = isSuperAdmin ||
+    hasTabAccess('categories') ||
+    hasTabAccess('course-categories') ||
+    hasTabAccess('products') ||
+    hasTabAccess('coupons') ||
+    hasTabAccess('subscription-plans');
+
+  const showOperationsSection = isSuperAdmin ||
+    hasTabAccess('orders') ||
+    hasTabAccess('beauty-services') ||
+    hasTabAccess('service-categories') ||
+    hasTabAccess('admin-service-leads') ||
+    hasTabAccess('home-content') ||
+    hasTabAccess('home-booking-cards') ||
+    hasTabAccess('cashback-slabs') ||
+    hasTabAccess('wallet-balances') ||
+    hasTabAccess('bank-accounts') ||
+    hasTabAccess('tickets') ||
+    hasTabAccess('notifications');
 
   // Collapsible dropdown group state
   const [openGroups, setOpenGroups] = useState(() => {
@@ -221,7 +308,7 @@ const AdminSidebar = ({
             <p className="text-xs font-bold uppercase tracking-wider px-3 mb-2 text-zinc-400">
               Overview
             </p>
-            {hasAccess('DASHBOARD') && (
+            {hasTabAccess('dashboard') && (
               <NavItem 
                 id="dashboard" 
                 label="Dashboard" 
@@ -248,7 +335,7 @@ const AdminSidebar = ({
                 People
               </p>
               <div className="space-y-0.5">
-                {hasAccess('USERS') && (
+                {hasTabAccess('users') && (
                   <NavItem 
                     id="users" 
                     label="User Management" 
@@ -258,7 +345,7 @@ const AdminSidebar = ({
                     isDarkMode={isDarkMode}
                   />
                 )}
-                {hasAccess('SERVICE_PROVIDERS') && (
+                {hasTabAccess('service-providers') && (
                   <NavItem 
                     id="service-providers" 
                     label="Service Providers" 
@@ -268,25 +355,25 @@ const AdminSidebar = ({
                     isDarkMode={isDarkMode}
                   />
                 )}
-                {hasAccess('COURSES') && (
-                  <>
-                    <NavItem 
-                      id="educators" 
-                      label="Educator Approvals" 
-                      icon={<BookOpen size={16} />} 
-                      onClick={() => handleItemClick('educators')}
-                      activeTab={activeTab}
-                      isDarkMode={isDarkMode}
-                    />
-                    <NavItem 
-                      id="all-educators" 
-                      label="Educator Directory" 
-                      icon={<BookOpen size={16} />} 
-                      onClick={() => handleItemClick('all-educators')}
-                      activeTab={activeTab}
-                      isDarkMode={isDarkMode}
-                    />
-                  </>
+                {hasTabAccess('educators') && (
+                  <NavItem 
+                    id="educators" 
+                    label="Educator Approvals" 
+                    icon={<BookOpen size={16} />} 
+                    onClick={() => handleItemClick('educators')}
+                    activeTab={activeTab}
+                    isDarkMode={isDarkMode}
+                  />
+                )}
+                {hasTabAccess('all-educators') && (
+                  <NavItem 
+                    id="all-educators" 
+                    label="Educator Directory" 
+                    icon={<BookOpen size={16} />} 
+                    onClick={() => handleItemClick('all-educators')}
+                    activeTab={activeTab}
+                    isDarkMode={isDarkMode}
+                  />
                 )}
                 {isSuperAdmin && (
                   <NavItem 
@@ -300,7 +387,7 @@ const AdminSidebar = ({
                 )}
 
                 {/* Vendors Group */}
-                {hasAccess('VENDORS') && (
+                {showVendorGroup && (
                   <GroupHeader
                     groupKey="vendors"
                     isActive={isVendorTabActive}
@@ -310,14 +397,20 @@ const AdminSidebar = ({
                     isOpen={openGroups.vendors}
                     onToggle={handleToggleVendors}
                   >
-                    <SubNavItem id="vendors" label="Vendor List" icon={<Store size={13} />} activeTab={activeTab} isDarkMode={isDarkMode} onClick={() => handleItemClick('vendors')} />
-                    <SubNavItem id="pending" label="Pending Approvals" icon={<CircleAlert size={13} />} activeTab={activeTab} isDarkMode={isDarkMode} onClick={() => handleItemClick('pending')} />
-                    <SubNavItem id="vendor-payouts" label="Vendor Payouts" icon={<IndianRupee size={13} />} activeTab={activeTab} isDarkMode={isDarkMode} onClick={() => handleItemClick('vendor-payouts')} />
+                    {hasTabAccess('vendors') && (
+                      <SubNavItem id="vendors" label="Vendor List" icon={<Store size={13} />} activeTab={activeTab} isDarkMode={isDarkMode} onClick={() => handleItemClick('vendors')} />
+                    )}
+                    {hasTabAccess('pending') && (
+                      <SubNavItem id="pending" label="Pending Approvals" icon={<CircleAlert size={13} />} activeTab={activeTab} isDarkMode={isDarkMode} onClick={() => handleItemClick('pending')} />
+                    )}
+                    {hasTabAccess('vendor-payouts') && (
+                      <SubNavItem id="vendor-payouts" label="Vendor Payouts" icon={<IndianRupee size={13} />} activeTab={activeTab} isDarkMode={isDarkMode} onClick={() => handleItemClick('vendor-payouts')} />
+                    )}
                   </GroupHeader>
                 )}
 
                 {/* Influencers Group */}
-                {hasAccess('INFLUENCERS') && (
+                {showInfluencerGroup && (
                   <GroupHeader
                     groupKey="influencers"
                     isActive={isInfluencerTabActive}
@@ -327,10 +420,18 @@ const AdminSidebar = ({
                     isOpen={openGroups.influencers}
                     onToggle={handleToggleInfluencer}
                   >
-                    <SubNavItem id="affiliate-dashboard" label="Affiliate Performance" icon={<LayoutDashboard size={13} />} activeTab={activeTab} isDarkMode={isDarkMode} onClick={() => handleItemClick('affiliate-dashboard')} />
-                    <SubNavItem id="influencers" label="Influencer List" icon={<Users size={13} />} activeTab={activeTab} isDarkMode={isDarkMode} onClick={() => handleItemClick('influencers')} />
-                    <SubNavItem id="commission-slabs" label="Commission Slabs" icon={<Percent size={13} />} activeTab={activeTab} isDarkMode={isDarkMode} onClick={() => handleItemClick('commission-slabs')} />
-                    <SubNavItem id="influencer-commissions" label="Commissions & Payouts" icon={<IndianRupee size={13} />} activeTab={activeTab} isDarkMode={isDarkMode} onClick={() => handleItemClick('influencer-commissions')} />
+                    {hasTabAccess('affiliate-dashboard') && (
+                      <SubNavItem id="affiliate-dashboard" label="Affiliate Performance" icon={<LayoutDashboard size={13} />} activeTab={activeTab} isDarkMode={isDarkMode} onClick={() => handleItemClick('affiliate-dashboard')} />
+                    )}
+                    {hasTabAccess('influencers') && (
+                      <SubNavItem id="influencers" label="Influencer List" icon={<Users size={13} />} activeTab={activeTab} isDarkMode={isDarkMode} onClick={() => handleItemClick('influencers')} />
+                    )}
+                    {hasTabAccess('commission-slabs') && (
+                      <SubNavItem id="commission-slabs" label="Commission Slabs" icon={<Percent size={13} />} activeTab={activeTab} isDarkMode={isDarkMode} onClick={() => handleItemClick('commission-slabs')} />
+                    )}
+                    {hasTabAccess('influencer-commissions') && (
+                      <SubNavItem id="influencer-commissions" label="Commissions & Payouts" icon={<IndianRupee size={13} />} activeTab={activeTab} isDarkMode={isDarkMode} onClick={() => handleItemClick('influencer-commissions')} />
+                    )}
                   </GroupHeader>
                 )}
               </div>
@@ -344,19 +445,19 @@ const AdminSidebar = ({
                 Catalog
               </p>
               <div className="space-y-0.5">
-                {(hasAccess('COURSES') || hasAccess('VENDORS')) && (
+                {hasTabAccess('categories') && (
                   <NavItem id="categories" label="Categories" icon={<Grid size={17} />} onClick={() => handleItemClick('categories')} activeTab={activeTab} isDarkMode={isDarkMode} />
                 )}
-                {hasAccess('COURSES') && (
+                {hasTabAccess('course-categories') && (
                   <NavItem id="course-categories" label="Course Categories" icon={<BookOpen size={17} />} onClick={() => handleItemClick('course-categories')} activeTab={activeTab} isDarkMode={isDarkMode} />
                 )}
-                {hasAccess('VENDORS') && (
+                {hasTabAccess('products') && (
                   <NavItem id="products" label="Products" icon={<Package size={17} />} onClick={() => handleItemClick('products')} activeTab={activeTab} isDarkMode={isDarkMode} />
                 )}
-                {hasAccess('INFLUENCERS') && (
+                {hasTabAccess('coupons') && (
                   <NavItem id="coupons" label="Coupons" icon={<TicketPercent size={17} />} onClick={() => handleItemClick('coupons')} activeTab={activeTab} isDarkMode={isDarkMode} />
                 )}
-                {hasAccess('SERVICE_PROVIDERS') && (
+                {hasTabAccess('subscription-plans') && (
                   <NavItem id="subscription-plans" label="Beauty Services" icon={<Sparkles size={17} />} onClick={() => handleItemClick('subscription-plans')} activeTab={activeTab} isDarkMode={isDarkMode} />
                 )}
               </div>
@@ -370,35 +471,37 @@ const AdminSidebar = ({
                 Operations
               </p>
               <div className="space-y-0.5">
-                {(hasAccess('VENDORS') || hasAccess('SERVICE_PROVIDERS')) && (
+                {hasTabAccess('orders') && (
                   <NavItem id="orders" label="Orders Manager" icon={<ShoppingBag size={17} />} onClick={() => handleItemClick('orders')} activeTab={activeTab} isDarkMode={isDarkMode} />
                 )}
-                {hasAccess('SERVICE_PROVIDERS') && (
-                  <>
-                    <NavItem id="beauty-services" label="Services Subscription" icon={<CreditCard size={17} />} onClick={() => handleItemClick('beauty-services')} activeTab={activeTab} isDarkMode={isDarkMode} />
-                    <NavItem id="service-categories" label="Service Categories" icon={<Layers size={17} />} onClick={() => handleItemClick('service-categories')} activeTab={activeTab} isDarkMode={isDarkMode} />
-                    <NavItem id="admin-service-leads" label="Service Leads" icon={<ClipboardList size={17} />} onClick={() => handleItemClick('admin-service-leads')} activeTab={activeTab} isDarkMode={isDarkMode} />
-                  </>
+                {hasTabAccess('beauty-services') && (
+                  <NavItem id="beauty-services" label="Services Subscription" icon={<CreditCard size={17} />} onClick={() => handleItemClick('beauty-services')} activeTab={activeTab} isDarkMode={isDarkMode} />
                 )}
-                {hasAccess('HOME_CONTENT') && (
-                  <>
-                    <NavItem id="home-content" label="Home Content" icon={<Image size={17} />} onClick={() => handleItemClick('home-content')} activeTab={activeTab} isDarkMode={isDarkMode} />
-                    <NavItem id="home-booking-cards" label="Home Booking Cards" icon={<Sparkles size={17} />} onClick={() => handleItemClick('home-booking-cards')} activeTab={activeTab} isDarkMode={isDarkMode} />
-                  </>
+                {hasTabAccess('service-categories') && (
+                  <NavItem id="service-categories" label="Service Categories" icon={<Layers size={17} />} onClick={() => handleItemClick('service-categories')} activeTab={activeTab} isDarkMode={isDarkMode} />
                 )}
-                {(hasAccess('FINANCE') || hasAccess('USERS')) && (
+                {hasTabAccess('admin-service-leads') && (
+                  <NavItem id="admin-service-leads" label="Service Leads" icon={<ClipboardList size={17} />} onClick={() => handleItemClick('admin-service-leads')} activeTab={activeTab} isDarkMode={isDarkMode} />
+                )}
+                {hasTabAccess('home-content') && (
+                  <NavItem id="home-content" label="Home Content" icon={<Image size={17} />} onClick={() => handleItemClick('home-content')} activeTab={activeTab} isDarkMode={isDarkMode} />
+                )}
+                {hasTabAccess('home-booking-cards') && (
+                  <NavItem id="home-booking-cards" label="Home Booking Cards" icon={<Sparkles size={17} />} onClick={() => handleItemClick('home-booking-cards')} activeTab={activeTab} isDarkMode={isDarkMode} />
+                )}
+                {hasTabAccess('cashback-slabs') && (
                   <NavItem id="cashback-slabs" label="Cashback Slabs" icon={<Percent size={17} />} onClick={() => handleItemClick('cashback-slabs')} activeTab={activeTab} isDarkMode={isDarkMode} />
                 )}
-                {hasAccess('FINANCE') && (
-                  <>
-                    <NavItem id="wallet-balances" label="Wallet Balances" icon={<Wallet size={17} />} onClick={() => handleItemClick('wallet-balances')} activeTab={activeTab} isDarkMode={isDarkMode} />
-                    <NavItem id="bank-accounts" label="Bank Accounts" icon={<Landmark size={17} />} onClick={() => handleItemClick('bank-accounts')} activeTab={activeTab} isDarkMode={isDarkMode} />
-                  </>
+                {hasTabAccess('wallet-balances') && (
+                  <NavItem id="wallet-balances" label="Wallet Balances" icon={<Wallet size={17} />} onClick={() => handleItemClick('wallet-balances')} activeTab={activeTab} isDarkMode={isDarkMode} />
                 )}
-                {hasAccess('TICKETS') && (
+                {hasTabAccess('bank-accounts') && (
+                  <NavItem id="bank-accounts" label="Bank Accounts" icon={<Landmark size={17} />} onClick={() => handleItemClick('bank-accounts')} activeTab={activeTab} isDarkMode={isDarkMode} />
+                )}
+                {hasTabAccess('tickets') && (
                   <NavItem id="tickets" label="Support Tickets" icon={<CircleAlert size={17} />} onClick={() => handleItemClick('tickets')} activeTab={activeTab} isDarkMode={isDarkMode} />
                 )}
-                {hasAccess('NOTIFICATION') && (
+                {hasTabAccess('notifications') && (
                   <NavItem id="notifications" label="Notifications Manager" icon={<Bell size={17} />} onClick={() => handleItemClick('notifications')} activeTab={activeTab} isDarkMode={isDarkMode} />
                 )}
               </div>

@@ -335,7 +335,7 @@ const HomeBookingCardsManager = ({ isDarkMode }) => {
                 {/* Status Badge */}
                 <button
                   onClick={() => handleToggleStatus(card)}
-                  className={`absolute top-2 right-2 px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider shadow-md border cursor-pointer ${card.isActive !== false ? 'bg-emerald-500 text-white border-emerald-400' : 'bg-gray-700 text-gray-300 border-gray-600'}`}
+                  className={`absolute top-2 right-2 px-2.5 py-0.5 rounded-full text-xs font-black uppercase tracking-wider shadow-md border cursor-pointer ${card.isActive !== false ? 'bg-emerald-500 text-white border-emerald-400' : 'bg-gray-700 text-gray-300 border-gray-600'}`}
                 >
                   {card.isActive !== false ? 'ACTIVE' : 'INACTIVE'}
                 </button>
@@ -343,7 +343,7 @@ const HomeBookingCardsManager = ({ isDarkMode }) => {
 
               {/* Card Details */}
               <div className="p-3 flex flex-col flex-grow text-left">
-                <span className="text-[9px] font-black uppercase text-[#ff4d6d] tracking-wider truncate mb-0.5">
+                <span className="text-xs font-black uppercase text-[#ff4d6d] tracking-wider truncate mb-0.5">
                   {card.category}
                 </span>
                 <h4 className={`font-extrabold text-xs uppercase leading-snug truncate mb-3 ${isDarkMode ? 'text-white' : 'text-gray-900'}`} title={card.name}>
@@ -445,7 +445,7 @@ const HomeBookingCardsManager = ({ isDarkMode }) => {
                     />
                   </label>
 
-                  <div className="text-[10px] text-gray-400 text-center font-bold uppercase tracking-wider">
+                  <div className="text-xs text-gray-400 text-center font-bold uppercase tracking-wider">
                     — OR ENTER WEB IMAGE URL BELOW —
                   </div>
 
@@ -466,7 +466,7 @@ const HomeBookingCardsManager = ({ isDarkMode }) => {
               {imagePreview && (
                 <div className="w-full h-32 rounded-xl overflow-hidden border bg-gray-100 relative group">
                   <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
-                  <span className="absolute bottom-1.5 left-1.5 bg-black/60 text-white text-[9px] font-bold px-2 py-0.5 rounded-md backdrop-blur-xs">
+                  <span className="absolute bottom-1.5 left-1.5 bg-black/60 text-white text-xs font-bold px-2 py-0.5 rounded-md backdrop-blur-xs">
                     Image Selected Preview
                   </span>
                 </div>

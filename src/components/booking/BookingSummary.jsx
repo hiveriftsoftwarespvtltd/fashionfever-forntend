@@ -47,18 +47,18 @@ const BookingSummary = ({
 
         {/* Step 1 summary: Lounge details */}
         <div className="space-y-2">
-          <span className="text-[9px] font-black uppercase text-gray-400 block">1. Lounge Location</span>
+          <span className="text-xs font-black uppercase text-gray-400 block">1. Lounge Location</span>
           {selectedResult ? (
             <div className="p-3 bg-gray-50 border border-gray-150 rounded-2xl space-y-0.5">
               <p className="text-[11px] font-black text-gray-800 uppercase truncate">
                 {selectedResult.provider.businessName}
               </p>
-              <p className="text-[9px] font-bold text-gray-400 uppercase truncate">
+              <p className="text-xs font-bold text-gray-400 uppercase truncate">
                 {selectedResult.provider.address}, {selectedResult.provider.city}
               </p>
             </div>
           ) : (
-            <div className="py-5 border border-dashed border-gray-200 rounded-2xl text-center text-gray-400 text-[9px] font-bold uppercase">
+            <div className="py-5 border border-dashed border-gray-200 rounded-2xl text-center text-gray-400 text-xs font-bold uppercase">
               No lounge selected
             </div>
           )}
@@ -66,7 +66,7 @@ const BookingSummary = ({
 
         {/* Step 2 summary: Services catalog items */}
         <div className="space-y-2">
-          <span className="text-[9px] font-black uppercase text-gray-400 block">
+          <span className="text-xs font-black uppercase text-gray-400 block">
             2. Services Selected ({selectedServices.length})
           </span>
           {selectedServices.length > 0 ? (
@@ -82,7 +82,7 @@ const BookingSummary = ({
               })}
             </div>
           ) : (
-            <div className="py-5 border border-dashed border-gray-200 rounded-2xl text-center text-gray-400 text-[9px] font-bold uppercase">
+            <div className="py-5 border border-dashed border-gray-200 rounded-2xl text-center text-gray-400 text-xs font-bold uppercase">
               No services selected
             </div>
           )}
@@ -91,7 +91,7 @@ const BookingSummary = ({
         {/* Step 3 summary: Schedule slot and Stylist details */}
         {selectedResult && selectedServices.length > 0 && (
           <div className="space-y-2">
-            <span className="text-[9px] font-black uppercase text-gray-400 block">3. Slot & Stylist</span>
+            <span className="text-xs font-black uppercase text-gray-400 block">3. Slot & Stylist</span>
             <div className="p-4 bg-gray-50 border border-gray-150 rounded-2xl space-y-2 text-sm font-black uppercase text-gray-600">
               <div className="flex items-center gap-2">
                 <CalendarIcon size={12} className="text-primary flex-shrink-0" />
@@ -144,13 +144,13 @@ const BookingSummary = ({
       {selectedResult && selectedServices.length > 0 && (
         <div className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-200/80 shadow-2xl p-4 lg:hidden flex items-center justify-between gap-4 animate-in slide-in-from-bottom duration-300">
           <div className="text-left min-w-0">
-            <p className="text-[8px] font-black uppercase text-gray-400 leading-none">
+            <p className="text-[11px] font-black uppercase text-gray-400 leading-none">
               Total ({selectedServices.length} Services)
             </p>
             <p className="text-base font-black text-primary leading-tight mt-1">
               ₹{calculateTotal()}
             </p>
-            <p className="text-[9px] font-bold text-gray-400 uppercase truncate mt-0.5 leading-none">
+            <p className="text-xs font-bold text-gray-400 uppercase truncate mt-0.5 leading-none">
               Lounge: {selectedResult.provider.businessName}
             </p>
           </div>

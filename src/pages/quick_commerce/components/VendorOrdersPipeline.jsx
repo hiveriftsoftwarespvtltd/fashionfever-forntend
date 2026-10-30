@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { RefreshCw, Search, X, ShoppingBag, Calendar, Eye, Truck, ChevronLeft, ChevronRight, Phone, MapPin } from 'lucide-react';
+import { handleImageError } from '../../../utils/imageUrl';
 
 const VendorOrdersPipeline = ({
   orders = [],
@@ -176,6 +177,7 @@ const VendorOrdersPipeline = ({
                             src={getItemImage(ord.items[0])}
                             alt={ord.items[0]?.productName}
                             className="w-9 h-9 object-cover rounded-xl border border-slate-200 shadow-xs flex-shrink-0"
+                            onError={handleImageError}
                           />
                         ) : (
                           <div className="w-9 h-9 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-400 font-bold text-xs flex-shrink-0">

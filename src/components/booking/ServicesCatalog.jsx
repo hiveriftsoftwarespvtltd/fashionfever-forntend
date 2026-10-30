@@ -37,7 +37,7 @@ const ServicesCatalog = ({
               <p className="text-xs font-extrabold text-[#ff4d6d] uppercase truncate">
                 Catalog for {selectedResult.provider.businessName}
               </p>
-              <p className="text-[10px] text-gray-500 font-medium">
+              <p className="text-xs text-gray-500 font-medium">
                 Click items to add or remove them from your appointment
               </p>
             </div>
@@ -77,16 +77,16 @@ const ServicesCatalog = ({
                       <h3 className={`text-xs font-bold truncate ${isChecked ? 'text-[#ff4d6d]' : 'text-gray-900'}`}>
                         {service.title || service.name}
                       </h3>
-                      <p className="text-[10px] text-gray-400 font-medium truncate mt-0.5">
+                      <p className="text-xs text-gray-400 font-medium truncate mt-0.5">
                         {service.description || 'Beauty service'}
                       </p>
 
-                      <div className="flex items-center gap-2 mt-1.5 text-[10px] font-bold text-gray-400">
+                      <div className="flex items-center gap-2 mt-1.5 text-xs font-bold text-gray-400">
                         <span className="flex items-center gap-0.5">
                           <Clock size={10} className="text-gray-400" /> {service.durationMinutes || 30} MIN
                         </span>
                         {service.serviceType && (
-                          <span className="px-1.5 py-0.5 bg-gray-100 rounded-md text-[9px] uppercase font-semibold text-gray-500">
+                          <span className="px-1.5 py-0.5 bg-gray-100 rounded-md text-xs uppercase font-semibold text-gray-500">
                             {service.serviceType}
                           </span>
                         )}

@@ -5,6 +5,7 @@ import UserSidebar from '../profile/UserSidebar';
 import { getUserEnrollments } from '../../api/educatorService';
 
 import config from '../../config/config';
+import { getImageUrl } from '../../utils/imageUrl';
 
 const MyLearning = () => {
   const [enrollments, setEnrollments] = useState([]);
@@ -36,13 +37,13 @@ const MyLearning = () => {
 
     // Check if thumbnail is a populated object
     if (thumbnail.url && typeof thumbnail.url === 'string') {
-      return thumbnail.url;
+      return getImageUrl(thumbnail.url);
     }
     
     // Check if thumbnail is a direct URL string or base64 data
     if (typeof thumbnail === 'string') {
       if (thumbnail.startsWith('http://') || thumbnail.startsWith('https://') || thumbnail.startsWith('data:')) {
-        return thumbnail;
+        return getImageUrl(thumbnail);
       }
       // If it looks like a Mongo ID or filename, resolve via backend file retrieval route
       return `${config.API_URL}/file/get-file/${thumbnail}`;
@@ -84,7 +85,7 @@ const MyLearning = () => {
                   <div className="bg-gray-50 px-4 py-2 rounded-xl border border-gray-100 flex items-center gap-2">
                      <Award className="text-primary" size={18} />
                      <div>
-                        <p className="text-[8px] font-bold uppercase text-gray-400">Certificates</p>
+                        <p className="text-xs font-semibold uppercase text-gray-500">Certificates</p>
                         <p className="text-sm font-black text-gray-900">
                           {enrollments.filter(e => e.progressPercentage === 100).length} Earned
                         </p>
@@ -107,7 +108,7 @@ const MyLearning = () => {
                 </div>
                 <div className="space-y-1.5 max-w-sm mx-auto">
                   <h3 className="text-base font-extrabold uppercase text-gray-800">No Enrollments Found</h3>
-                  <p className="text-xs text-gray-400 font-bold uppercase leading-relaxed">
+                  <p className="text-xs text-gray-500 font-medium uppercase leading-relaxed">
                     You haven't enrolled in any courses yet on FashionFever.
                   </p>
                 </div>
@@ -138,11 +139,11 @@ const MyLearning = () => {
                            <div className="flex-grow p-5 flex flex-col justify-between text-left h-full">
                               <div className="space-y-2">
                                  <div className="flex items-center justify-between gap-2">
-                                    <span className="bg-primary/10 text-primary text-[8px] font-black uppercase px-2 py-0.5 rounded">
+                                    <span className="bg-primary/10 text-primary text-xs font-bold uppercase px-2.5 py-1 rounded">
                                        {courseItem.level || 'BEGINNER'}
                                     </span>
-                                    <span className={`text-[8px] font-black uppercase px-2 py-0.5 rounded ${
-                                       isCompleted ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' : 'bg-gray-100 text-gray-500'
+                                    <span className={`text-xs font-bold uppercase px-2.5 py-1 rounded ${
+                                       isCompleted ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' : 'bg-gray-100 text-gray-600'
                                     }`}>
                                        {isCompleted ? 'Completed' : 'Active'}
                                     </span>
@@ -155,11 +156,11 @@ const MyLearning = () => {
                                  
                                  {/* Progress slider */}
                                  <div className="space-y-1.5 pt-2">
-                                    <div className="flex justify-between text-[9px] font-bold uppercase tracking-wider text-gray-400">
+                                    <div className="flex justify-between text-xs font-semibold uppercase tracking-wider text-gray-600">
                                        <span>Progress</span>
                                        <span>{enrollment.progressPercentage || 0}%</span>
                                     </div>
-                                    <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                                    <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
                                        <div 
                                           className={`h-full transition-all duration-300 ${isCompleted ? 'bg-emerald-500' : 'bg-primary'}`} 
                                           style={{ width: `${enrollment.progressPercentage || 0}%` }}
@@ -170,9 +171,9 @@ const MyLearning = () => {
                               
                               <Link 
                                  to={`/academy/course/${courseItem._id}`} 
-                                 className="mt-4 w-full bg-gray-900 hover:bg-black text-white py-3 rounded-xl font-bold uppercase text-[9px] flex items-center justify-center gap-1.5 transition-all active:scale-[0.98]"
+                                 className="mt-4 w-full bg-gray-900 hover:bg-black text-white py-2.5 rounded-xl font-bold uppercase text-xs flex items-center justify-center gap-1.5 transition-all active:scale-[0.98]"
                               >
-                                 Resume Masterclass <ChevronRight size={12} className="stroke-[2.5]" />
+                                 Resume Masterclass <ChevronRight size={14} className="stroke-[2.5]" />
                               </Link>
                            </div>
                         </div>

@@ -1495,11 +1495,11 @@ const InfluencerDashboard = () => {
                     : 'bg-white border-zinc-200 shadow-sm'
                 }`}>
                   <div className="space-y-1">
-                    <span className="text-[10px] font-black text-emerald-500 uppercase tracking-widest block">Available to Withdraw</span>
+                    <span className="text-xs font-black text-emerald-500 uppercase tracking-widest block">Available to Withdraw</span>
                     <span className={`text-2xl font-black block ${isDarkMode ? 'text-white' : 'text-zinc-900'}`}>
                       ₹{(walletBalance.approvedBalance ?? walletBalance.balance ?? 0).toLocaleString('en-IN')}
                     </span>
-                    <span className="text-[10px] text-zinc-400 font-medium block">Approved & Unsettled</span>
+                    <span className="text-xs text-zinc-400 font-medium block">Approved & Unsettled</span>
                   </div>
                   <div className="p-3.5 rounded-2xl bg-emerald-500/10 text-emerald-500">
                     <Coins size={24} />
@@ -1513,11 +1513,11 @@ const InfluencerDashboard = () => {
                     : 'bg-white border-zinc-200 shadow-sm'
                 }`}>
                   <div className="space-y-1">
-                    <span className="text-[10px] font-black text-amber-400 uppercase tracking-widest block">In 7-Day Return Hold</span>
+                    <span className="text-xs font-black text-amber-400 uppercase tracking-widest block">In 7-Day Return Hold</span>
                     <span className={`text-2xl font-black block ${isDarkMode ? 'text-white' : 'text-zinc-900'}`}>
                       ₹{(walletBalance.pendingBalance ?? 0).toLocaleString('en-IN')}
                     </span>
-                    <span className="text-[10px] text-zinc-400 font-medium block">Pending return window</span>
+                    <span className="text-xs text-zinc-400 font-medium block">Pending return window</span>
                   </div>
                   <div className="p-3.5 rounded-2xl bg-amber-500/10 text-amber-400">
                     <Clock size={24} />
@@ -1531,11 +1531,11 @@ const InfluencerDashboard = () => {
                     : 'bg-white border-zinc-200 shadow-sm'
                 }`}>
                   <div className="space-y-1">
-                    <span className="text-[10px] font-black text-blue-400 uppercase tracking-widest block">Total Paid Out</span>
+                    <span className="text-xs font-black text-blue-400 uppercase tracking-widest block">Total Paid Out</span>
                     <span className={`text-2xl font-black block ${isDarkMode ? 'text-white' : 'text-zinc-900'}`}>
                       ₹{(walletBalance.paidBalance ?? 0).toLocaleString('en-IN')}
                     </span>
-                    <span className="text-[10px] text-zinc-400 font-medium block">Settled bank transfers</span>
+                    <span className="text-xs text-zinc-400 font-medium block">Settled bank transfers</span>
                   </div>
                   <div className="p-3.5 rounded-2xl bg-blue-500/10 text-blue-400">
                     <CheckCircle2 size={24} />
@@ -1549,11 +1549,11 @@ const InfluencerDashboard = () => {
                     : 'bg-white border-zinc-200 shadow-sm'
                 }`}>
                   <div className="space-y-1">
-                    <span className="text-[10px] font-black text-primary uppercase tracking-widest block">Lifetime Earnings</span>
+                    <span className="text-xs font-black text-primary uppercase tracking-widest block">Lifetime Earnings</span>
                     <span className={`text-2xl font-black block ${isDarkMode ? 'text-white' : 'text-zinc-900'}`}>
                       ₹{(walletBalance.lifetimeEarnings ?? walletBalance.totalEarnings ?? 0).toLocaleString('en-IN')}
                     </span>
-                    <span className="text-[10px] text-zinc-400 font-medium block">Approved + Paid</span>
+                    <span className="text-xs text-zinc-400 font-medium block">Approved + Paid</span>
                   </div>
                   <div className="p-3.5 rounded-2xl bg-primary/10 text-primary">
                     <TrendingUp size={24} />
@@ -2173,7 +2173,7 @@ const InfluencerDashboard = () => {
             </div>
 
             <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 mb-4">
-              <span className="text-[10px] font-black uppercase tracking-wider text-emerald-500 block">Total Claimable Payout</span>
+              <span className="text-xs font-black uppercase tracking-wider text-emerald-500 block">Total Claimable Payout</span>
               <span className="text-2xl font-black text-emerald-500 block mt-0.5">
                 ₹{(walletBalance.approvedBalance ?? walletBalance.balance ?? 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
               </span>
@@ -2197,7 +2197,7 @@ const InfluencerDashboard = () => {
                     isDarkMode ? 'bg-zinc-800 border-zinc-700 text-white focus:border-primary placeholder:text-zinc-600' : 'bg-zinc-50 border-zinc-200 text-zinc-800 focus:border-primary placeholder:text-zinc-400'
                   }`}
                 />
-                <p className={`text-[10px] mt-1 ${ isDarkMode ? 'text-zinc-500' : 'text-zinc-400' }`}>
+                <p className={`text-xs mt-1 ${ isDarkMode ? 'text-zinc-500' : 'text-zinc-400' }`}>
                   This UPI ID will be saved as a snapshot with this payout request for admin reference.
                 </p>
               </div>

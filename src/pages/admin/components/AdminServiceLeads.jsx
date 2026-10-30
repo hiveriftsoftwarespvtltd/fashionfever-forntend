@@ -138,7 +138,7 @@ const AdminServiceLeads = ({ isDarkMode }) => {
             <span className={`text-xs font-black uppercase truncate ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>
               {lead.name || lead.userId?.name || 'Customer'}
             </span>
-            <span className="text-[9px] font-bold text-gray-400 uppercase truncate">
+            <span className="text-xs font-bold text-gray-400 uppercase truncate">
               {lead.email || lead.userId?.email || '—'}
             </span>
           </div>
@@ -152,7 +152,7 @@ const AdminServiceLeads = ({ isDarkMode }) => {
           <span className={`text-xs font-semibold line-clamp-2 ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
             {lead.requirement}
           </span>
-          <span className="text-[9px] font-bold text-gray-400 uppercase mt-1">
+          <span className="text-xs font-bold text-gray-400 uppercase mt-1">
             Category: {lead.categoryIds?.map(c => c.label || c.name).filter(Boolean).join(', ') || 'Beauty Service'}
           </span>
         </div>
@@ -165,7 +165,7 @@ const AdminServiceLeads = ({ isDarkMode }) => {
           <span className={`text-xs font-black flex items-center gap-0.5 ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>
             <IndianRupee size={10} className="text-emerald-500" /> {lead.budget?.toLocaleString('en-IN')}
           </span>
-          <span className="text-[9px] font-bold text-gray-400 uppercase mt-0.5">
+          <span className="text-xs font-bold text-gray-400 uppercase mt-0.5">
             Qty: {lead.totalPersons || lead.quantity || 1} • {lead.gender || 'Any'}
           </span>
         </div>
@@ -188,7 +188,7 @@ const AdminServiceLeads = ({ isDarkMode }) => {
           <span className={`text-xs font-bold truncate ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`} title={`${lead.address}, ${lead.city}, ${lead.state}`}>
             {lead.city}, {lead.state}
           </span>
-          <span className="text-[9px] font-bold text-gray-400 uppercase mt-0.5">
+          <span className="text-xs font-bold text-gray-400 uppercase mt-0.5">
             {lead.phoneNumber || '—'}
           </span>
         </div>
@@ -197,7 +197,7 @@ const AdminServiceLeads = ({ isDarkMode }) => {
     {
       header: 'Status',
       render: (lead) => (
-        <span className={`px-2.5 py-1 rounded-xl text-[9px] font-black uppercase tracking-wider ${getStatusBadgeClass(lead.status)}`}>
+        <span className={`px-2.5 py-1 rounded-xl text-xs font-black uppercase tracking-wider ${getStatusBadgeClass(lead.status)}`}>
           {lead.status || 'OPEN'}
         </span>
       )
@@ -270,7 +270,7 @@ const AdminServiceLeads = ({ isDarkMode }) => {
             <button
               key={status}
               onClick={() => setFilterStatus(status)}
-              className={`px-4.5 py-2.5 rounded-xl text-[9px] font-black uppercase tracking-wider transition-all duration-300 cursor-pointer whitespace-nowrap ${
+              className={`px-4.5 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider transition-all duration-300 cursor-pointer whitespace-nowrap ${
                 filterStatus === status
                   ? 'bg-white text-primary shadow-xs font-extrabold'
                   : 'text-gray-400 hover:text-gray-800'
@@ -334,7 +334,7 @@ const AdminServiceLeads = ({ isDarkMode }) => {
                 <ClipboardList className="text-primary stroke-[2.5]" size={20} />
                 <div>
                   <h3 className="text-sm font-black uppercase tracking-wider">Service Lead Inspection</h3>
-                  <p className="text-[9px] text-gray-400 font-bold uppercase mt-0.5">ID: {selectedLead._id}</p>
+                  <p className="text-xs text-gray-400 font-bold uppercase mt-0.5">ID: {selectedLead._id}</p>
                 </div>
               </div>
               <button
@@ -352,7 +352,7 @@ const AdminServiceLeads = ({ isDarkMode }) => {
               {/* User Profiling grid */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 <div className={`p-4 rounded-2xl border ${isDarkMode ? 'bg-gray-800/40 border-white/5' : 'bg-gray-50 border-gray-100'}`}>
-                  <span className="text-[9px] font-black text-gray-450 uppercase block mb-2 tracking-wider">Customer Contact</span>
+                  <span className="text-xs font-black text-gray-450 uppercase block mb-2 tracking-wider">Customer Contact</span>
                   <div className="space-y-1.5 font-semibold text-gray-600">
                     <p><strong className={isDarkMode ? 'text-gray-300' : 'text-gray-800'}>Name:</strong> {selectedLead.name || selectedLead.userId?.name || '—'}</p>
                     <p><strong className={isDarkMode ? 'text-gray-300' : 'text-gray-800'}>Email:</strong> {selectedLead.email || selectedLead.userId?.email || '—'}</p>
@@ -361,7 +361,7 @@ const AdminServiceLeads = ({ isDarkMode }) => {
                 </div>
 
                 <div className={`p-4 rounded-2xl border ${isDarkMode ? 'bg-gray-800/40 border-white/5' : 'bg-gray-50 border-gray-100'}`}>
-                  <span className="text-[9px] font-black text-gray-450 uppercase block mb-2 tracking-wider">Lead Coordinates & Location</span>
+                  <span className="text-xs font-black text-gray-450 uppercase block mb-2 tracking-wider">Lead Coordinates & Location</span>
                   <div className="space-y-1.5 font-semibold text-gray-600">
                     <p><strong className={isDarkMode ? 'text-gray-300' : 'text-gray-800'}>Pincode:</strong> {selectedLead.pincode}</p>
                     <p><strong className={isDarkMode ? 'text-gray-300' : 'text-gray-800'}>City / State:</strong> {selectedLead.city}, {selectedLead.state}</p>
@@ -372,7 +372,7 @@ const AdminServiceLeads = ({ isDarkMode }) => {
 
               {/* Requirement detailed text block */}
               <div className={`p-4 rounded-2xl border text-left ${isDarkMode ? 'bg-gray-800/40 border-white/5' : 'bg-gray-50 border-gray-100'}`}>
-                <span className="text-[9px] font-black text-gray-450 uppercase block mb-2 tracking-wider">Requirement Details</span>
+                <span className="text-xs font-black text-gray-450 uppercase block mb-2 tracking-wider">Requirement Details</span>
                 <p className={`text-xs font-semibold leading-relaxed ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
                   {selectedLead.requirement}
                 </p>
@@ -382,32 +382,32 @@ const AdminServiceLeads = ({ isDarkMode }) => {
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
                 <div className={`p-3.5 rounded-2xl border ${isDarkMode ? 'bg-gray-800/40 border-white/5' : 'bg-gray-50 border-gray-100'}`}>
                   <Calendar size={15} className="mx-auto text-primary mb-1" />
-                  <span className="text-[8px] font-bold text-gray-400 uppercase block">Schedule</span>
-                  <span className={`text-[10px] font-bold block mt-0.5 ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>{formatDate(selectedLead.preferredDate)}</span>
+                  <span className="text-[11px] font-bold text-gray-400 uppercase block">Schedule</span>
+                  <span className={`text-xs font-bold block mt-0.5 ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>{formatDate(selectedLead.preferredDate)}</span>
                 </div>
 
                 <div className={`p-3.5 rounded-2xl border ${isDarkMode ? 'bg-gray-800/40 border-white/5' : 'bg-gray-50 border-gray-100'}`}>
                   <Users size={15} className="mx-auto text-primary mb-1" />
-                  <span className="text-[8px] font-bold text-gray-400 uppercase block">Quantity</span>
-                  <span className={`text-[10px] font-bold block mt-0.5 ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>{selectedLead.totalPersons || selectedLead.quantity || 1} Person(s)</span>
+                  <span className="text-[11px] font-bold text-gray-400 uppercase block">Quantity</span>
+                  <span className={`text-xs font-bold block mt-0.5 ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>{selectedLead.totalPersons || selectedLead.quantity || 1} Person(s)</span>
                 </div>
 
                 <div className={`p-3.5 rounded-2xl border ${isDarkMode ? 'bg-gray-800/40 border-white/5' : 'bg-gray-50 border-gray-100'}`}>
                   <User size={15} className="mx-auto text-primary mb-1" />
-                  <span className="text-[8px] font-bold text-gray-400 uppercase block">Gender</span>
-                  <span className={`text-[10px] font-bold block mt-0.5 ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>{selectedLead.gender}</span>
+                  <span className="text-[11px] font-bold text-gray-400 uppercase block">Gender</span>
+                  <span className={`text-xs font-bold block mt-0.5 ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>{selectedLead.gender}</span>
                 </div>
 
                 <div className={`p-3.5 rounded-2xl border ${isDarkMode ? 'bg-gray-800/40 border-white/5' : 'bg-gray-50 border-gray-100'}`}>
                   <IndianRupee size={15} className="mx-auto text-primary mb-1" />
-                  <span className="text-[8px] font-bold text-gray-400 uppercase block">Budget</span>
-                  <span className={`text-[10px] font-bold block mt-0.5 ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>₹{selectedLead.budget?.toLocaleString('en-IN')}</span>
+                  <span className="text-[11px] font-bold text-gray-400 uppercase block">Budget</span>
+                  <span className={`text-xs font-bold block mt-0.5 ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>₹{selectedLead.budget?.toLocaleString('en-IN')}</span>
                 </div>
               </div>
 
               {/* Exact full address details block */}
               <div className={`p-4 rounded-2xl border text-left ${isDarkMode ? 'bg-gray-800/40 border-white/5' : 'bg-gray-50 border-gray-100'}`}>
-                <span className="text-[9px] font-black text-gray-450 uppercase block mb-1.5 tracking-wider">Detailed Address</span>
+                <span className="text-xs font-black text-gray-450 uppercase block mb-1.5 tracking-wider">Detailed Address</span>
                 <p className={`text-xs font-semibold leading-relaxed ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
                   {selectedLead.address}, {selectedLead.city}, {selectedLead.state} - {selectedLead.pincode}
                 </p>
@@ -418,7 +418,7 @@ const AdminServiceLeads = ({ isDarkMode }) => {
             <div className={`p-6 border-t flex justify-end ${isDarkMode ? 'border-white/5' : 'border-gray-100'}`}>
               <button
                 onClick={() => setSelectedLead(null)}
-                className="px-6 py-2.5 bg-primary hover:bg-primary/95 text-white font-bold uppercase text-[10px] tracking-wider rounded-xl transition-all cursor-pointer active:scale-95 shadow-md shadow-primary/20"
+                className="px-6 py-2.5 bg-primary hover:bg-primary/95 text-white font-bold uppercase text-xs tracking-wider rounded-xl transition-all cursor-pointer active:scale-95 shadow-md shadow-primary/20"
               >
                 Close Inspection
               </button>

@@ -3,6 +3,7 @@ import { Loader2, X, Grid, Clock, Sparkles } from 'lucide-react';
 import { toast } from '../../../utils/toast';
 import { fetchCategoryById } from '../../../api/adminService';
 import { useTheme } from '../../../context/ThemeContext';
+import { getImageUrl } from '../../../utils/imageUrl';
 
 /**
  * Category Details Modal
@@ -50,12 +51,29 @@ const CategoryDetailsModal = ({ categoryId, onClose }) => {
             {/* Modal Header */}
             <div className="flex justify-between items-start mb-6">
               <div className="flex items-center gap-4">
-                <div className={`w-16 h-16 rounded-2xl overflow-hidden flex items-center justify-center font-bold border shadow-inner ${isDarkMode ? 'bg-gray-900 border-white/5' : 'bg-gray-50 border-gray-100'}`}>
-                  {category.image?.url ? (
-                    <img src={category.image.url} alt={category.label} className="w-full h-full object-cover" />
-                  ) : (
-                    <Grid className="text-primary" size={24} />
-                  )}
+                <div className={`w-16 h-16 rounded-2xl overflow-hidden flex items-center justify-center font-bold border shadow-inner flex-shrink-0 ${isDarkMode ? 'bg-zinc-900 border-zinc-700' : 'bg-gray-50 border-gray-100'}`}>
+                  {(() => {
+                    const rawImg = category.image?.url || category.image || category.icon?.url || category.icon;
+                    const imgUrl = rawImg ? getImageUrl(rawImg) : null;
+                    return (
+                      <>
+                        {imgUrl ? (
+                          <img
+                            src={imgUrl}
+                            alt={category.label || category.name || 'Category'}
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              e.target.style.display = 'none';
+                              if (e.target.nextSibling) e.target.nextSibling.style.display = 'flex';
+                            }}
+                          />
+                        ) : null}
+                        <div className={`w-full h-full items-center justify-center ${imgUrl ? 'hidden' : 'flex'}`}>
+                          <Grid className="text-primary" size={24} />
+                        </div>
+                      </>
+                    );
+                  })()}
                 </div>
                 <div>
                   <h2 className={`text-xl font-bold leading-tight ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>{category.label || category.name}</h2>

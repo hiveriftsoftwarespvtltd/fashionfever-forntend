@@ -201,13 +201,13 @@ const InfluencerDetailsModal = ({ influencerId, onClose, onEditCoupon, onRefresh
                       <div className="flex items-center gap-1.5">
                         <span className="text-lg font-bold text-primary">{influencer.commissionRate}%</span>
                         {influencer.commissionRate === 0 && (
-                          <span className="text-[10px] font-bold uppercase px-1.5 py-0.5 rounded bg-zinc-500/20 text-zinc-400">0%</span>
+                          <span className="text-xs font-bold uppercase px-1.5 py-0.5 rounded bg-zinc-500/20 text-zinc-400">0%</span>
                         )}
                       </div>
                     ) : (
                       <div className="flex flex-col gap-0.5">
                         <span className="text-sm font-black text-amber-500 uppercase tracking-wide">Rate Unset</span>
-                        <span className="text-[10px] font-bold uppercase text-amber-400/80">Commission Disabled</span>
+                        <span className="text-xs font-bold uppercase text-amber-400/80">Commission Disabled</span>
                       </div>
                     )}
                   </div>

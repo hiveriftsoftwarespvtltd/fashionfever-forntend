@@ -121,7 +121,7 @@ const BookingsSection = () => {
           {/* Header */}
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-6 sm:mb-8 pb-4 border-b border-slate-100">
             <div>
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-50 text-[#ff4d6d] text-[10px] sm:text-xs font-black uppercase tracking-widest border border-rose-100/80 mb-2 shadow-2xs">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-50 text-[#ff4d6d] text-xs font-black uppercase tracking-widest border border-rose-100/80 mb-2 shadow-2xs">
                 <Scissors size={13} className="text-[#ff4d6d]" /> POPULAR SERVICES
               </span>
               <h2 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-slate-900 leading-tight tracking-tight font-serif">
@@ -189,7 +189,7 @@ const BookingsSection = () => {
                     <div className="flex flex-col flex-grow text-left min-w-0">
                       
                       {/* Category Tag */}
-                      <span className="text-[9px] sm:text-[10px] font-black uppercase text-gray-400 tracking-wider truncate mb-0.5">
+                      <span className="text-xs font-black uppercase text-gray-400 tracking-wider truncate mb-0.5">
                         {service.category}
                       </span>
                       

@@ -440,11 +440,28 @@ const VendorOverview = ({
                       <div key={keyStr} className="flex items-center justify-between p-2 rounded-2xl hover:bg-gray-50/50 dark:hover:bg-white/5 transition-colors">
                         <div className="flex items-center gap-3 min-w-0">
                           <div className="w-10 h-10 rounded-xl overflow-hidden border border-gray-100 dark:border-white/10 flex items-center justify-center font-bold text-sm bg-gray-50 dark:bg-gray-900 text-gray-400 flex-shrink-0">
-                            {prod.variants?.[0]?.thumbnail ? (
-                              <img src={getImageUrl(prod.variants[0].thumbnail)} alt="" className="w-full h-full object-cover" />
-                            ) : (
-                              <span className="text-xs uppercase font-extrabold text-primary">{name.charAt(0) || 'P'}</span>
-                            )}
+                            {(() => {
+                              const rawImg = prod.variants?.[0]?.thumbnail || prod.variants?.[0]?.images?.[0] || prod.images?.[0] || prod.thumbnail || prod.image;
+                              const prodImg = rawImg ? getImageUrl(rawImg) : null;
+                              return (
+                                <>
+                                  {prodImg ? (
+                                    <img
+                                      src={prodImg}
+                                      alt=""
+                                      className="w-full h-full object-cover"
+                                      onError={(e) => {
+                                        e.target.style.display = 'none';
+                                        if (e.target.nextSibling) e.target.nextSibling.style.display = 'flex';
+                                      }}
+                                    />
+                                  ) : null}
+                                  <div className={`w-full h-full items-center justify-center ${prodImg ? 'hidden' : 'flex'}`}>
+                                    <span className="text-xs uppercase font-extrabold text-primary">{name.charAt(0) || 'P'}</span>
+                                  </div>
+                                </>
+                              );
+                            })()}
                           </div>
                           <div className="flex flex-col min-w-0">
                             <span className="text-xs font-bold text-zinc-800 dark:text-zinc-200 truncate">{name}</span>

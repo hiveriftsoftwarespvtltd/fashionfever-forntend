@@ -251,7 +251,7 @@ const AdminDashboard = ({
                         return (
                           <g key={idx}>
                             <line x1="50" y1={y} x2="480" y2={y} stroke={isDarkMode ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)'} strokeWidth="1" strokeDasharray="3 3" />
-                            <text x="45" y={y + 3} textAnchor="end" className={`text-[10px] font-bold ${isDarkMode ? 'fill-zinc-400' : 'fill-zinc-500'}`}>
+                            <text x="45" y={y + 3} textAnchor="end" className={`text-xs font-bold ${isDarkMode ? 'fill-zinc-400' : 'fill-zinc-500'}`}>
                               ₹{val >= 1000 ? (val / 1000).toFixed(0) + 'K' : val}
                             </text>
                           </g>
@@ -583,7 +583,7 @@ const AdminDashboard = ({
                             }`} 
                             strokeWidth="1.5" 
                           />
-                          <text x={p.x} y="115" textAnchor="middle" className={`text-[10px] font-bold ${isDarkMode ? 'fill-zinc-400' : 'fill-zinc-500'}`}>
+                          <text x={p.x} y="115" textAnchor="middle" className={`text-xs font-bold ${isDarkMode ? 'fill-zinc-400' : 'fill-zinc-500'}`}>
                             {p.label}
                           </text>
                         </g>

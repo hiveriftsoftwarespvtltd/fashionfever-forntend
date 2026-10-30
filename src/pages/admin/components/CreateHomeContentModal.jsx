@@ -232,7 +232,7 @@ const CreateHomeContentModal = ({ isOpen, onClose, onSuccess, editData }) => {
                         Upload Desktop Image
                         <input type="file" accept="image/*" onChange={handleCompFileChange} className="hidden" />
                       </label>
-                      <p className="text-[8px] font-medium text-gray-400 uppercase mt-1">PNG, JPG. Desktop ratio (e.g. 1920x600).</p>
+                      <p className="text-[11px] font-medium text-gray-400 uppercase mt-1">PNG, JPG. Desktop ratio (e.g. 1920x600).</p>
                     </div>
                   </div>
                 </div>
@@ -254,7 +254,7 @@ const CreateHomeContentModal = ({ isOpen, onClose, onSuccess, editData }) => {
                         Upload Mobile Image
                         <input type="file" accept="image/*" onChange={handleMobFileChange} className="hidden" />
                       </label>
-                      <p className="text-[8px] font-medium text-gray-400 uppercase mt-1">PNG, JPG. Portrait ratio (e.g. 750x1000).</p>
+                      <p className="text-[11px] font-medium text-gray-400 uppercase mt-1">PNG, JPG. Portrait ratio (e.g. 750x1000).</p>
                     </div>
                   </div>
                 </div>

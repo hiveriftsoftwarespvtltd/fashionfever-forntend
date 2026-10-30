@@ -6,15 +6,17 @@ import { toast } from '../utils/toast';
 import Swal from 'sweetalert2';
 import { clearQuickCart } from '../api/quickECommerceService';
 import { clearCart as apiClearCart } from '../api/cartService';
+import { getImageUrl, handleImageError, DEFAULT_PRODUCT_PLACEHOLDER } from '../utils/imageUrl';
 
 const CartItemRow = ({ item, updatingId, setUpdatingId, removeFromCart, updateQty }) => {
   return (
     <div className="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm flex gap-4 relative group text-left">
-      <div className="w-20 h-24 bg-gray-50 rounded-xl overflow-hidden flex-shrink-0">
+      <div className="w-20 h-24 bg-gray-50 rounded-xl overflow-hidden flex-shrink-0 relative">
         <img 
-          src={item.image || 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2050/svg" width="150" height="150" viewBox="0 0 150 150"><rect width="150" height="150" fill="%23f1f5f9"/><text x="75" y="75" font-family="sans-serif" font-size="12" font-weight="bold" fill="%2394a3b8" dominant-baseline="middle" text-anchor="middle">NO IMAGE</text></svg>'} 
+          src={getImageUrl(item.image || item) || DEFAULT_PRODUCT_PLACEHOLDER} 
           alt={item.name} 
           className="w-full h-full object-cover" 
+          onError={handleImageError}
         />
       </div>
       
@@ -25,7 +27,7 @@ const CartItemRow = ({ item, updatingId, setUpdatingId, removeFromCart, updateQt
           </h4>
           <div className="flex flex-wrap gap-2 mt-2">
             {item.attributes && Object.entries(item.attributes).map(([k, v]) => (
-              <p key={k} className="text-[9px] font-bold text-gray-400 uppercase bg-gray-50 px-2 py-0.5 rounded">
+              <p key={k} className="text-xs font-bold text-gray-400 uppercase bg-gray-50 px-2 py-0.5 rounded">
                 {k}: {v}
               </p>
             ))}
@@ -188,7 +190,7 @@ const CartDrawer = ({ isOpen, onClose }) => {
             <div className="flex border-b border-gray-100 bg-gray-50/50 p-1 gap-1">
               <button
                 onClick={() => setActiveCartTab('standard')}
-                className={`flex-1 py-2.5 rounded-xl font-bold uppercase text-[10px] tracking-wider transition-all cursor-pointer ${
+                className={`flex-1 py-2.5 rounded-xl font-bold uppercase text-xs tracking-wider transition-all cursor-pointer ${
                   activeCartTab === 'standard'
                     ? 'bg-white text-primary shadow-xs border border-gray-100 font-extrabold'
                     : 'text-gray-400 hover:text-gray-600'
@@ -198,7 +200,7 @@ const CartDrawer = ({ isOpen, onClose }) => {
               </button>
               <button
                 onClick={() => setActiveCartTab('express')}
-                className={`flex-1 py-2.5 rounded-xl font-bold uppercase text-[10px] tracking-wider transition-all flex items-center justify-center gap-1 cursor-pointer ${
+                className={`flex-1 py-2.5 rounded-xl font-bold uppercase text-xs tracking-wider transition-all flex items-center justify-center gap-1 cursor-pointer ${
                   activeCartTab === 'express'
                     ? 'bg-white text-rose-600 shadow-xs border border-gray-100 font-extrabold'
                     : 'text-gray-400 hover:text-gray-600'
@@ -223,12 +225,12 @@ const CartDrawer = ({ isOpen, onClose }) => {
                 <div className="space-y-3.5">
                   <div className="flex items-center gap-2 px-1">
                     {activeCartTab === 'express' ? (
-                      <span className="bg-rose-50 text-rose-500 border border-rose-100 px-2 py-0.5 rounded-lg text-[9px] font-black uppercase flex items-center gap-1 animate-pulse">
+                      <span className="bg-rose-50 text-rose-500 border border-rose-100 px-2 py-0.5 rounded-lg text-xs font-black uppercase flex items-center gap-1 animate-pulse">
                         <Zap size={11} className="fill-rose-500 text-rose-500" />
                         <span>10-Min Delivery</span>
                       </span>
                     ) : (
-                      <span className="bg-blue-50 text-blue-600 border border-blue-100 px-2 py-0.5 rounded-lg text-[9px] font-black uppercase">
+                      <span className="bg-blue-50 text-blue-600 border border-blue-100 px-2 py-0.5 rounded-lg text-xs font-black uppercase">
                         Standard Shipping
                       </span>
                     )}
@@ -304,7 +306,7 @@ const CartDrawer = ({ isOpen, onClose }) => {
                     onClick={() => {
                       onClose();
                       if (activeCartTab === 'express') {
-                        navigate('/quick-commerce?tab=cart');
+                        navigate('/checkout?mode=quick');
                       } else {
                         navigate('/checkout');
                       }

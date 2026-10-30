@@ -451,11 +451,11 @@ const Booking = () => {
       const mins = parseInt(parts[1], 10) || 0;
       if (isPM && hours < 12) hours += 12;
       if (isAM && hours === 12) hours = 0;
-      const pad = (n) => String(n).padStart(2, '0');
-      const parsed = new Date(`${dateStr}T${pad(hours)}:${pad(mins)}:00.000Z`);
-      if (!isNaN(parsed.getTime())) return parsed.toISOString();
+      const cleanDate = String(dateStr).split('T')[0];
+      const d = new Date(`${cleanDate}T${String(hours).padStart(2, '0')}:${String(mins).padStart(2, '0')}:00`);
+      if (!isNaN(d.getTime())) return d.toISOString();
     }
-    return new Date(`${dateStr}T10:00:00.000Z`).toISOString();
+    return new Date().toISOString();
   };
 
   // Confirm booking
@@ -494,7 +494,8 @@ const Booking = () => {
     }
 
     const items = selectedServices.map(s => ({ serviceId: s._id }));
-    const staffId = selectedStaff?._id || selectedSlot?.availableStaff?.[0]?._id;
+    const staffInSlot = selectedSlot?.availableStaff?.find(st => st?._id === selectedStaff?._id);
+    const staffId = staffInSlot?._id || selectedSlot?.availableStaff?.[0]?._id || selectedStaff?._id;
     if (!staffId) {
       toast.error("No stylist/staff available for the selected slot.");
       return;
@@ -503,7 +504,7 @@ const Booking = () => {
     const serviceProviderId = selectedResult.provider?._id;
     const serviceAddress = [selectedResult.provider?.address, selectedResult.provider?.city].filter(Boolean).join(', ') || 'Delhi';
     const validSlotStartTime = parseValidSlotStartTime(selectedSlot, selectedDate);
-    const validBookingDate = new Date(selectedDate).toISOString();
+    const validBookingDate = selectedDate ? (selectedDate.includes('T') ? selectedDate : `${selectedDate}T00:00:00.000Z`) : new Date().toISOString();
 
     // Build coupon codes for the booking payload (one per service that has a coupon applied)
     // We pass the first applied coupon code as the primary couponCode for the backend
@@ -542,8 +543,8 @@ const Booking = () => {
           couponDiscount,
           appliedCoupons: { ...appliedCoupons },
           netTotal,
-          advancePaid: advanceRequired,
-          remainingAtSalon
+          advancePaid: unpacked?.advanceAmount ?? advanceRequired,
+          remainingAtSalon: unpacked?.remainingAmount ?? remainingPayableAtSalon
         });
 
         setCurrentStep(5);
@@ -1443,7 +1444,7 @@ const Booking = () => {
                       <span className="text-xs font-bold uppercase tracking-wider text-gray-500">
                         Service Coupons
                       </span>
-                      <span className="text-[10px] text-gray-400 font-medium ml-1">
+                      <span className="text-xs text-gray-400 font-medium ml-1">
                         (coupon codes are service-specific)
                       </span>
                     </div>
@@ -1484,7 +1485,7 @@ const Booking = () => {
                                 <button
                                   type="button"
                                   onClick={() => handleRemoveCoupon(svcId)}
-                                  className="text-[10px] font-bold text-emerald-700 hover:text-rose-600 uppercase transition-colors cursor-pointer ml-2 shrink-0"
+                                  className="text-xs font-bold text-emerald-700 hover:text-rose-600 uppercase transition-colors cursor-pointer ml-2 shrink-0"
                                 >
                                   Remove
                                 </button>
@@ -1504,7 +1505,7 @@ const Booking = () => {
                                 <button
                                   type="submit"
                                   disabled={isApplying || !inputVal.trim()}
-                                  className="px-4 py-2 bg-gray-900 hover:bg-gray-800 text-white rounded-xl text-[10px] font-bold uppercase disabled:opacity-50 transition-all cursor-pointer shadow-2xs shrink-0 whitespace-nowrap"
+                                  className="px-4 py-2 bg-gray-900 hover:bg-gray-800 text-white rounded-xl text-xs font-bold uppercase disabled:opacity-50 transition-all cursor-pointer shadow-2xs shrink-0 whitespace-nowrap"
                                 >
                                   {isApplying ? <Loader2 size={12} className="animate-spin" /> : 'Apply'}
                                 </button>

@@ -5,6 +5,7 @@ import {
   Trash2, X, Check, Home, Phone
 } from 'lucide-react';
 import { getAddresses, getAddressDetails, addAddress, editAddress, deleteAddress } from '../../api/authService';
+import { lookupPincode } from '../../utils/pincodeLookup';
 import { toast } from '../../utils/toast';
 import UserSidebar from './UserSidebar';
 
@@ -24,6 +25,39 @@ const Address = () => {
   const [editingId, setEditingId]   = useState(null);   // null = add mode
   const [form, setForm]             = useState(EMPTY_FORM);
   const [isSaving, setIsSaving]     = useState(false);
+  const [isPincodeLoading, setIsPincodeLoading] = useState(false);
+  const [pincodeAutoDetected, setPincodeAutoDetected] = useState(false);
+
+  /* ── Pincode auto-fill ──────────────────────────────────── */
+  const handlePincodeChange = async (e) => {
+    const rawVal = e.target.value;
+    const cleanPin = rawVal.replace(/\D/g, '').slice(0, 6);
+    
+    setForm(f => ({ ...f, pincode: cleanPin }));
+    setPincodeAutoDetected(false);
+
+    if (cleanPin.length === 6) {
+      setIsPincodeLoading(true);
+      try {
+        const res = await lookupPincode(cleanPin);
+        if (res.success) {
+          setForm(f => ({
+            ...f,
+            city: res.city || f.city,
+            state: res.state || f.state
+          }));
+          setPincodeAutoDetected(true);
+          toast.success(`📍 Auto-filled: ${res.city}, ${res.state}`);
+        } else {
+          toast.error(res.error || 'Pincode not found. Please enter city & state manually.');
+        }
+      } catch (err) {
+        console.error('Pincode lookup error:', err);
+      } finally {
+        setIsPincodeLoading(false);
+      }
+    }
+  };
 
   /* ── fetch ─────────────────────────────────────────────── */
   const fetchAddresses = async () => {
@@ -47,6 +81,8 @@ const Address = () => {
   const openAdd = () => {
     setForm(EMPTY_FORM);
     setEditingId(null);
+    setPincodeAutoDetected(false);
+    setIsPincodeLoading(false);
     setShowForm(true);
   };
 
@@ -88,7 +124,13 @@ const Address = () => {
     }
   };
 
-  const closeForm = () => { setShowForm(false); setEditingId(null); setForm(EMPTY_FORM); };
+  const closeForm = () => { 
+    setShowForm(false); 
+    setEditingId(null); 
+    setForm(EMPTY_FORM); 
+    setPincodeAutoDetected(false);
+    setIsPincodeLoading(false);
+  };
 
   /* ── save (add / edit) ─────────────────────────────────── */
   const handleSave = async (e) => {
@@ -222,35 +264,83 @@ const Address = () => {
 
                     {/* City */}
                     <div>
-                      <label className="text-sm font-bold text-gray-400 uppercase  mb-1 block">City *</label>
+                      <div className="flex items-center justify-between mb-1">
+                        <label className="text-sm font-bold text-gray-400 uppercase block">City *</label>
+                        {pincodeAutoDetected && form.city && (
+                          <span className="text-[11px] font-bold text-emerald-600 flex items-center gap-1">
+                            <Check size={11} className="stroke-[3]" /> Auto-Filled
+                          </span>
+                        )}
+                      </div>
                       <input
                         value={form.city}
                         onChange={e => setForm(f => ({ ...f, city: e.target.value }))}
                         placeholder="City"
-                        className="w-full border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/10 rounded-xl px-4 py-3 text-sm font-medium text-gray-800 outline-none transition-all bg-white"
+                        className={`w-full border rounded-xl px-4 py-3 text-sm font-medium text-gray-800 outline-none transition-all bg-white ${
+                          pincodeAutoDetected && form.city
+                            ? 'border-emerald-300 bg-emerald-50/15'
+                            : 'border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/10'
+                        }`}
                       />
                     </div>
 
                     {/* State */}
                     <div>
-                      <label className="text-sm font-bold text-gray-400 uppercase  mb-1 block">State</label>
+                      <div className="flex items-center justify-between mb-1">
+                        <label className="text-sm font-bold text-gray-400 uppercase block">State</label>
+                        {pincodeAutoDetected && form.state && (
+                          <span className="text-[11px] font-bold text-emerald-600 flex items-center gap-1">
+                            <Check size={11} className="stroke-[3]" /> Auto-Filled
+                          </span>
+                        )}
+                      </div>
                       <input
                         value={form.state}
                         onChange={e => setForm(f => ({ ...f, state: e.target.value }))}
                         placeholder="State"
-                        className="w-full border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/10 rounded-xl px-4 py-3 text-sm font-medium text-gray-800 outline-none transition-all bg-white"
+                        className={`w-full border rounded-xl px-4 py-3 text-sm font-medium text-gray-800 outline-none transition-all bg-white ${
+                          pincodeAutoDetected && form.state
+                            ? 'border-emerald-300 bg-emerald-50/15'
+                            : 'border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/10'
+                        }`}
                       />
                     </div>
 
                     {/* Pincode */}
                     <div>
-                      <label className="text-sm font-bold text-gray-400 uppercase  mb-1 block">Pincode *</label>
-                      <input
-                        value={form.pincode}
-                        onChange={e => setForm(f => ({ ...f, pincode: e.target.value }))}
-                        placeholder="Pincode"
-                        className="w-full border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/10 rounded-xl px-4 py-3 text-sm font-medium text-gray-800 outline-none transition-all bg-white"
-                      />
+                      <div className="flex items-center justify-between mb-1">
+                        <label className="text-sm font-bold text-gray-400 uppercase block">Pincode *</label>
+                        {isPincodeLoading && (
+                          <span className="flex items-center gap-1 text-[11px] font-bold text-primary animate-pulse">
+                            <Loader2 size={11} className="animate-spin" /> Fetching location...
+                          </span>
+                        )}
+                        {!isPincodeLoading && pincodeAutoDetected && (
+                          <span className="flex items-center gap-1 text-[11px] font-bold text-emerald-600">
+                            <Check size={12} className="stroke-[3]" /> Verified
+                          </span>
+                        )}
+                      </div>
+                      <div className="relative">
+                        <input
+                          type="text"
+                          inputMode="numeric"
+                          maxLength={6}
+                          value={form.pincode}
+                          onChange={handlePincodeChange}
+                          placeholder="6-Digit Pincode"
+                          className={`w-full border rounded-xl px-4 py-3 text-sm font-medium text-gray-800 outline-none transition-all bg-white ${
+                            pincodeAutoDetected 
+                              ? 'border-emerald-400 ring-2 ring-emerald-100' 
+                              : 'border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/10'
+                          }`}
+                        />
+                        {isPincodeLoading && (
+                          <div className="absolute right-3.5 top-1/2 -translate-y-1/2">
+                            <Loader2 size={16} className="animate-spin text-primary" />
+                          </div>
+                        )}
+                      </div>
                     </div>
 
                     {/* Phone 1 */}

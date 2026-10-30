@@ -3,7 +3,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { 
   Search, ShoppingBag, Menu, ChevronDown, ChevronRight, Wallet, User, LogOut, 
   Settings, UserCircle, X, Heart, LayoutDashboard, Bookmark, Bell, 
-  Loader2, Smartphone, MapPin, Gift, HelpCircle, Zap
+  Loader2, Smartphone, MapPin, Gift, HelpCircle, Zap, Package
 } from 'lucide-react';
 import { useUser } from '../context/UserContext';
 import { useSearch } from '../context/SearchContext';
@@ -12,6 +12,7 @@ import { useWishlist } from '../context/WishlistContext';
 import { useWallet } from '../context/WalletContext';
 import CartDrawer from './CartDrawer';
 import { getMyNotifications, markNotificationRead } from '../api/notificationService';
+import { getImageUrl } from '../utils/imageUrl';
 import { toast } from '../utils/toast';
 import feverlogo from '../assets/feverlogo.png';
 
@@ -95,7 +96,7 @@ const NotificationBell = () => {
       >
         <Bell size={18} strokeWidth={2} />
         {unreadCount > 0 && (
-          <span className="absolute -top-0.5 -right-0.5 bg-primary text-white text-[8px] font-black w-4 h-4 flex items-center justify-center rounded-full shadow-md animate-pulse">
+          <span className="absolute -top-0.5 -right-0.5 bg-primary text-white text-xs font-black w-4 h-4 flex items-center justify-center rounded-full shadow-md animate-pulse">
             {unreadCount > 9 ? '9+' : unreadCount}
           </span>
         )}
@@ -108,7 +109,7 @@ const NotificationBell = () => {
             {unreadCount > 0 && (
               <button
                 onClick={handleMarkAllRead}
-                className="text-[9px] font-black uppercase tracking-wider text-primary hover:underline cursor-pointer"
+                className="text-xs font-black uppercase tracking-wider text-primary hover:underline cursor-pointer"
               >
                 Mark all read
               </button>
@@ -119,12 +120,12 @@ const NotificationBell = () => {
             {loading && notifications.length === 0 ? (
               <div className="py-12 flex flex-col items-center justify-center gap-2">
                 <Loader2 className="animate-spin text-primary" size={20} />
-                <span className="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Loading...</span>
+                <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">Loading...</span>
               </div>
             ) : notifications.length === 0 ? (
               <div className="py-12 text-center text-gray-400">
                 <Bell className="mx-auto mb-2 text-gray-300 stroke-[1.5]" size={28} />
-                <p className="text-[10px] font-bold uppercase tracking-wider">No notifications yet</p>
+                <p className="text-xs font-bold uppercase tracking-wider">No notifications yet</p>
               </div>
             ) : (
               notifications.map((n) => (
@@ -145,7 +146,7 @@ const NotificationBell = () => {
                     <p className="text-xs text-gray-600 font-semibold leading-relaxed break-words">
                       {n.body}
                     </p>
-                    <span className="text-[8px] text-gray-450 font-bold uppercase block mt-1">
+                    <span className="text-[11px] text-gray-450 font-bold uppercase block mt-1">
                       {new Date(n.createdAt).toLocaleDateString('en-IN', {
                         day: 'numeric',
                         month: 'short',
@@ -235,21 +236,21 @@ const Navbar = () => {
           <div className="flex items-center justify-between h-[108px] gap-4">
             
             {/* Top Left Utility Links */}
-            <div className="flex items-center gap-3 xl:gap-5 text-gray-800 text-[12px] font-bold whitespace-nowrap shrink-0">
+            <div className="flex items-center gap-3.5 xl:gap-6 text-gray-700 text-sm font-semibold whitespace-nowrap shrink-0">
               <Link to="/get-app" className="flex items-center gap-1.5 hover:text-primary transition-colors whitespace-nowrap shrink-0">
-                <Smartphone size={16} className="text-gray-700 stroke-[1.8] shrink-0" />
+                <Smartphone size={16} className="text-gray-600 stroke-[1.8] shrink-0" />
                 <span className="whitespace-nowrap">Get App</span>
               </Link>
               <Link to="/stores" className="flex items-center gap-1.5 hover:text-primary transition-colors whitespace-nowrap shrink-0">
-                <MapPin size={16} className="text-gray-700 stroke-[1.8] shrink-0" />
+                <MapPin size={16} className="text-gray-600 stroke-[1.8] shrink-0" />
                 <span className="whitespace-nowrap">Store & Events</span>
               </Link>
               <Link to="/coupons" className="flex items-center gap-1.5 hover:text-primary transition-colors whitespace-nowrap shrink-0">
-                <Gift size={16} className="text-gray-700 stroke-[1.8] shrink-0" />
+                <Gift size={16} className="text-gray-600 stroke-[1.8] shrink-0" />
                 <span className="whitespace-nowrap">Gift Card</span>
               </Link>
               <Link to="/help" className="flex items-center gap-1.5 hover:text-primary transition-colors whitespace-nowrap shrink-0">
-                <HelpCircle size={16} className="text-gray-700 stroke-[1.8] shrink-0" />
+                <HelpCircle size={16} className="text-gray-600 stroke-[1.8] shrink-0" />
                 <span className="whitespace-nowrap">Help</span>
               </Link>
             </div>
@@ -269,7 +270,7 @@ const Navbar = () => {
               {/* Quick Delivery */}
               <Link 
                 to="/quick-commerce" 
-                className="hidden xl:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-50/80 border border-amber-200/80 text-amber-900 text-[11px] font-bold hover:bg-amber-100 transition-all cursor-pointer whitespace-nowrap shrink-0"
+                className="hidden xl:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-50/80 border border-amber-200/80 text-amber-900 text-xs font-bold hover:bg-amber-100 transition-all cursor-pointer whitespace-nowrap shrink-0"
               >
                 <Zap size={13} className="text-amber-500 fill-amber-500 shrink-0" />
                 <span className="whitespace-nowrap">Quick Delivery</span>
@@ -283,7 +284,7 @@ const Navbar = () => {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search..."
-                  className="w-full bg-[#f4f4f4] border border-gray-200 rounded-full h-[38px] pl-3 pr-8 text-[12px] font-medium text-gray-800 placeholder:text-gray-400 outline-none focus:border-primary focus:bg-white transition-all"
+                  className="w-full bg-[#f4f4f4] border border-gray-200 rounded-full h-[38px] pl-3.5 pr-8 text-sm font-medium text-gray-800 placeholder:text-gray-400 outline-none focus:border-primary focus:bg-white transition-all"
                 />
                 <button className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-500 hover:text-primary transition-colors cursor-pointer">
                   <Search size={15} strokeWidth={2} />
@@ -296,13 +297,13 @@ const Navbar = () => {
               {/* Wishlist Button */}
               <Link
                 to="/wishlist"
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-rose-50/80 hover:bg-rose-100 border border-rose-200/80 text-[11px] font-extrabold text-rose-600 transition-all shadow-2xs relative cursor-pointer whitespace-nowrap shrink-0"
+                className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-rose-50/80 hover:bg-rose-100 border border-rose-200/80 text-xs font-bold text-rose-600 transition-all shadow-2xs relative cursor-pointer whitespace-nowrap shrink-0"
                 title="View Wishlist"
               >
                 <Heart size={15} className="text-[#ff4d6d] fill-rose-50 stroke-[2] shrink-0" />
                 <span className="whitespace-nowrap">Wishlist</span>
                 {wishlistCount > 0 && (
-                  <span className="bg-[#ff4d6d] text-white text-[9px] font-black w-4 h-4 rounded-full flex items-center justify-center shadow-xs shrink-0">
+                  <span className="bg-[#ff4d6d] text-white text-xs font-black w-4 h-4 rounded-full flex items-center justify-center shadow-xs shrink-0">
                     {wishlistCount}
                   </span>
                 )}
@@ -314,7 +315,7 @@ const Navbar = () => {
                   {user.role === 'user' && (
                     <Link
                       to="/wallet"
-                      className="flex items-center gap-1.5 px-2.5 py-1.5 bg-primary/5 hover:bg-primary/10 border border-primary/10 rounded-xl text-[11px] font-bold text-gray-700 hover:text-primary transition-all whitespace-nowrap shrink-0"
+                      className="flex items-center gap-1.5 px-2.5 py-1.5 bg-primary/5 hover:bg-primary/10 border border-primary/10 rounded-xl text-xs font-bold text-gray-700 hover:text-primary transition-all whitespace-nowrap shrink-0"
                       title="Wallet Balance"
                     >
                       <Wallet size={13} className="text-primary shrink-0" />
@@ -323,16 +324,26 @@ const Navbar = () => {
                   )}
 
                   <div className="relative group shrink-0">
-                    <button className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#f4f4f4] hover:bg-gray-200 transition-all text-[11px] font-bold text-gray-800 border border-gray-200/80 cursor-pointer whitespace-nowrap shrink-0">
+                    <button className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#f4f4f4] hover:bg-gray-200 transition-all text-xs font-bold text-gray-800 border border-gray-200/80 cursor-pointer whitespace-nowrap shrink-0">
                       {user.avatar ? (
                         <img
-                          src={typeof user.avatar === 'string' ? user.avatar : (user.avatar.url || '')}
+                          src={getImageUrl(user.avatar)}
                           alt={user.name}
                           className="w-5 h-5 rounded-full object-cover shrink-0"
+                          onError={(e) => {
+                            e.currentTarget.style.display = 'none';
+                            if (e.currentTarget.nextElementSibling) {
+                              e.currentTarget.nextElementSibling.style.display = 'inline-flex';
+                            }
+                          }}
                         />
-                      ) : (
-                        <User size={14} className="text-gray-700 shrink-0" />
-                      )}
+                      ) : null}
+                      <span 
+                        className="w-5 h-5 rounded-full bg-primary text-white flex items-center justify-center text-xs font-bold shrink-0" 
+                        style={{ display: user.avatar ? 'none' : 'inline-flex' }}
+                      >
+                        {user.name?.charAt(0)?.toUpperCase() || 'U'}
+                      </span>
                       <span className="max-w-[80px] truncate whitespace-nowrap">{user.name?.split(' ')[0]}</span>
                       <ChevronDown size={12} className="text-gray-500 shrink-0" />
                     </button>
@@ -343,7 +354,7 @@ const Navbar = () => {
                         <div className="flex flex-col gap-1 text-left relative z-10 bg-white rounded-xl overflow-hidden">
                           <div className="px-4 py-3 bg-gray-50/70 border-b border-gray-100">
                             <p className="text-xs font-bold text-gray-800 uppercase truncate">{user.name}</p>
-                            <p className="text-[10px] font-semibold text-gray-400 truncate mt-0.5">{user.email}</p>
+                            <p className="text-xs font-semibold text-gray-400 truncate mt-0.5">{user.email}</p>
                           </div>
 
                           <div className="p-1.5 flex flex-col gap-0.5">
@@ -357,6 +368,12 @@ const Navbar = () => {
                             })()}
                             <Link to="/profile" className="flex items-center gap-3 px-3 py-2 hover:bg-gray-50 rounded-xl text-xs font-bold text-gray-600 hover:text-primary transition-all">
                               <User size={15} /> My Profile
+                            </Link>
+                            <Link to="/orders" className="flex items-center gap-3 px-3 py-2 hover:bg-gray-50 rounded-xl text-xs font-bold text-gray-600 hover:text-primary transition-all">
+                              <Package size={15} /> My Orders
+                            </Link>
+                            <Link to="/orders?tab=quick" className="flex items-center gap-3 px-3 py-2 hover:bg-amber-50 rounded-xl text-xs font-bold text-amber-600 hover:text-amber-700 transition-all">
+                              <Zap size={15} className="fill-amber-500 text-amber-500" /> Quick Orders (10-Min)
                             </Link>
                             <Link to="/wishlist" className="flex items-center gap-3 px-3 py-2 hover:bg-gray-50 rounded-xl text-xs font-bold text-gray-600 hover:text-primary transition-all">
                               <Heart size={15} className="text-[#ff4d6d]" /> View Wishlist
@@ -380,7 +397,7 @@ const Navbar = () => {
               ) : (
                 <Link
                   to="/auth"
-                  className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#f4f4f4] hover:bg-gray-200 border border-gray-200/80 text-[11px] font-extrabold text-gray-800 transition-all cursor-pointer whitespace-nowrap shrink-0"
+                  className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#f4f4f4] hover:bg-gray-200 border border-gray-200/80 text-xs font-bold text-gray-800 transition-all cursor-pointer whitespace-nowrap shrink-0"
                 >
                   <User size={14} className="text-gray-700 shrink-0" />
                   <span className="whitespace-nowrap">Sign in</span>
@@ -390,12 +407,12 @@ const Navbar = () => {
               {/* Shopping Bag Button */}
               <button
                 onClick={() => setIsCartOpen(true)}
-                className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-rose-50/80 hover:bg-rose-100 border border-rose-200/80 text-[11px] font-extrabold text-rose-600 transition-all shadow-2xs relative cursor-pointer whitespace-nowrap shrink-0"
+                className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-rose-50/80 hover:bg-rose-100 border border-rose-200/80 text-xs font-bold text-rose-600 transition-all shadow-2xs relative cursor-pointer whitespace-nowrap shrink-0"
               >
                 <ShoppingBag size={15} className="text-[#ff4d6d] shrink-0" />
                 <span className="whitespace-nowrap">Shopping Bag</span>
                 {activeCartCount > 0 && (
-                  <span className="ml-0.5 bg-[#ff4d6d] text-white text-[9px] font-black w-4 h-4 rounded-full flex items-center justify-center shadow-xs shrink-0">
+                  <span className="ml-0.5 bg-[#ff4d6d] text-white text-xs font-black w-4 h-4 rounded-full flex items-center justify-center shadow-xs shrink-0">
                     {activeCartCount}
                   </span>
                 )}
@@ -415,32 +432,32 @@ const Navbar = () => {
             <div className="flex items-center gap-8 whitespace-nowrap">
               
               {/* Shop */}
-              <Link to="/shop" className="text-[13px] font-extrabold text-gray-900 hover:text-[#ff4d6d] tracking-wide transition-colors py-2.5 whitespace-nowrap">
+              <Link to="/shop" className="text-sm font-bold text-gray-900 hover:text-[#ff4d6d] tracking-wide transition-colors py-2.5 whitespace-nowrap">
                 Shop
               </Link>
 
               {/* Bookings */}
-              <Link to="/booking" className="text-[13px] font-extrabold text-gray-900 hover:text-[#ff4d6d] tracking-wide transition-colors py-2.5 whitespace-nowrap">
+              <Link to="/booking" className="text-sm font-bold text-gray-900 hover:text-[#ff4d6d] tracking-wide transition-colors py-2.5 whitespace-nowrap">
                 Bookings
               </Link>
 
               {/* Academy */}
-              <Link to="/academy" className="text-[13px] font-extrabold text-gray-900 hover:text-[#ff4d6d] tracking-wide transition-colors py-2.5 whitespace-nowrap">
+              <Link to="/academy" className="text-sm font-bold text-gray-900 hover:text-[#ff4d6d] tracking-wide transition-colors py-2.5 whitespace-nowrap">
                 Academy
               </Link>
 
               {/* Quick E-Commerce */}
-              <Link to="/quick-commerce" className="text-[13px] font-extrabold text-[#ff4d6d] hover:text-[#e63956] tracking-wide transition-colors py-2.5 whitespace-nowrap flex items-center gap-1.5">
+              <Link to="/quick-commerce" className="text-sm font-bold text-[#ff4d6d] hover:text-[#e63956] tracking-wide transition-colors py-2.5 whitespace-nowrap flex items-center gap-1.5">
                 <Zap size={14} className="fill-[#ff4d6d] text-[#ff4d6d]" /> Quick E-Commerce
               </Link>
 
               {/* International High-End */}
-              <Link to="/luxe" className="text-[13px] font-extrabold text-gray-900 hover:text-[#ff4d6d] tracking-wide transition-colors py-2.5 whitespace-nowrap">
+              <Link to="/luxe" className="text-sm font-bold text-gray-900 hover:text-[#ff4d6d] tracking-wide transition-colors py-2.5 whitespace-nowrap">
                 International High-End
               </Link>
 
               {/* Beauty Advice */}
-              <Link to="/advice" className="text-[13px] font-extrabold text-gray-900 hover:text-[#ff4d6d] tracking-wide transition-colors py-2.5 whitespace-nowrap">
+              <Link to="/advice" className="text-sm font-bold text-gray-900 hover:text-[#ff4d6d] tracking-wide transition-colors py-2.5 whitespace-nowrap">
                 Beauty Advice
               </Link>
 
@@ -476,7 +493,7 @@ const Navbar = () => {
             <Link to="/wishlist" className="p-1.5 text-gray-700 hover:text-rose-500 transition-colors relative">
               <Heart size={20} />
               {wishlistCount > 0 && (
-                <span className="absolute top-0 right-0 bg-rose-500 text-white text-[8px] font-bold w-3.5 h-3.5 rounded-full flex items-center justify-center">
+                <span className="absolute top-0 right-0 bg-rose-500 text-white text-xs font-bold w-3.5 h-3.5 rounded-full flex items-center justify-center">
                   {wishlistCount}
                 </span>
               )}
@@ -488,7 +505,7 @@ const Navbar = () => {
             >
               <ShoppingBag size={20} />
               {activeCartCount > 0 && (
-                <span className="absolute top-0 right-0 bg-[#ff4d6d] text-white text-[8px] font-black w-3.5 h-3.5 rounded-full flex items-center justify-center">
+                <span className="absolute top-0 right-0 bg-[#ff4d6d] text-white text-xs font-black w-3.5 h-3.5 rounded-full flex items-center justify-center">
                   {activeCartCount}
                 </span>
               )}
@@ -558,7 +575,7 @@ const Navbar = () => {
 
                 {/* Categories */}
                 <div className="space-y-3.5">
-                  <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest block">Main Menu</span>
+                  <span className="text-xs font-black text-gray-400 uppercase tracking-widest block">Main Menu</span>
                   
                   <Link to="/shop" onClick={() => setIsMenuOpen(false)} className="flex items-center justify-between text-sm font-bold text-gray-800 hover:text-primary uppercase py-1">
                     <span>Shop</span>
@@ -585,7 +602,7 @@ const Navbar = () => {
                 {/* Logged-in User Links */}
                 {user && (
                   <div className="pt-4 border-t border-gray-100 space-y-3">
-                    <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest block">My Account</span>
+                    <span className="text-xs font-black text-gray-400 uppercase tracking-widest block">My Account</span>
                     
                     {(() => {
                       const dashInfo = getDashboardLink(user);
@@ -602,6 +619,12 @@ const Navbar = () => {
 
                     <Link to="/profile" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-2.5 text-xs font-bold text-gray-700 hover:text-primary py-1">
                       <User size={15} /> My Profile
+                    </Link>
+                    <Link to="/orders" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-2.5 text-xs font-bold text-gray-700 hover:text-primary py-1">
+                      <Package size={15} /> My Orders
+                    </Link>
+                    <Link to="/orders?tab=quick" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-2.5 text-xs font-bold text-amber-600 hover:text-amber-700 py-1">
+                      <Zap size={15} className="fill-amber-500 text-amber-500" /> Quick Orders (10-Min)
                     </Link>
                     <Link to="/my-learning" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-2.5 text-xs font-bold text-gray-700 hover:text-primary py-1">
                       <Bookmark size={15} /> My Learning
@@ -620,7 +643,7 @@ const Navbar = () => {
               
               {/* Utility Help Links moved to bottom */}
               <div className="space-y-2 text-left">
-                <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest block px-1">Help & Information</span>
+                <span className="text-xs font-black text-gray-400 uppercase tracking-widest block px-1">Help & Information</span>
                 <div className="grid grid-cols-2 gap-2 text-left">
                   <Link to="/get-app" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-2 p-2 bg-white rounded-xl border border-gray-100 text-[11px] font-bold text-gray-700 hover:text-primary hover:border-primary/20 transition-all truncate">
                     <Smartphone size={14} className="shrink-0 text-primary" /> <span className="truncate">Get App</span>
@@ -647,7 +670,7 @@ const Navbar = () => {
                       </div>
                       <div className="min-w-0 flex-1 text-left">
                         <p className="text-xs font-black text-gray-900 uppercase truncate">{user.name}</p>
-                        <p className="text-[9px] font-semibold text-gray-400 truncate">{user.email}</p>
+                        <p className="text-xs font-semibold text-gray-400 truncate">{user.email}</p>
                       </div>
                     </div>
                   </div>

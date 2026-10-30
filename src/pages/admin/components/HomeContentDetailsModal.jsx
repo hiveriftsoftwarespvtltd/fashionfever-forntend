@@ -153,7 +153,7 @@ const HomeContentDetailsModal = ({ isOpen, id, onClose, isDarkMode }) => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* Computer Image */}
                 <div className="space-y-1">
-                  <span className="text-[9px] font-black uppercase text-gray-400">Desktop Banner Preview</span>
+                  <span className="text-xs font-black uppercase text-gray-400">Desktop Banner Preview</span>
                   <div className={`aspect-[2/1] rounded-2xl overflow-hidden border flex items-center justify-center bg-gray-50 dark:bg-gray-900 ${isDarkMode ? 'border-gray-750' : 'border-gray-100 shadow-sm'}`}>
                     {data.computerImage ? (
                       <SecureImage src={resolveImageUrl(data.computerImage)} alt="Desktop Banner" className="w-full h-full object-cover" />
@@ -165,7 +165,7 @@ const HomeContentDetailsModal = ({ isOpen, id, onClose, isDarkMode }) => {
 
                 {/* Mobile Image */}
                 <div className="space-y-1">
-                  <span className="text-[9px] font-black uppercase text-gray-400">Mobile Banner Preview</span>
+                  <span className="text-xs font-black uppercase text-gray-400">Mobile Banner Preview</span>
                   <div className={`aspect-[2/1] rounded-2xl overflow-hidden border flex items-center justify-center bg-gray-50 dark:bg-gray-900 ${isDarkMode ? 'border-gray-750' : 'border-gray-100 shadow-sm'}`}>
                     {data.mobileImage ? (
                       <SecureImage src={resolveImageUrl(data.mobileImage)} alt="Mobile Banner" className="w-full h-full object-cover" />
@@ -305,7 +305,7 @@ const HomeContentDetailsModal = ({ isOpen, id, onClose, isDarkMode }) => {
                   </h4>
                   <div className="flex flex-wrap gap-1.5">
                     {data.labels.map((lbl, idx) => (
-                      <span key={idx} className="px-2 py-0.5 bg-primary/5 hover:bg-primary/10 text-primary rounded-lg text-[9px] font-bold uppercase transition-all">
+                      <span key={idx} className="px-2 py-0.5 bg-primary/5 hover:bg-primary/10 text-primary rounded-lg text-xs font-bold uppercase transition-all">
                         {lbl}
                       </span>
                     ))}

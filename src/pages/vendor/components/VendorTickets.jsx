@@ -118,14 +118,14 @@ const VendorTickets = () => {
     const st = (status || 'PENDING').toUpperCase();
     switch (st) {
       case 'OPEN':
-        return <span className="px-2.5 py-1 text-[10px] font-black rounded-md bg-blue-500/10 text-blue-500 uppercase tracking-wider flex items-center gap-1"><Clock size={11} /> OPEN</span>;
+        return <span className="px-2.5 py-1 text-xs font-black rounded-md bg-blue-500/10 text-blue-500 uppercase tracking-wider flex items-center gap-1"><Clock size={11} /> OPEN</span>;
       case 'RESOLVED':
-        return <span className="px-2.5 py-1 text-[10px] font-black rounded-md bg-emerald-500/10 text-emerald-500 uppercase tracking-wider flex items-center gap-1"><CheckCircle size={11} /> RESOLVED</span>;
+        return <span className="px-2.5 py-1 text-xs font-black rounded-md bg-emerald-500/10 text-emerald-500 uppercase tracking-wider flex items-center gap-1"><CheckCircle size={11} /> RESOLVED</span>;
       case 'CLOSED':
-        return <span className="px-2.5 py-1 text-[10px] font-black rounded-md bg-gray-500/10 text-gray-400 uppercase tracking-wider flex items-center gap-1"><XCircle size={11} /> CLOSED</span>;
+        return <span className="px-2.5 py-1 text-xs font-black rounded-md bg-gray-500/10 text-gray-400 uppercase tracking-wider flex items-center gap-1"><XCircle size={11} /> CLOSED</span>;
       case 'PENDING':
       default:
-        return <span className="px-2.5 py-1 text-[10px] font-black rounded-md bg-amber-500/10 text-amber-500 uppercase tracking-wider flex items-center gap-1"><AlertCircle size={11} /> PENDING</span>;
+        return <span className="px-2.5 py-1 text-xs font-black rounded-md bg-amber-500/10 text-amber-500 uppercase tracking-wider flex items-center gap-1"><AlertCircle size={11} /> PENDING</span>;
     }
   };
 
@@ -205,7 +205,7 @@ const VendorTickets = () => {
                 >
                   <div className="flex justify-between items-start mb-2">
                     <div className="space-y-0.5">
-                      <span className="text-[10px] font-black text-gray-400 font-mono">
+                      <span className="text-xs font-black text-gray-400 font-mono">
                         #{t._id ? t._id.substring(t._id.length - 8).toUpperCase() : 'N/A'}
                       </span>
                       <h3 className={`text-xs font-bold uppercase tracking-wide ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
@@ -219,7 +219,7 @@ const VendorTickets = () => {
                     {t.description}
                   </p>
 
-                  <div className="pt-3 border-t border-dashed border-gray-100 dark:border-white/5 flex justify-between items-center text-[10px] text-gray-400 font-bold uppercase">
+                  <div className="pt-3 border-t border-dashed border-gray-100 dark:border-white/5 flex justify-between items-center text-xs text-gray-400 font-bold uppercase">
                     <span className="flex items-center gap-1">
                       <User size={11} className="text-primary" /> {t.userId?.name || 'Customer'}
                     </span>
@@ -251,13 +251,13 @@ const VendorTickets = () => {
               {/* Ticket Top Info */}
               <div className="flex justify-between items-start border-b border-gray-100 dark:border-white/5 pb-4">
                 <div>
-                  <span className="text-[10px] font-black text-gray-400 font-mono block">
+                  <span className="text-xs font-black text-gray-400 font-mono block">
                     TICKET ID: #{selectedTicket._id?.toUpperCase()}
                   </span>
                   <h2 className={`text-base font-black uppercase tracking-wide mt-1 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
                     Category: {selectedTicket.ticketType}
                   </h2>
-                  <p className="text-[10px] font-bold text-gray-400 uppercase mt-0.5">
+                  <p className="text-xs font-bold text-gray-400 uppercase mt-0.5">
                     Raised by: <span className="text-primary">{selectedTicket.userId?.name || 'Customer'}</span> ({selectedTicket.userId?.email || 'N/A'})
                   </p>
                 </div>
@@ -269,7 +269,7 @@ const VendorTickets = () => {
                 <div className={`p-3 rounded-xl border flex items-center gap-3 ${isDarkMode ? 'bg-white/5 border-white/5' : 'bg-pink-50/40 border-pink-100'}`}>
                   <Package className="text-primary shrink-0" size={20} />
                   <div className="min-w-0 flex-1">
-                    <span className="text-[9px] font-black text-primary uppercase block">Complain Product</span>
+                    <span className="text-xs font-black text-primary uppercase block">Complain Product</span>
                     <p className={`text-xs font-bold truncate ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
                       {selectedTicket.productId.name}
                     </p>
@@ -279,7 +279,7 @@ const VendorTickets = () => {
 
               {/* Issue Description */}
               <div className="space-y-1.5">
-                <span className="text-[10px] font-black text-gray-400 uppercase tracking-wider block">Customer Complaint Description</span>
+                <span className="text-xs font-black text-gray-400 uppercase tracking-wider block">Customer Complaint Description</span>
                 <div className={`p-3.5 rounded-xl border text-xs font-medium leading-relaxed ${isDarkMode ? 'bg-white/5 border-white/5 text-gray-200' : 'bg-gray-50 border-gray-100 text-gray-700'}`}>
                   {selectedTicket.description}
                 </div>
@@ -288,7 +288,7 @@ const VendorTickets = () => {
               {/* Proof Attachments */}
               {selectedTicket.mediaFiles && selectedTicket.mediaFiles.length > 0 && (
                 <div className="space-y-1.5">
-                  <span className="text-[10px] font-black text-gray-400 uppercase tracking-wider flex items-center gap-1">
+                  <span className="text-xs font-black text-gray-400 uppercase tracking-wider flex items-center gap-1">
                     <ImageIcon size={12} /> Uploaded Proofs ({selectedTicket.mediaFiles.length})
                   </span>
                   <div className="flex flex-wrap gap-2">
@@ -303,14 +303,14 @@ const VendorTickets = () => {
 
               {/* Status Action Buttons */}
               <div className="space-y-1.5 pt-2">
-                <span className="text-[10px] font-black text-gray-400 uppercase tracking-wider block">Update Resolution Status</span>
+                <span className="text-xs font-black text-gray-400 uppercase tracking-wider block">Update Resolution Status</span>
                 <div className="flex flex-wrap gap-2">
                   {['OPEN', 'RESOLVED', 'CLOSED'].map((st) => (
                     <button
                       key={st}
                       disabled={updatingStatus}
                       onClick={() => handleStatusChange(st)}
-                      className={`px-3 py-1.5 text-[10px] font-black rounded-lg transition-all uppercase tracking-wider ${
+                      className={`px-3 py-1.5 text-xs font-black rounded-lg transition-all uppercase tracking-wider ${
                         (selectedTicket.ticketStatus || '').toUpperCase() === st
                           ? 'bg-primary text-white shadow-sm'
                           : isDarkMode
@@ -326,7 +326,7 @@ const VendorTickets = () => {
 
               {/* Reply History Thread */}
               <div className="space-y-3 pt-3 border-t border-gray-100 dark:border-white/5">
-                <span className="text-[10px] font-black text-gray-400 uppercase tracking-wider block">
+                <span className="text-xs font-black text-gray-400 uppercase tracking-wider block">
                   Conversation & Resolution Thread
                 </span>
 
@@ -348,7 +348,7 @@ const VendorTickets = () => {
                               : 'bg-gray-100 dark:bg-white/5 border-gray-200 dark:border-white/5 mr-4'
                           }`}
                         >
-                          <div className="flex justify-between items-center text-[9px] font-black uppercase mb-1 opacity-75">
+                          <div className="flex justify-between items-center text-xs font-black uppercase mb-1 opacity-75">
                             <span>{r.senderName} ({r.senderRole})</span>
                             <span>{new Date(r.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                           </div>

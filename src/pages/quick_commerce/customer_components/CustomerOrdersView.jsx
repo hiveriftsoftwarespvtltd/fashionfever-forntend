@@ -1,5 +1,6 @@
 import React from 'react';
 import { Search, X, XCircle, Calendar, Eye, ChevronLeft, ChevronRight, ShoppingBag } from 'lucide-react';
+import { handleImageError } from '../../../utils/imageUrl';
 
 const CustomerOrdersView = ({
   orders = [],
@@ -70,7 +71,7 @@ const CustomerOrdersView = ({
         <div className="overflow-x-auto rounded-2xl border border-slate-100 shadow-sm bg-white">
           <table className="w-full text-left border-collapse min-w-[750px]">
             <thead>
-              <tr className="bg-slate-50/90 border-b border-slate-100 text-[10px] font-black text-slate-500 uppercase tracking-wider">
+              <tr className="bg-slate-50/90 border-b border-slate-100 text-xs font-black text-slate-500 uppercase tracking-wider">
                 <th className="py-3.5 px-4">Order ID & Date</th>
                 <th className="py-3.5 px-4">Items Ordered</th>
                 <th className="py-3.5 px-4">Payment</th>
@@ -87,7 +88,7 @@ const CustomerOrdersView = ({
                     <span className="font-mono font-black text-slate-800 block text-xs">
                       #{ord._id?.substring(0, 8)}
                     </span>
-                    <span className="text-[10px] font-semibold text-slate-400 block mt-0.5 flex items-center gap-1">
+                    <span className="text-xs font-semibold text-slate-400 block mt-0.5 flex items-center gap-1">
                       <Calendar size={10} className="inline text-slate-400" />
                       {formatOrderDate(ord.createdAt)}
                     </span>
@@ -102,6 +103,7 @@ const CustomerOrdersView = ({
                             src={getItemImage(ord.items[0])}
                             alt={ord.items[0]?.productName}
                             className="w-9 h-9 object-cover rounded-xl border border-slate-200 shadow-xs flex-shrink-0"
+                            onError={handleImageError}
                           />
                         ) : (
                           <div className="w-9 h-9 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-400 font-bold text-xs flex-shrink-0">
@@ -113,7 +115,7 @@ const CustomerOrdersView = ({
                             {ord.items[0]?.quantity}x {ord.items[0]?.productName}
                           </span>
                           {ord.items.length > 1 && (
-                            <span className="text-[10px] font-bold text-rose-500 block">
+                            <span className="text-xs font-bold text-rose-500 block">
                               +{ord.items.length - 1} more items
                             </span>
                           )}
@@ -126,10 +128,10 @@ const CustomerOrdersView = ({
 
                   {/* Payment */}
                   <td className="py-3.5 px-4">
-                    <span className="inline-block bg-slate-100 text-slate-700 font-extrabold text-[9px] px-2 py-0.5 rounded-md uppercase tracking-wider mb-0.5">
+                    <span className="inline-block bg-slate-100 text-slate-700 font-extrabold text-xs px-2 py-0.5 rounded-md uppercase tracking-wider mb-0.5">
                       {ord.paymentMethod?.replace(/_/g, ' ') || 'COD'}
                     </span>
-                    <span className={`block text-[9px] font-black uppercase ${
+                    <span className={`block text-xs font-black uppercase ${
                       ord.paymentStatus === 'PAID' ? 'text-emerald-600' : 'text-amber-600'
                     }`}>
                       {ord.paymentStatus || 'PENDING'}
@@ -143,7 +145,7 @@ const CustomerOrdersView = ({
 
                   {/* Delivery Status */}
                   <td className="py-3.5 px-4">
-                    <span className={`inline-block px-2.5 py-1 rounded-full text-[9px] font-black uppercase tracking-wider border ${getStatusBadge(ord.status)}`}>
+                    <span className={`inline-block px-2.5 py-1 rounded-full text-xs font-black uppercase tracking-wider border ${getStatusBadge(ord.status)}`}>
                       {ord.status}
                     </span>
                   </td>
@@ -164,7 +166,7 @@ const CustomerOrdersView = ({
                         <button
                           onClick={() => handleCancelOrder(ord._id)}
                           title="Cancel Order"
-                          className="px-2.5 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-100 rounded-xl text-[9px] font-black uppercase transition-colors cursor-pointer"
+                          className="px-2.5 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-100 rounded-xl text-xs font-black uppercase transition-colors cursor-pointer"
                         >
                           Cancel
                         </button>

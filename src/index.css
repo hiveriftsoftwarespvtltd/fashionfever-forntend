@@ -4,6 +4,8 @@
 /* Tailwind must be first of framework imports */
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 /* Root Variables */
 :root {
   --primary: #da016a;

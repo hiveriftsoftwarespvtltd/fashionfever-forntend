@@ -40,6 +40,7 @@ import {
 import { useUser } from '../../context/UserContext';
 import { toast } from '../../utils/toast';
 import config from '../../config/config';
+import { getImageUrl } from '../../utils/imageUrl';
 
 const CoursePlayer = () => {
   const { id } = useParams();
@@ -87,13 +88,13 @@ const CoursePlayer = () => {
 
     // Check if thumbnail is a populated object
     if (thumbnail.url && typeof thumbnail.url === 'string') {
-      return thumbnail.url;
+      return getImageUrl(thumbnail.url);
     }
     
     // Check if thumbnail is a direct URL string or base64 data
     if (typeof thumbnail === 'string') {
       if (thumbnail.startsWith('http://') || thumbnail.startsWith('https://') || thumbnail.startsWith('data:')) {
-        return thumbnail;
+        return getImageUrl(thumbnail);
       }
       // If it looks like a Mongo ID or filename, resolve via backend file retrieval route
       return `${config.API_URL}/file/get-file/${thumbnail}`;
@@ -656,27 +657,27 @@ const CoursePlayer = () => {
         {/* Banner header (Light, simple, decent) */}
         <div className="bg-white border-b border-gray-150 py-10">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <Link to="/academy" className="inline-flex items-center gap-1 text-xs font-bold text-gray-500 hover:text-primary transition-all uppercase mb-4">
-              <ChevronLeft size={16} /> Back to Catalog
+            <Link to="/academy" className="inline-flex items-center gap-1.5 text-sm font-bold text-gray-600 hover:text-primary transition-all uppercase mb-4">
+              <ChevronLeft size={18} /> Back to Catalog
             </Link>
             
             <div className="space-y-3">
-              <span className="bg-primary/10 text-primary border border-primary/20 text-sm font-bold uppercase tracking-wider px-2.5 py-0.5 rounded">
+              <span className="bg-primary/10 text-primary border border-primary/20 text-xs sm:text-sm font-bold uppercase tracking-wider px-3 py-1 rounded-md">
                 {course.categoryId?.label || course.categoryId?.name || 'Academy'}
               </span>
               
-              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 leading-tight">
+              <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 leading-tight">
                 {course.title}
               </h1>
               
               {course.subtitle && (
-                <p className="text-sm text-gray-500 font-medium">{course.subtitle}</p>
+                <p className="text-base text-gray-600 font-medium">{course.subtitle}</p>
               )}
 
-              <div className="flex flex-wrap gap-4 pt-1 text-sm font-bold text-gray-400 uppercase tracking-wide">
-                <div className="flex items-center gap-1"><Globe size={13} className="text-primary" /> {course.language}</div>
-                <div className="flex items-center gap-1"><Clock size={13} className="text-primary" /> {course.totalDurationInMinutes || 0} Mins</div>
-                <div className="flex items-center gap-1"><BookOpen size={13} className="text-primary" /> {course.level}</div>
+              <div className="flex flex-wrap gap-5 pt-2 text-sm font-bold text-gray-600 uppercase tracking-wide">
+                <div className="flex items-center gap-1.5"><Globe size={15} className="text-primary" /> {course.language}</div>
+                <div className="flex items-center gap-1.5"><Clock size={15} className="text-primary" /> {course.totalDurationInMinutes || 0} Mins</div>
+                <div className="flex items-center gap-1.5"><BookOpen size={15} className="text-primary" /> {course.level}</div>
               </div>
             </div>
           </div>
@@ -690,40 +691,40 @@ const CoursePlayer = () => {
             <div className="lg:col-span-8 space-y-8">
               {/* About Course */}
               <div className="bg-white p-6 rounded-2xl border border-gray-200 space-y-3 shadow-sm">
-                <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider">About This Course</h3>
-                <p className="text-sm text-gray-600 leading-relaxed font-normal">{course.description}</p>
+                <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wider">About This Course</h3>
+                <p className="text-sm sm:text-base text-gray-700 leading-relaxed font-normal">{course.description}</p>
               </div>
 
               {/* Syllabus list */}
               <div className="bg-white p-6 rounded-2xl border border-gray-200 space-y-4 shadow-sm">
                 <div className="flex justify-between items-center border-b border-gray-100 pb-3">
-                  <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider">Course Curriculum</h3>
-                  <span className="text-sm font-bold text-gray-500 uppercase">{sections.length} Sections • {lessons.length} Lessons</span>
+                  <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wider">Course Curriculum</h3>
+                  <span className="text-xs font-bold text-gray-600 uppercase tracking-wider">{sections.length} Sections • {lessons.length} Lessons</span>
                 </div>
                 
                 <div className="divide-y divide-gray-100">
                   {sections.length === 0 ? (
-                    <div className="py-6 text-center text-gray-450 text-xs font-semibold">No lessons added yet.</div>
+                    <div className="py-6 text-center text-gray-450 text-sm font-semibold">No lessons added yet.</div>
                   ) : (
                     sections.map((section, sIdx) => {
                       const sectionLessons = lessons.filter(l => l.sectionId === section._id);
                       return (
                         <div key={section._id} className="py-4 first:pt-0 last:pb-0">
-                          <h4 className="text-xs font-bold text-gray-900 uppercase flex items-center justify-between">
+                          <h4 className="text-sm font-bold text-gray-900 uppercase flex items-center justify-between">
                             <span>Section {sIdx + 1}: {section.title}</span>
-                            <span className="text-sm font-semibold text-gray-400 normal-case">
+                            <span className="text-xs font-semibold text-gray-500 normal-case">
                               {section.totalVideos || 0} Videos • {section.totalAttachments || 0} Attachments
                             </span>
                           </h4>
                           
-                          <div className="mt-2 space-y-2 pl-4">
+                          <div className="mt-2.5 space-y-2 pl-4">
                             {sectionLessons.map((lesson) => (
-                              <div key={lesson._id} className="flex items-center justify-between text-xs text-gray-600 font-medium py-0.5">
-                                <div className="flex items-center gap-2">
-                                  <Lock size={12} className="text-gray-400" />
+                              <div key={lesson._id} className="flex items-center justify-between text-sm text-gray-700 font-medium py-1">
+                                <div className="flex items-center gap-2.5">
+                                  <Lock size={14} className="text-gray-400" />
                                   <span>{lesson.title}</span>
                                 </div>
-                                <span className="text-sm text-gray-400">
+                                <span className="text-xs text-gray-500 font-semibold">
                                   {lesson.durationInSeconds ? `${Math.floor(lesson.durationInSeconds / 60)}m` : '10m'}
                                 </span>
                               </div>
@@ -739,8 +740,8 @@ const CoursePlayer = () => {
               {/* Student Reviews list inside MODE A (Landing Page) */}
               <div className="bg-white p-6 rounded-2xl border border-gray-200 space-y-4 shadow-sm">
                 <div className="flex justify-between items-center border-b border-gray-100 pb-3">
-                  <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider">Student Feedback</h3>
-                  <span className="text-sm font-bold text-gray-500 uppercase">
+                  <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wider">Student Feedback</h3>
+                  <span className="text-xs font-bold text-gray-600 uppercase tracking-wider">
                     {reviewsList.length} Reviews • {reviewsList.length > 0
                       ? (reviewsList.reduce((acc, curr) => acc + curr.rating, 0) / reviewsList.length).toFixed(1)
                       : '0.0'} ★
@@ -748,7 +749,7 @@ const CoursePlayer = () => {
                 </div>
 
                 {reviewsList.length === 0 ? (
-                  <div className="py-6 text-center text-gray-450 text-xs font-semibold uppercase">No reviews yet for this course.</div>
+                  <div className="py-6 text-center text-gray-500 text-sm font-semibold uppercase">No reviews yet for this course.</div>
                 ) : (
                   <div className="space-y-4 divide-y divide-gray-100">
                     {reviewsList.map((reviewItem, rIdx) => {
@@ -756,26 +757,26 @@ const CoursePlayer = () => {
                       const reviewInitial = reviewUserName.charAt(0).toUpperCase();
                       const reviewAvatarGrad = getAvatarGradient(reviewUserName);
                       return (
-                        <div key={reviewItem._id} className={`flex gap-3.5 text-xs leading-relaxed ${rIdx > 0 ? 'pt-4' : ''}`}>
-                          <div className={`w-8 h-8 rounded-full bg-gradient-to-tr ${reviewAvatarGrad} flex items-center justify-center font-bold text-xs flex-shrink-0 shadow-xs`}>
+                        <div key={reviewItem._id} className={`flex gap-3.5 text-sm leading-relaxed ${rIdx > 0 ? 'pt-4' : ''}`}>
+                          <div className={`w-9 h-9 rounded-full bg-gradient-to-tr ${reviewAvatarGrad} flex items-center justify-center font-bold text-sm flex-shrink-0 shadow-xs`}>
                             {reviewInitial}
                           </div>
                           <div className="flex-1 space-y-1">
                             <div className="flex items-center justify-between">
                               <div>
-                                <span className="font-bold text-gray-900 text-xs block">{reviewUserName}</span>
+                                <span className="font-bold text-gray-900 text-sm block">{reviewUserName}</span>
                                 <div className="mt-0.5">
                                   {renderStars(reviewItem.rating)}
                                 </div>
                               </div>
-                              <span className="text-[10px] text-gray-400 font-bold">
+                              <span className="text-xs text-gray-500 font-semibold">
                                 {new Date(reviewItem.createdAt).toLocaleDateString('en-IN', {
                                   day: 'numeric',
                                   month: 'short'
                                 })}
                               </span>
                             </div>
-                            <p className="text-gray-650 font-medium text-xs leading-relaxed mt-1">{reviewItem.review}</p>
+                            <p className="text-gray-700 font-normal text-sm leading-relaxed mt-1">{reviewItem.review}</p>
                           </div>
                         </div>
                       );
@@ -797,18 +798,18 @@ const CoursePlayer = () => {
                   )}
                 </div>
 
-                <div className="p-5 space-y-5">
+                <div className="p-6 space-y-5">
                   {/* Price Block */}
-                  <div className="space-y-0.5">
-                    <span className="text-[8px] font-bold text-gray-400 uppercase tracking-wider block">Course Fee</span>
+                  <div className="space-y-1">
+                    <span className="text-xs font-bold text-gray-500 uppercase tracking-wider block">Course Fee</span>
                     <div className="flex items-baseline gap-2">
                       {course.isFree ? (
-                        <span className="text-xl font-bold text-emerald-600">FREE</span>
+                        <span className="text-2xl font-black text-emerald-600">FREE</span>
                       ) : (
                         <>
-                          <span className="text-xl font-bold text-gray-900">₹{course.sellingPrice}</span>
+                          <span className="text-2xl font-black text-gray-900">₹{course.sellingPrice}</span>
                           {course.offeredPrice > course.sellingPrice && (
-                            <span className="text-xs font-semibold text-gray-400 line-through">₹{course.offeredPrice}</span>
+                            <span className="text-sm font-semibold text-gray-400 line-through">₹{course.offeredPrice}</span>
                           )}
                         </>
                       )}
@@ -818,22 +819,21 @@ const CoursePlayer = () => {
                   {/* Enrollment Button */}
                   <button 
                     onClick={handleEnroll}
-                    className="w-full bg-primary hover:bg-primary/95 text-white py-3 rounded-xl text-xs font-bold uppercase tracking-wider shadow-sm transition-all cursor-pointer active:scale-95 text-center"
+                    className="w-full bg-primary hover:bg-primary/95 text-white py-3.5 rounded-xl text-sm font-bold uppercase tracking-wider shadow-sm transition-all cursor-pointer active:scale-95 text-center"
                   >
                     Enroll & Start Learning
                   </button>
 
                   {/* Bullet features */}
-                  <div className="space-y-2.5 pt-4 border-t border-gray-100 text-sm font-bold text-gray-550 uppercase">
-                    <div className="flex items-center gap-2"><Video size={13} className="text-primary" /> Full Video Masterclass</div>
-                    <div className="flex items-center gap-2"><Clock size={13} className="text-primary" /> {course.totalDurationInMinutes || 0} Mins Content</div>
-                    <div className="flex items-center gap-2"><FileText size={13} className="text-primary" /> References & Attachments</div>
-                    <div className="flex items-center gap-2"><Award size={13} className="text-primary" /> Completion Certification</div>
+                  <div className="space-y-3 pt-4 border-t border-gray-100 text-sm font-semibold text-gray-700">
+                    <div className="flex items-center gap-2.5"><Video size={16} className="text-primary" /> Full Video Masterclass</div>
+                    <div className="flex items-center gap-2.5"><Clock size={16} className="text-primary" /> {course.totalDurationInMinutes || 0} Mins Content</div>
+                    <div className="flex items-center gap-2.5"><FileText size={16} className="text-primary" /> References & Attachments</div>
+                    <div className="flex items-center gap-2.5"><Award size={16} className="text-primary" /> Completion Certification</div>
                   </div>
                 </div>
               </div>
             </div>
-
           </div>
         </div>
       </div>
@@ -851,8 +851,8 @@ const CoursePlayer = () => {
                <ChevronLeft size={22} />
             </Link>
             <div>
-               <h1 className="text-sm font-bold text-primary uppercase tracking-wider">Academy Player</h1>
-               <p className="text-sm font-bold text-gray-900 line-clamp-1">{course.title}</p>
+               <h1 className="text-xs font-bold text-primary uppercase tracking-wider">Academy Player</h1>
+               <p className="text-base sm:text-lg font-bold text-gray-900 line-clamp-1">{course.title}</p>
             </div>
          </div>
       </header>
@@ -877,7 +877,7 @@ const CoursePlayer = () => {
               ) : (
                 <div className="text-center p-8">
                   <Play size={32} className="text-gray-600 mx-auto mb-2" />
-                  <p className="text-gray-400 font-bold uppercase text-[9px] tracking-wider">No video available for this lesson.</p>
+                  <p className="text-gray-400 font-bold uppercase text-xs tracking-wider">No video available for this lesson.</p>
                 </div>
               )}
             </div>
@@ -885,18 +885,18 @@ const CoursePlayer = () => {
             {/* Active Lesson details & Discussion Board Card */}
             <div className="bg-white p-6 rounded-2xl border border-gray-200 space-y-5 shadow-sm">
               <div>
-                <span className="text-[9px] font-bold text-primary uppercase tracking-wider block">Active Lesson</span>
-                <h2 className="text-base sm:text-lg font-bold text-gray-900 mt-0.5">
+                <span className="text-xs font-bold text-primary uppercase tracking-wider block">Active Lesson</span>
+                <h2 className="text-xl sm:text-2xl font-black text-gray-900 mt-1">
                    {activeLesson ? activeLesson.title : 'No Lesson Selected'}
                 </h2>
               </div>
 
               {/* Sub tabs inside the lesson card */}
-              <div className="flex border-b border-gray-100 gap-6 mt-2">
+              <div className="flex border-b border-gray-150 gap-6 mt-2">
                 <button
                   onClick={() => setActivePlayerTab('about')}
-                  className={`pb-2 text-xs font-bold uppercase tracking-wider relative transition-all cursor-pointer ${
-                    activePlayerTab === 'about' ? 'text-primary font-black' : 'text-gray-405 hover:text-gray-600'
+                  className={`pb-2.5 text-sm font-bold uppercase tracking-wider relative transition-all cursor-pointer ${
+                    activePlayerTab === 'about' ? 'text-primary font-black' : 'text-gray-500 hover:text-gray-900'
                   }`}
                 >
                   About & Resources
@@ -906,8 +906,8 @@ const CoursePlayer = () => {
                 </button>
                 <button
                   onClick={() => setActivePlayerTab('comments')}
-                  className={`pb-2 text-xs font-bold uppercase tracking-wider relative transition-all cursor-pointer ${
-                    activePlayerTab === 'comments' ? 'text-primary font-black' : 'text-gray-405 hover:text-gray-600'
+                  className={`pb-2.5 text-sm font-bold uppercase tracking-wider relative transition-all cursor-pointer ${
+                    activePlayerTab === 'comments' ? 'text-primary font-black' : 'text-gray-500 hover:text-gray-900'
                   }`}
                 >
                   Discussion ({totalDiscussionCount})
@@ -917,8 +917,8 @@ const CoursePlayer = () => {
                 </button>
                 <button
                   onClick={() => setActivePlayerTab('reviews')}
-                  className={`pb-2 text-xs font-bold uppercase tracking-wider relative transition-all cursor-pointer ${
-                    activePlayerTab === 'reviews' ? 'text-primary font-black' : 'text-gray-450 hover:text-gray-600'
+                  className={`pb-2.5 text-sm font-bold uppercase tracking-wider relative transition-all cursor-pointer ${
+                    activePlayerTab === 'reviews' ? 'text-primary font-black' : 'text-gray-500 hover:text-gray-900'
                   }`}
                 >
                   Reviews ({reviewsList.length})
@@ -930,9 +930,9 @@ const CoursePlayer = () => {
 
               {/* Tab Panels */}
               {activePlayerTab === 'about' ? (
-                <div className="space-y-4 animate-in fade-in duration-200">
+                <div className="space-y-5 animate-in fade-in duration-200">
                   {activeLesson?.description && (
-                     <p className="text-xs text-gray-500 leading-relaxed font-normal">
+                     <p className="text-sm sm:text-base text-gray-700 leading-relaxed font-normal">
                         {activeLesson.description}
                      </p>
                   )}
@@ -942,7 +942,7 @@ const CoursePlayer = () => {
                       <button
                         onClick={() => handleToggleLessonCompletion(activeLesson._id)}
                         disabled={updatingProgress}
-                        className={`flex items-center gap-1.5 px-4 py-2.5 rounded-xl border text-xs font-bold uppercase transition-all cursor-pointer select-none active:scale-95 disabled:opacity-50 ${
+                        className={`flex items-center gap-2 px-5 py-2.5 rounded-xl border text-sm font-bold uppercase transition-all cursor-pointer select-none active:scale-95 disabled:opacity-50 ${
                           completedLessonIds.has(activeLesson._id)
                             ? 'bg-emerald-50 border-emerald-200 text-emerald-600 hover:bg-emerald-100'
                             : 'bg-white border-gray-200 text-gray-700 hover:bg-gray-55'
@@ -959,13 +959,13 @@ const CoursePlayer = () => {
 
                   {/* Reference Attachments */}
                   {(activeLessonAttachments.length > 0 || activeSectionAttachments.length > 0) && (
-                    <div className="space-y-4 pt-4 border-t border-gray-50">
-                      <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider">Reference Attachments</h4>
+                    <div className="space-y-4 pt-4 border-t border-gray-100">
+                      <h4 className="text-sm font-bold text-gray-900 uppercase tracking-wider">Reference Attachments</h4>
                       
                       {/* Lesson Resources */}
                       {activeLessonAttachments.length > 0 && (
                         <div className="space-y-2">
-                          <span className="text-[9px] font-semibold text-gray-400 uppercase block">Lesson Resources</span>
+                          <span className="text-xs font-bold text-gray-600 uppercase block">Lesson Resources</span>
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             {activeLessonAttachments.map(att => (
                               <a 
@@ -973,10 +973,10 @@ const CoursePlayer = () => {
                                 href={att.url} 
                                 target="_blank" 
                                 rel="noreferrer"
-                                className="flex items-center justify-between p-2.5 rounded-xl bg-gray-50 border border-gray-200 text-xs font-semibold text-gray-700 hover:text-primary hover:border-primary/30 transition-all cursor-pointer"
+                                className="flex items-center justify-between p-3 rounded-xl bg-gray-50 border border-gray-200 text-sm font-semibold text-gray-800 hover:text-primary hover:border-primary/30 transition-all cursor-pointer"
                               >
                                 <span className="truncate pr-4">{att.type} • {att.url}</span>
-                                <span className="text-[9px] text-gray-400 bg-gray-200/50 px-1.5 py-0.5 rounded">{att.duration}s</span>
+                                <span className="text-xs text-gray-600 bg-gray-200/70 px-2 py-0.5 rounded font-semibold">{att.duration}s</span>
                               </a>
                             ))}
                           </div>
@@ -986,7 +986,7 @@ const CoursePlayer = () => {
                       {/* Section Resources */}
                       {activeSectionAttachments.length > 0 && (
                         <div className="space-y-2">
-                          <span className="text-[9px] font-semibold text-gray-400 uppercase block">Section Resources</span>
+                          <span className="text-xs font-bold text-gray-600 uppercase block">Section Resources</span>
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             {activeSectionAttachments.map(att => (
                               <a 
@@ -994,10 +994,10 @@ const CoursePlayer = () => {
                                 href={att.url} 
                                 target="_blank" 
                                 rel="noreferrer"
-                                className="flex items-center justify-between p-2.5 rounded-xl bg-gray-50 border border-gray-200 text-xs font-semibold text-gray-700 hover:text-primary hover:border-primary/30 transition-all cursor-pointer"
+                                className="flex items-center justify-between p-3 rounded-xl bg-gray-50 border border-gray-200 text-sm font-semibold text-gray-800 hover:text-primary hover:border-primary/30 transition-all cursor-pointer"
                               >
                                 <span className="truncate pr-4">{att.type} • {att.url}</span>
-                                <span className="text-[9px] text-gray-400 bg-gray-200/50 px-1.5 py-0.5 rounded">{att.duration}s</span>
+                                <span className="text-xs text-gray-600 bg-gray-200/70 px-2 py-0.5 rounded font-semibold">{att.duration}s</span>
                               </a>
                             ))}
                           </div>
@@ -1016,15 +1016,15 @@ const CoursePlayer = () => {
                       value={newCommentText}
                       onChange={e => setNewCommentText(e.target.value)}
                       placeholder="Ask a question or share your thoughts on this lesson..."
-                      className="w-full px-4 py-3 rounded-xl border border-gray-250 text-xs font-semibold outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all resize-none bg-white text-gray-800 placeholder:text-gray-400"
+                      className="w-full px-4 py-3 rounded-xl border border-gray-250 text-sm font-medium outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all resize-none bg-white text-gray-800 placeholder:text-gray-400"
                     />
                     <div className="flex justify-end">
                       <button
                         type="submit"
                         disabled={submittingComment || !newCommentText.trim()}
-                        className="flex items-center gap-1.5 px-5 py-2.5 bg-primary text-white rounded-xl font-bold text-xs uppercase tracking-wider shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="flex items-center gap-1.5 px-5 py-2.5 bg-primary text-white rounded-xl font-bold text-xs sm:text-sm uppercase tracking-wider shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                       >
-                        {submittingComment ? <Loader2 size={12} className="animate-spin" /> : <Send size={12} />}
+                        {submittingComment ? <Loader2 size={14} className="animate-spin" /> : <Send size={14} />}
                         Post Comment
                       </button>
                     </div>
@@ -1034,13 +1034,13 @@ const CoursePlayer = () => {
                   {commentsLoading ? (
                     <div className="flex flex-col items-center justify-center py-12 text-center">
                       <Loader2 className="animate-spin text-primary mb-2" size={28} />
-                      <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Loading discussion thread...</p>
+                      <p className="text-sm font-bold text-gray-500 uppercase tracking-wider">Loading discussion thread...</p>
                     </div>
                   ) : parentCommentsOnly.length === 0 ? (
                     <div className="py-12 text-center border border-dashed border-gray-255 rounded-2xl bg-gray-50/30">
                       <MessageSquare size={36} className="text-gray-300 mx-auto mb-2" />
-                      <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">No discussion yet</p>
-                      <p className="text-xs text-gray-400 mt-1">Be the first to comment on this lesson!</p>
+                      <p className="text-sm font-bold text-gray-500 uppercase tracking-wider">No discussion yet</p>
+                      <p className="text-sm text-gray-500 mt-1">Be the first to comment on this lesson!</p>
                     </div>
                   ) : (
                     <div className="space-y-4 max-h-[420px] overflow-y-auto pr-1">
@@ -1053,14 +1053,14 @@ const CoursePlayer = () => {
                         
                         return (
                           <div key={commentItem._id} className="p-4 rounded-2xl bg-white border border-gray-150 hover:shadow-xs transition-all duration-300">
-                            <div className="flex items-start gap-3.5 text-xs leading-relaxed">
+                            <div className="flex items-start gap-3.5 text-sm leading-relaxed">
                               <div className={`w-9 h-9 rounded-full bg-gradient-to-tr ${avatarGrad} flex items-center justify-center font-bold text-sm flex-shrink-0 shadow-sm`}>
                                 {initial}
                               </div>
                               <div className="flex-1 space-y-1">
                                 <div className="flex items-center justify-between">
                                   <span className="font-bold text-gray-900 text-sm">{userName}</span>
-                                  <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">
+                                  <span className="text-xs text-gray-500 font-semibold">
                                     {new Date(commentItem.createdAt).toLocaleDateString('en-IN', {
                                       day: 'numeric',
                                       month: 'short',
@@ -1069,7 +1069,7 @@ const CoursePlayer = () => {
                                     })}
                                   </span>
                                 </div>
-                                <p className="text-gray-700 font-medium text-xs leading-relaxed mt-0.5">{commentItem.comment}</p>
+                                <p className="text-gray-800 font-normal text-sm leading-relaxed mt-1">{commentItem.comment}</p>
                                 
                                 <button
                                   onClick={() => {
@@ -1081,9 +1081,9 @@ const CoursePlayer = () => {
                                       setReplyText('');
                                     }
                                   }}
-                                  className="flex items-center gap-1 text-[10px] font-black text-primary uppercase tracking-wider hover:underline mt-1.5 focus:outline-none cursor-pointer"
+                                  className="flex items-center gap-1.5 text-xs font-bold text-primary uppercase tracking-wider hover:underline mt-2 focus:outline-none cursor-pointer"
                                 >
-                                  <MessageSquare size={11} />
+                                  <MessageSquare size={13} />
                                   {isReplying ? 'Cancel' : 'Reply'}
                                 </button>
                               </div>
@@ -1091,41 +1091,41 @@ const CoursePlayer = () => {
 
                             {/* Reply Input Form */}
                             {isReplying && (
-                              <form onSubmit={(e) => handlePostReply(e, commentItem._id)} className="mt-3 ml-12 flex gap-2 items-center animate-in slide-in-from-top-2 duration-200 bg-gray-55/50 p-2 rounded-xl border border-gray-150">
+                              <form onSubmit={(e) => handlePostReply(e, commentItem._id)} className="mt-3 ml-12 flex gap-2 items-center animate-in slide-in-from-top-2 duration-200 bg-gray-55/50 p-2.5 rounded-xl border border-gray-150">
                                 <textarea
                                   required
                                   rows={1}
                                   value={replyText}
                                   onChange={e => setReplyText(e.target.value)}
                                   placeholder="Write a reply..."
-                                  className="flex-1 px-3 py-2 rounded-xl border border-gray-250 text-xs font-semibold outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all resize-none bg-white text-gray-805"
+                                  className="flex-1 px-3 py-2 rounded-xl border border-gray-250 text-sm font-medium outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all resize-none bg-white text-gray-800"
                                 />
                                 <button
                                   type="submit"
                                   disabled={submittingReply || !replyText.trim()}
-                                  className="p-2 bg-primary text-white rounded-lg font-bold shadow-md hover:scale-[1.02] active:scale-95 transition-all cursor-pointer flex items-center justify-center disabled:opacity-50"
+                                  className="p-2.5 bg-primary text-white rounded-lg font-bold shadow-md hover:scale-[1.02] active:scale-95 transition-all cursor-pointer flex items-center justify-center disabled:opacity-50"
                                 >
-                                  {submittingReply ? <Loader2 size={12} className="animate-spin" /> : <Send size={12} />}
+                                  {submittingReply ? <Loader2 size={14} className="animate-spin" /> : <Send size={14} />}
                                 </button>
                               </form>
                             )}
 
                             {/* Replies List */}
                             {replies.length > 0 && (
-                              <div className="ml-12 mt-3 space-y-3.5 border-l-2 border-primary/20 pl-4 bg-gray-55/30 p-3 rounded-r-xl animate-in fade-in duration-200">
+                              <div className="ml-12 mt-3 space-y-3.5 border-l-2 border-primary/20 pl-4 bg-gray-55/30 p-3.5 rounded-r-xl animate-in fade-in duration-200">
                                 {replies.map(replyItem => {
                                   const replyUserName = replyItem.userId?.name || 'Student';
                                   const replyInitial = replyUserName.charAt(0).toUpperCase();
                                   const replyAvatarGrad = getAvatarGradient(replyUserName);
                                   return (
-                                    <div key={replyItem._id} className="flex items-start gap-2.5 text-xs leading-relaxed">
-                                      <div className={`w-7 h-7 rounded-full bg-gradient-to-tr ${replyAvatarGrad} flex items-center justify-center font-bold text-xs flex-shrink-0 shadow-xs`}>
+                                    <div key={replyItem._id} className="flex items-start gap-2.5 text-sm leading-relaxed">
+                                      <div className={`w-8 h-8 rounded-full bg-gradient-to-tr ${replyAvatarGrad} flex items-center justify-center font-bold text-xs flex-shrink-0 shadow-xs`}>
                                         {replyInitial}
                                       </div>
                                       <div className="flex-1 space-y-0.5">
                                         <div className="flex items-center justify-between">
-                                          <span className="font-bold text-gray-800 text-xs">{replyUserName}</span>
-                                          <span className="text-[9px] text-gray-400 font-bold uppercase tracking-wider">
+                                          <span className="font-bold text-gray-900 text-sm">{replyUserName}</span>
+                                          <span className="text-xs text-gray-500 font-semibold">
                                             {new Date(replyItem.createdAt).toLocaleDateString('en-IN', {
                                               day: 'numeric',
                                               month: 'short',
@@ -1134,7 +1134,7 @@ const CoursePlayer = () => {
                                             })}
                                           </span>
                                         </div>
-                                        <p className="text-gray-650 font-medium text-xs leading-relaxed">{replyItem.comment}</p>
+                                        <p className="text-gray-800 font-normal text-sm leading-relaxed mt-0.5">{replyItem.comment}</p>
                                       </div>
                                     </div>
                                   );
@@ -1152,16 +1152,16 @@ const CoursePlayer = () => {
                 <div className="space-y-6 animate-in fade-in duration-200">
                   
                   {/* Reviews Summary Header */}
-                  <div className="bg-gray-50/50 p-4 rounded-2xl border border-gray-150 flex items-center justify-between gap-4">
+                  <div className="bg-gray-50/50 p-5 rounded-2xl border border-gray-150 flex items-center justify-between gap-4">
                     <div>
-                      <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block">Course Rating</span>
+                      <span className="text-xs font-bold text-gray-500 uppercase tracking-wider block">Course Rating</span>
                       <div className="flex items-baseline gap-1 mt-0.5">
-                        <span className="text-2xl font-black text-gray-900">
+                        <span className="text-3xl font-black text-gray-900">
                           {reviewsList.length > 0
                             ? (reviewsList.reduce((acc, curr) => acc + curr.rating, 0) / reviewsList.length).toFixed(1)
                             : '0.0'}
                         </span>
-                        <span className="text-xs font-bold text-gray-400">/ 5.0</span>
+                        <span className="text-sm font-bold text-gray-500">/ 5.0</span>
                       </div>
                       <div className="mt-1">
                         {renderStars(
@@ -1172,18 +1172,18 @@ const CoursePlayer = () => {
                       </div>
                     </div>
                     <div className="text-right">
-                      <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block">Total Reviews</span>
-                      <span className="text-xl font-black text-gray-900 block mt-0.5">{reviewsList.length}</span>
-                      <span className="text-[9px] font-semibold text-gray-400 uppercase">Verified Learners</span>
+                      <span className="text-xs font-bold text-gray-500 uppercase tracking-wider block">Total Reviews</span>
+                      <span className="text-2xl font-black text-gray-900 block mt-0.5">{reviewsList.length}</span>
+                      <span className="text-xs font-semibold text-gray-500 uppercase">Verified Learners</span>
                     </div>
                   </div>
 
                   {/* Create Review Form (Only if not already reviewed) */}
                   {!reviewsList.some(r => (r.userId?._id || r.userId) === user?._id) && (
-                    <form onSubmit={handleCreateReview} className="space-y-3 bg-gray-50/50 p-4 rounded-2xl border border-gray-150 transition-all hover:border-gray-200">
+                    <form onSubmit={handleCreateReview} className="space-y-3 bg-gray-50/50 p-5 rounded-2xl border border-gray-150 transition-all hover:border-gray-200">
                       <div>
-                        <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">Your Rating</span>
-                        <div className="flex gap-1.5 my-1">
+                        <span className="text-xs font-bold text-gray-600 uppercase tracking-wider block mb-1.5">Your Rating</span>
+                        <div className="flex gap-2 my-1">
                           {[1, 2, 3, 4, 5].map((star) => (
                             <button
                               key={star}
@@ -1192,7 +1192,7 @@ const CoursePlayer = () => {
                               className="focus:outline-none hover:scale-110 transition-all cursor-pointer"
                             >
                               <Star 
-                                size={22} 
+                                size={24} 
                                 className={star <= newReviewRating ? 'text-amber-500 fill-amber-500' : 'text-gray-300'} 
                               />
                             </button>
@@ -1201,14 +1201,14 @@ const CoursePlayer = () => {
                       </div>
 
                       <div>
-                        <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1.5">Write a Review</span>
+                        <span className="text-xs font-bold text-gray-600 uppercase tracking-wider block mb-1.5">Write a Review</span>
                         <textarea
                           required
                           rows={2}
                           value={newReviewText}
                           onChange={e => setNewReviewText(e.target.value)}
                           placeholder="Tell others what you think about this course..."
-                          className="w-full px-4 py-3 rounded-xl border border-gray-255 text-xs font-semibold outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all resize-none bg-white text-gray-805 placeholder:text-gray-400"
+                          className="w-full px-4 py-3 rounded-xl border border-gray-255 text-sm font-medium outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all resize-none bg-white text-gray-805 placeholder:text-gray-400"
                         />
                       </div>
 
@@ -1216,9 +1216,9 @@ const CoursePlayer = () => {
                         <button
                           type="submit"
                           disabled={submittingReview || !newReviewText.trim()}
-                          className="flex items-center gap-1.5 px-5 py-2.5 bg-primary text-white rounded-xl font-bold text-xs uppercase tracking-wider shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                          className="flex items-center gap-1.5 px-5 py-2.5 bg-primary text-white rounded-xl font-bold text-xs sm:text-sm uppercase tracking-wider shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                         >
-                          {submittingReview ? <Loader2 size={12} className="animate-spin" /> : <Send size={12} />}
+                          {submittingReview ? <Loader2 size={14} className="animate-spin" /> : <Send size={14} />}
                           Submit Review
                         </button>
                       </div>
@@ -1229,8 +1229,8 @@ const CoursePlayer = () => {
                   {reviewsList.length === 0 ? (
                     <div className="py-12 text-center border border-dashed border-gray-255 rounded-2xl bg-gray-50/30">
                       <Star size={36} className="text-gray-300 mx-auto mb-2" />
-                      <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">No reviews yet</p>
-                      <p className="text-xs text-gray-400 mt-1">Be the first to review this course!</p>
+                      <p className="text-sm font-bold text-gray-500 uppercase tracking-wider">No reviews yet</p>
+                      <p className="text-sm text-gray-500 mt-1">Be the first to review this course!</p>
                     </div>
                   ) : (
                     <div className="space-y-4 max-h-[420px] overflow-y-auto pr-1">
@@ -1242,7 +1242,7 @@ const CoursePlayer = () => {
                         
                         return (
                           <div key={reviewItem._id} className="p-4 rounded-2xl bg-white border border-gray-150 hover:shadow-xs transition-all duration-300">
-                            <div className="flex items-start gap-3.5 text-xs leading-relaxed">
+                            <div className="flex items-start gap-3.5 text-sm leading-relaxed">
                               <div className={`w-9 h-9 rounded-full bg-gradient-to-tr ${reviewAvatarGrad} flex items-center justify-center font-bold text-sm flex-shrink-0 shadow-sm`}>
                                 {reviewInitial}
                               </div>
@@ -1254,7 +1254,7 @@ const CoursePlayer = () => {
                                       {renderStars(reviewItem.rating)}
                                     </div>
                                   </div>
-                                  <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">
+                                  <span className="text-xs text-gray-500 font-semibold">
                                     {new Date(reviewItem.createdAt).toLocaleDateString('en-IN', {
                                       day: 'numeric',
                                       month: 'short',
@@ -1263,22 +1263,22 @@ const CoursePlayer = () => {
                                     })}
                                   </span>
                                 </div>
-                                <p className="text-gray-700 font-medium text-xs leading-relaxed mt-2">{reviewItem.review}</p>
+                                <p className="text-gray-800 font-normal text-sm leading-relaxed mt-1.5">{reviewItem.review}</p>
                                 
                                 {isOwn && (
-                                  <div className="flex items-center gap-4 mt-3 pt-2 border-t border-gray-50">
+                                  <div className="flex items-center gap-4 mt-3 pt-2 border-t border-gray-100">
                                     <button
                                       onClick={() => handleEditReviewSwal(reviewItem)}
-                                      className="flex items-center gap-1 text-[10px] font-bold text-primary uppercase tracking-wider hover:underline focus:outline-none cursor-pointer"
+                                      className="flex items-center gap-1.5 text-xs font-bold text-primary uppercase tracking-wider hover:underline focus:outline-none cursor-pointer"
                                     >
-                                      <Pencil size={11} />
+                                      <Pencil size={13} />
                                       Edit
                                     </button>
                                     <button
                                       onClick={() => handleDeleteReviewSwal(reviewItem._id)}
-                                      className="flex items-center gap-1 text-[10px] font-bold text-red-500 uppercase tracking-wider hover:underline focus:outline-none cursor-pointer"
+                                      className="flex items-center gap-1.5 text-xs font-bold text-red-500 uppercase tracking-wider hover:underline focus:outline-none cursor-pointer"
                                     >
-                                      <Trash2 size={11} />
+                                      <Trash2 size={13} />
                                       Delete
                                     </button>
                                   </div>
@@ -1297,15 +1297,15 @@ const CoursePlayer = () => {
 
             {/* Course Overview Card */}
             <div className="bg-white p-6 rounded-2xl border border-gray-200 space-y-3 shadow-sm">
-               <span className="text-[9px] font-bold text-gray-400 uppercase tracking-wider block">Course Overview</span>
-               <h3 className="text-sm font-bold text-gray-900">{course.title}</h3>
-               {course.subtitle && <p className="text-xs text-gray-500 font-medium">{course.subtitle}</p>}
-               <p className="text-xs text-gray-500 leading-relaxed font-normal">{course.description}</p>
+               <span className="text-xs font-bold text-primary uppercase tracking-wider block">Course Overview</span>
+               <h3 className="text-base font-bold text-gray-900">{course.title}</h3>
+               {course.subtitle && <p className="text-sm text-gray-600 font-medium">{course.subtitle}</p>}
+               <p className="text-sm text-gray-700 leading-relaxed font-normal">{course.description}</p>
                
-               <div className="flex flex-wrap gap-4 pt-2 border-t border-gray-50 text-[9px] font-bold text-gray-400 uppercase">
-                 <div className="flex items-center gap-1"><Globe size={12} className="text-primary" /> {course.language}</div>
-                 <div className="flex items-center gap-1"><Clock size={12} className="text-primary" /> {course.totalDurationInMinutes || 0} Mins</div>
-                 <div className="flex items-center gap-1"><BookOpen size={12} className="text-primary" /> {course.level}</div>
+               <div className="flex flex-wrap gap-5 pt-3 border-t border-gray-100 text-xs font-bold text-gray-600 uppercase">
+                 <div className="flex items-center gap-1.5"><Globe size={15} className="text-primary" /> {course.language}</div>
+                 <div className="flex items-center gap-1.5"><Clock size={15} className="text-primary" /> {course.totalDurationInMinutes || 0} Mins</div>
+                 <div className="flex items-center gap-1.5"><BookOpen size={15} className="text-primary" /> {course.level}</div>
                </div>
             </div>
 
@@ -1315,16 +1315,16 @@ const CoursePlayer = () => {
           <div className="lg:col-span-4 space-y-6">
             <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm flex flex-col">
               <div className="p-4 border-b border-gray-150 bg-gray-50/50">
-                 <h3 className="text-xs font-bold text-gray-905 uppercase">Course Curriculum</h3>
-                 <p className="text-gray-450 text-[9px] font-bold uppercase mt-0.5">{sections.length} Sections • {lessons.length} Lessons</p>
+                 <h3 className="text-sm font-black text-gray-900 uppercase tracking-wider">Course Curriculum</h3>
+                 <p className="text-gray-500 text-xs font-bold uppercase mt-1 tracking-wide">{sections.length} Sections • {lessons.length} Lessons</p>
                  
                  {/* Progress Bar */}
-                 <div className="mt-3 space-y-1.5">
-                   <div className="flex justify-between text-[9px] font-bold uppercase tracking-wider text-gray-400">
+                 <div className="mt-3.5 space-y-1.5">
+                   <div className="flex justify-between text-xs font-bold uppercase tracking-wider text-gray-600">
                      <span>Your Progress</span>
-                     <span>{progressPercentage}%</span>
+                     <span className="text-emerald-600 font-black">{progressPercentage}%</span>
                    </div>
-                   <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                   <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
                      <div className="h-full bg-emerald-500 transition-all duration-300" style={{ width: `${progressPercentage}%` }}></div>
                    </div>
                  </div>
@@ -1343,17 +1343,17 @@ const CoursePlayer = () => {
                           className="w-full p-4 flex items-center justify-between hover:bg-gray-55 transition-all text-left cursor-pointer"
                         >
                           <div>
-                            <span className="text-[9px] font-bold text-primary uppercase tracking-wider block">Section {sIdx + 1}</span>
-                            <h4 className="text-xs font-bold text-gray-900 uppercase mt-0.5">{section.title}</h4>
-                            <span className="text-[8px] font-semibold text-gray-400 normal-case mt-0.5 block">
+                            <span className="text-xs font-bold text-primary uppercase tracking-wider block">Section {sIdx + 1}</span>
+                            <h4 className="text-sm font-bold text-gray-900 uppercase mt-0.5">{section.title}</h4>
+                            <span className="text-xs font-semibold text-gray-500 normal-case mt-0.5 block">
                               {section.totalVideos || 0} Videos • {section.totalAttachments || 0} Attachments
                             </span>
                           </div>
                           <div className="flex items-center gap-2">
-                            <span className="text-[9px] font-semibold text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">
+                            <span className="text-xs font-bold text-gray-600 bg-gray-200/70 px-2.5 py-0.5 rounded-full">
                               {sectionLessons.length}
                             </span>
-                            {isExpanded ? <ChevronUp size={14} className="text-gray-400" /> : <ChevronDown size={14} className="text-gray-400" />}
+                            {isExpanded ? <ChevronUp size={16} className="text-gray-500" /> : <ChevronDown size={16} className="text-gray-500" />}
                           </div>
                         </button>
                         
@@ -1361,7 +1361,7 @@ const CoursePlayer = () => {
                         {isExpanded && (
                           <div className="bg-gray-50 divide-y divide-gray-100">
                             {sectionLessons.length === 0 ? (
-                              <div className="p-4 text-center text-gray-400 text-sm font-semibold uppercase">No lessons in this section.</div>
+                              <div className="p-4 text-center text-gray-400 text-xs font-bold uppercase tracking-wider">No lessons in this section.</div>
                             ) : (
                               sectionLessons.map((lesson) => {
                                 const isCurrent = activeLessonId === lesson._id;
@@ -1370,22 +1370,22 @@ const CoursePlayer = () => {
                                   <button
                                     key={lesson._id}
                                     onClick={() => setActiveLessonId(lesson._id)}
-                                    className={`w-full p-4 flex items-start gap-2.5 hover:bg-gray-100 transition-all text-left cursor-pointer border-l-2 ${
+                                    className={`w-full p-4 flex items-start gap-3 hover:bg-gray-100 transition-all text-left cursor-pointer border-l-2 ${
                                       isCurrent ? 'bg-primary/5 border-primary' : 'border-transparent pl-[18px]'
                                     }`}
                                   >
                                     <div className="flex items-center justify-center mt-0.5 flex-shrink-0">
                                       {isCompleted ? (
-                                        <div className="w-3.5 h-3.5 rounded-full bg-emerald-500 text-white flex items-center justify-center text-[9px] font-bold">✓</div>
+                                        <div className="w-4 h-4 rounded-full bg-emerald-500 text-white flex items-center justify-center text-xs font-bold">✓</div>
                                       ) : (
-                                        <Play size={11} className={`${isCurrent ? 'text-primary fill-primary' : 'text-gray-400'}`} />
+                                        <Play size={13} className={`${isCurrent ? 'text-primary fill-primary' : 'text-gray-400'}`} />
                                       )}
                                     </div>
                                     <div className="flex-grow">
-                                      <h5 className={`text-xs font-semibold ${isCurrent ? 'text-primary' : 'text-gray-850'}`}>
+                                      <h5 className={`text-sm font-semibold ${isCurrent ? 'text-primary font-bold' : 'text-gray-900'}`}>
                                         {lesson.title}
                                       </h5>
-                                      <span className="text-[9px] text-gray-400 font-medium">
+                                      <span className="text-xs text-gray-500 font-semibold">
                                         {lesson.durationInSeconds ? `${Math.floor(lesson.durationInSeconds / 60)}m ${lesson.durationInSeconds % 60}s` : '10:00'}
                                       </span>
                                     </div>

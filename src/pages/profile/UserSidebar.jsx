@@ -16,23 +16,25 @@ import {
   BookOpen,
   ShieldCheck,
   Headphones,
-  ClipboardList
+  ClipboardList,
+  Zap
 } from 'lucide-react';
 import { useUser } from '../../context/UserContext';
 
 const sidebarLinks = [
-  { icon: <User size={19} />,        label: 'My Profile',       path: '/profile' },
-  { icon: <ShieldCheck size={19} />, label: 'Role Status',      path: '/requested-roles' },
-  { icon: <Headphones size={19} />,  label: 'Help & Support',   path: '/support' },
-  { icon: <Package size={19} />,     label: 'My Orders',        path: '/orders' },
-  { icon: <MapPin size={19} />,      label: 'My Addresses',     path: '/address' },
-  { icon: <Ticket size={19} />,      label: 'My Coupons',       path: '/coupons' },
-  { icon: <Wallet size={19} />,      label: 'My Wallet',        path: '/wallet' },
-  { icon: <ShoppingBag size={19} />, label: 'My booking',       path: '/my-appointments' },
-  { icon: <ClipboardList size={19} />, label: 'Custom Requests', path: '/profile/service-leads' },
-  { icon: <BookOpen size={19} />,    label: 'My Learning',      path: '/my-learning' },
-  { icon: <Heart size={19} />,       label: 'My Wishlist',      path: '/wishlist' },
-  // { icon: <CreditCard size={19} />,  label: 'My Saved Payment', path: '/payments' },
+  { icon: <User size={19} />,        label: 'My Profile',           path: '/profile' },
+  { icon: <ShieldCheck size={19} />, label: 'Role Status',          path: '/requested-roles' },
+  { icon: <Headphones size={19} />,  label: 'Help & Support',       path: '/support' },
+  { icon: <Package size={19} />,     label: 'My Orders',            path: '/orders' },
+  { icon: <Zap size={19} className="text-amber-500 fill-amber-500" />, label: 'Quick Orders (10-Min)', path: '/orders?tab=quick' },
+  { icon: <MapPin size={19} />,      label: 'My Addresses',         path: '/address' },
+  { icon: <Ticket size={19} />,      label: 'My Coupons',           path: '/coupons' },
+  { icon: <Wallet size={19} />,      label: 'My Wallet',            path: '/wallet' },
+  { icon: <ShoppingBag size={19} />, label: 'My booking',           path: '/my-appointments' },
+  { icon: <ClipboardList size={19} />, label: 'Custom Requests',    path: '/profile/service-leads' },
+  { icon: <BookOpen size={19} />,    label: 'My Learning',          path: '/my-learning' },
+  { icon: <Heart size={19} />,       label: 'My Wishlist',          path: '/wishlist' },
+  // { icon: <CreditCard size={19} />,  label: 'My Saved Payment',  path: '/payments' },
 ];
 
 const UserSidebar = () => {
@@ -46,11 +48,18 @@ const UserSidebar = () => {
     navigate('/');
   };
 
+  const currentPathWithSearch = `${location.pathname}${location.search}`;
+
   // Find the active link details
-  const activeLink = sidebarLinks.find(link => location.pathname === link.path);
+  const activeLink = sidebarLinks.find(link => {
+    if (link.path.includes('?')) {
+      return currentPathWithSearch === link.path;
+    }
+    return location.pathname === link.path && !location.search;
+  });
 
   return (
-    <div className="w-full lg:w-72 lg:sticky lg:top-28 self-start flex-shrink-0 z-30 font-outfit">
+    <div className="w-full lg:w-72 lg:sticky lg:top-[165px] self-start flex-shrink-0 z-30 font-outfit">
       
       {/* Mobile Toggle Trigger Button */}
       <button 
@@ -68,22 +77,25 @@ const UserSidebar = () => {
       </button>
 
       {/* Sidebar Links Menu (Expandable on Mobile, Always Block on Desktop) */}
-      <div className={`mt-3 lg:mt-0 bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden transition-all duration-300 ${
-        isOpen ? 'block animate-in fade-in slide-in-from-top-4 duration-300' : 'hidden lg:block'
+      <div className={`mt-3 lg:mt-0 bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden transition-all duration-300 lg:max-h-[calc(100vh-185px)] flex-col ${
+        isOpen ? 'flex animate-in fade-in slide-in-from-top-4 duration-300' : 'hidden lg:flex'
       }`}>
-        <div className="px-5 py-4 border-b border-gray-100 bg-rose-50/40 text-left">
+        <div className="px-5 py-4 border-b border-gray-100 bg-rose-50/40 text-left flex-shrink-0">
           <p className="text-xs font-black uppercase text-primary tracking-widest leading-none">FashionFever</p>
           <p className="text-sm font-extrabold uppercase text-gray-900 tracking-wide mt-1">User Account Dashboard</p>
         </div>
-        <div className="flex flex-col">
+        <div className="flex flex-col overflow-y-auto">
           {sidebarLinks.map((link, idx) => {
-            const isActive = location.pathname === link.path;
+            const isActive = link.path.includes('?')
+              ? currentPathWithSearch === link.path
+              : location.pathname === link.path && (!location.search || !sidebarLinks.some(sl => sl.path.includes('?') && sl.path === currentPathWithSearch));
+
             return (
               <Link
                 key={idx}
                 to={link.path}
                 onClick={() => setIsOpen(false)} // Close drawer on link click on mobile
-                className={`flex items-center gap-4 px-6 py-4 transition-all border-b border-gray-50 last:border-0 group ${
+                className={`flex items-center gap-4 px-6 py-4 transition-all border-b border-gray-50 last:border-0 group flex-shrink-0 ${
                   isActive
                     ? 'bg-rose-50/30 text-primary border-r-4 border-r-primary font-bold'
                     : 'text-gray-600 hover:bg-gray-50 hover:text-primary'
@@ -98,7 +110,7 @@ const UserSidebar = () => {
           })}
           <button 
             onClick={handleLogout} 
-            className="flex items-center gap-4 px-6 py-4 text-red-500 hover:bg-red-50 w-full text-left transition-all border-t border-gray-50 cursor-pointer"
+            className="flex items-center gap-4 px-6 py-4 text-red-500 hover:bg-red-50 w-full text-left transition-all border-t border-gray-50 cursor-pointer flex-shrink-0"
           >
             <LogOut size={19} />
             <span className="text-sm font-semibold uppercase">Log Out</span>

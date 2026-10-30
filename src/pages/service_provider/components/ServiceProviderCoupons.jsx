@@ -443,11 +443,11 @@ const ServiceProviderCoupons = ({
                   {row.code}
                 </span>
                 {(row.type || '').toLowerCase() === 'percentage' ? (
-                  <span className="px-1.5 py-0.5 rounded-md text-[10px] font-extrabold uppercase bg-purple-500/10 text-purple-500 border border-purple-500/20">
+                  <span className="px-1.5 py-0.5 rounded-md text-xs font-extrabold uppercase bg-purple-500/10 text-purple-500 border border-purple-500/20">
                     %{row.value} OFF
                   </span>
                 ) : (
-                  <span className="px-1.5 py-0.5 rounded-md text-[10px] font-extrabold uppercase bg-blue-500/10 text-blue-500 border border-blue-500/20">
+                  <span className="px-1.5 py-0.5 rounded-md text-xs font-extrabold uppercase bg-blue-500/10 text-blue-500 border border-blue-500/20">
                     ₹{row.value} OFF
                   </span>
                 )}
@@ -510,7 +510,7 @@ const ServiceProviderCoupons = ({
                   ₹{offeredPrice.toLocaleString('en-IN')}
                 </span>
                 {service.durationMinutes && (
-                  <span className="text-[10px] text-zinc-400 flex items-center gap-0.5">
+                  <span className="text-xs text-zinc-400 flex items-center gap-0.5">
                     <Clock size={10} /> {service.durationMinutes}m
                   </span>
                 )}
@@ -545,7 +545,7 @@ const ServiceProviderCoupons = ({
               <span className="text-xs font-black text-emerald-500 dark:text-emerald-400">
                 -₹{discountAmt.toLocaleString('en-IN')}
               </span>
-              <span className="text-[10px] text-zinc-400">
+              <span className="text-xs text-zinc-400">
                 ({isPercent ? `${row.value}% OFF` : `Flat ₹${row.value}`})
               </span>
             </div>
@@ -555,7 +555,7 @@ const ServiceProviderCoupons = ({
               </div>
             )}
             {row.maximumDiscount > 0 && row.type === 'PERCENTAGE' && (
-              <span className="text-[10px] text-amber-500 font-medium">
+              <span className="text-xs text-amber-500 font-medium">
                 Capped at ₹{row.maximumDiscount}
               </span>
             )}
@@ -578,7 +578,7 @@ const ServiceProviderCoupons = ({
               Max {row.usageLimitPerUser || 1} per customer
             </span>
             {row.minimumOrderAmount > 0 && (
-              <span className="text-[10px] text-zinc-500 mt-0.5">
+              <span className="text-xs text-zinc-500 mt-0.5">
                 Min. ₹{row.minimumOrderAmount}
               </span>
             )}
@@ -598,15 +598,15 @@ const ServiceProviderCoupons = ({
             </span>
             <div className="flex items-center gap-1.5 mt-1">
               {isExpired ? (
-                <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase bg-rose-500/10 text-rose-500 border border-rose-500/20">
+                <span className="px-2 py-0.5 rounded-full text-xs font-black uppercase bg-rose-500/10 text-rose-500 border border-rose-500/20">
                   Expired
                 </span>
               ) : row.isActive ? (
-                <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
+                <span className="px-2 py-0.5 rounded-full text-xs font-black uppercase bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
                   Active
                 </span>
               ) : (
-                <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase bg-zinc-500/10 text-zinc-400 border border-zinc-500/20">
+                <span className="px-2 py-0.5 rounded-full text-xs font-black uppercase bg-zinc-500/10 text-zinc-400 border border-zinc-500/20">
                   Paused
                 </span>
               )}
@@ -746,7 +746,7 @@ const ServiceProviderCoupons = ({
           <p className={`text-2xl font-black mt-2 ${isDarkMode ? 'text-white' : 'text-zinc-900'}`}>
             {stats.total}
           </p>
-          <span className="text-[10px] text-zinc-400 font-medium">All campaigns</span>
+          <span className="text-xs text-zinc-400 font-medium">All campaigns</span>
         </div>
 
         <div className={`p-5 rounded-2xl border transition-all ${
@@ -761,7 +761,7 @@ const ServiceProviderCoupons = ({
           <p className="text-2xl font-black mt-2 text-emerald-500">
             {stats.active}
           </p>
-          <span className="text-[10px] text-zinc-400 font-medium">Available to customers</span>
+          <span className="text-xs text-zinc-400 font-medium">Available to customers</span>
         </div>
 
         <div className={`p-5 rounded-2xl border transition-all ${
@@ -776,7 +776,7 @@ const ServiceProviderCoupons = ({
           <p className={`text-2xl font-black mt-2 ${isDarkMode ? 'text-white' : 'text-zinc-900'}`}>
             {stats.servicesWithCoupons} <span className="text-xs font-bold text-zinc-400">/ {services.length}</span>
           </p>
-          <span className="text-[10px] text-zinc-400 font-medium">Catalog services</span>
+          <span className="text-xs text-zinc-400 font-medium">Catalog services</span>
         </div>
 
         <div className={`p-5 rounded-2xl border transition-all ${
@@ -791,7 +791,7 @@ const ServiceProviderCoupons = ({
           <p className={`text-2xl font-black mt-2 ${isDarkMode ? 'text-white' : 'text-zinc-900'}`}>
             {stats.totalRedeemed}
           </p>
-          <span className="text-[10px] text-zinc-400 font-medium">Bookings discounted</span>
+          <span className="text-xs text-zinc-400 font-medium">Bookings discounted</span>
         </div>
       </div>
 
@@ -961,7 +961,7 @@ const ServiceProviderCoupons = ({
                           </div>
                         </div>
                       </div>
-                      <span className="px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase bg-primary/10 text-primary">
+                      <span className="px-2.5 py-1 rounded-full text-xs font-extrabold uppercase bg-primary/10 text-primary">
                         Selected
                       </span>
                     </div>
@@ -1089,7 +1089,7 @@ const ServiceProviderCoupons = ({
                     </div>
 
                     {discountPreview.isCapped && (
-                      <div className="text-[10px] text-amber-500 text-right font-semibold">
+                      <div className="text-xs text-amber-500 text-right font-semibold">
                         (Discount capped at max limit ₹{form.maximumDiscount})
                       </div>
                     )}
@@ -1281,7 +1281,7 @@ const ServiceProviderCoupons = ({
                 const srvImgUrl = getServiceImageUrl(srv);
                 return (
                   <div className={`p-4 rounded-2xl border ${isDarkMode ? 'bg-zinc-800/60 border-zinc-700' : 'bg-zinc-50 border-zinc-200'}`}>
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 block mb-2">
+                    <span className="text-xs font-bold uppercase tracking-wider text-zinc-400 block mb-2">
                       Linked Salon Service
                     </span>
                     <div className="flex items-center gap-3">
@@ -1320,14 +1320,14 @@ const ServiceProviderCoupons = ({
               {/* Details Grid */}
               <div className="grid grid-cols-2 gap-3">
                 <div className={`p-3 rounded-xl ${isDarkMode ? 'bg-zinc-800' : 'bg-zinc-50'}`}>
-                  <span className="text-[10px] uppercase font-bold text-zinc-400 block">Discount Type</span>
+                  <span className="text-xs uppercase font-bold text-zinc-400 block">Discount Type</span>
                   <span className="font-bold text-sm text-primary mt-0.5 block">
                     {viewingCoupon.type === 'PERCENTAGE' ? `${viewingCoupon.value}% OFF` : `₹${viewingCoupon.value} FLAT`}
                   </span>
                 </div>
 
                 <div className={`p-3 rounded-xl ${isDarkMode ? 'bg-zinc-800' : 'bg-zinc-50'}`}>
-                  <span className="text-[10px] uppercase font-bold text-zinc-400 block">Status</span>
+                  <span className="text-xs uppercase font-bold text-zinc-400 block">Status</span>
                   <span className={`font-bold text-sm mt-0.5 block ${
                     isCouponExpired(viewingCoupon.expiresAt)
                       ? 'text-rose-500'
@@ -1344,42 +1344,42 @@ const ServiceProviderCoupons = ({
                 </div>
 
                 <div className={`p-3 rounded-xl ${isDarkMode ? 'bg-zinc-800' : 'bg-zinc-50'}`}>
-                  <span className="text-[10px] uppercase font-bold text-zinc-400 block">Min Service Price</span>
+                  <span className="text-xs uppercase font-bold text-zinc-400 block">Min Service Price</span>
                   <span className="font-bold text-sm mt-0.5 block text-zinc-700 dark:text-zinc-200">
                     {viewingCoupon.minimumOrderAmount ? `₹${viewingCoupon.minimumOrderAmount}` : 'No minimum'}
                   </span>
                 </div>
 
                 <div className={`p-3 rounded-xl ${isDarkMode ? 'bg-zinc-800' : 'bg-zinc-50'}`}>
-                  <span className="text-[10px] uppercase font-bold text-zinc-400 block">Max Discount Cap</span>
+                  <span className="text-xs uppercase font-bold text-zinc-400 block">Max Discount Cap</span>
                   <span className="font-bold text-sm mt-0.5 block text-zinc-700 dark:text-zinc-200">
                     {viewingCoupon.maximumDiscount ? `₹${viewingCoupon.maximumDiscount}` : 'No cap'}
                   </span>
                 </div>
 
                 <div className={`p-3 rounded-xl ${isDarkMode ? 'bg-zinc-800' : 'bg-zinc-50'}`}>
-                  <span className="text-[10px] uppercase font-bold text-zinc-400 block">Per User Limit</span>
+                  <span className="text-xs uppercase font-bold text-zinc-400 block">Per User Limit</span>
                   <span className="font-bold text-sm mt-0.5 block text-zinc-700 dark:text-zinc-200">
                     {viewingCoupon.usageLimitPerUser || 1} time(s)
                   </span>
                 </div>
 
                 <div className={`p-3 rounded-xl ${isDarkMode ? 'bg-zinc-800' : 'bg-zinc-50'}`}>
-                  <span className="text-[10px] uppercase font-bold text-zinc-400 block">Times Redeemed</span>
+                  <span className="text-xs uppercase font-bold text-zinc-400 block">Times Redeemed</span>
                   <span className="font-bold text-sm mt-0.5 block text-zinc-700 dark:text-zinc-200">
                     {viewingCoupon.totalUsed || 0} times
                   </span>
                 </div>
 
                 <div className={`p-3 rounded-xl ${isDarkMode ? 'bg-zinc-800' : 'bg-zinc-50'}`}>
-                  <span className="text-[10px] uppercase font-bold text-zinc-400 block">Valid From</span>
+                  <span className="text-xs uppercase font-bold text-zinc-400 block">Valid From</span>
                   <span className="font-bold text-xs mt-0.5 block text-zinc-700 dark:text-zinc-200">
                     {formatDate(viewingCoupon.startsAt)}
                   </span>
                 </div>
 
                 <div className={`p-3 rounded-xl ${isDarkMode ? 'bg-zinc-800' : 'bg-zinc-50'}`}>
-                  <span className="text-[10px] uppercase font-bold text-zinc-400 block">Valid Until</span>
+                  <span className="text-xs uppercase font-bold text-zinc-400 block">Valid Until</span>
                   <span className="font-bold text-xs mt-0.5 block text-zinc-700 dark:text-zinc-200">
                     {formatDate(viewingCoupon.expiresAt)}
                   </span>
@@ -1388,7 +1388,7 @@ const ServiceProviderCoupons = ({
 
               {viewingCoupon.description && (
                 <div className={`p-3.5 rounded-xl ${isDarkMode ? 'bg-zinc-800' : 'bg-zinc-50'}`}>
-                  <span className="text-[10px] uppercase font-bold text-zinc-400 block mb-1">Description</span>
+                  <span className="text-xs uppercase font-bold text-zinc-400 block mb-1">Description</span>
                   <p className="text-xs text-zinc-600 dark:text-zinc-300">
                     {viewingCoupon.description}
                   </p>

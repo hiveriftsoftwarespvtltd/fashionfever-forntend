@@ -215,7 +215,7 @@ const ServiceCategories = ({ isDarkMode }) => {
       {/* ── Page Header ── */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <span className="text-[9px] font-black text-primary uppercase tracking-widest block mb-1">
+          <span className="text-xs font-black text-primary uppercase tracking-widest block mb-1">
             Operations
           </span>
           <h2 className={`text-2xl lg:text-3xl font-black uppercase ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>
@@ -233,7 +233,7 @@ const ServiceCategories = ({ isDarkMode }) => {
             <Plus size={15} /> Add Category
           </button>
           <div className={`px-5 py-3 rounded-2xl border ${isDarkMode ? 'bg-gray-900 border-white/5' : 'bg-white border-gray-100'} shadow-sm`}>
-            <p className="text-[9px] font-black uppercase text-gray-400 mb-0.5">Total</p>
+            <p className="text-xs font-black uppercase text-gray-400 mb-0.5">Total</p>
             <p className={`text-2xl font-black ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>{categories.length}</p>
           </div>
           <button
@@ -261,7 +261,7 @@ const ServiceCategories = ({ isDarkMode }) => {
             </div>
             <div>
               <p className={`text-lg font-black ${s.color}`}>{s.value}</p>
-              <p className={`text-[9px] font-black uppercase tracking-wider ${isDarkMode ? 'text-gray-600' : 'text-gray-400'}`}>{s.label}</p>
+              <p className={`text-xs font-black uppercase tracking-wider ${isDarkMode ? 'text-gray-600' : 'text-gray-400'}`}>{s.label}</p>
             </div>
           </div>
         ))}

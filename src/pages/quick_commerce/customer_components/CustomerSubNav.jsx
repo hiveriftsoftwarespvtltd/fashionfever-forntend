@@ -23,24 +23,7 @@ const CustomerSubNav = ({
       icon: <ShoppingCart size={14} className="shrink-0" />,
       count: quickCartCount,
       onClick: () => {
-        if (!isAuthenticated) {
-          Swal.fire('Access Denied', 'Please log in to view your cart.', 'warning');
-          return;
-        }
         setActiveSubTab('cart');
-      },
-    },
-    {
-      id: 'orders',
-      label: 'Quick Orders',
-      icon: <Package size={14} className="shrink-0" />,
-      count: ordersCount,
-      onClick: () => {
-        if (!isAuthenticated) {
-          Swal.fire('Access Denied', 'Please log in to view your orders.', 'warning');
-          return;
-        }
-        setActiveSubTab('orders');
       },
     },
   ];
@@ -71,7 +54,7 @@ const CustomerSubNav = ({
               <span
                 className={`
                   inline-flex items-center justify-center min-w-[18px] h-[18px] px-1
-                  rounded-full text-[10px] font-extrabold leading-none transition-all duration-300
+                  rounded-full text-xs font-extrabold leading-none transition-all duration-300
                   ${isActive
                     ? 'bg-white/25 text-white'
                     : tab.count > 0

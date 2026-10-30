@@ -1,5 +1,6 @@
 import React from 'react';
 import { X, Phone } from 'lucide-react';
+import { getImageUrl, handleImageError } from '../../../utils/imageUrl';
 
 const VendorRiderMetricsModal = ({
   viewingRider,
@@ -19,11 +20,12 @@ const VendorRiderMetricsModal = ({
         </button>
 
         <div className="flex items-center gap-4 border-b border-slate-100 pb-4 mb-4">
-          {viewingRider.profilePhoto?.url ? (
+          {getImageUrl(viewingRider.profilePhoto) ? (
             <img
-              src={viewingRider.profilePhoto.url}
+              src={getImageUrl(viewingRider.profilePhoto)}
               alt={viewingRider.name}
               className="w-14 h-14 rounded-2xl object-cover border border-slate-200 shadow-sm"
+              onError={handleImageError}
             />
           ) : (
             <div className="w-14 h-14 rounded-2xl bg-violet-100 text-violet-600 flex items-center justify-center font-black text-xl uppercase shadow-xs">

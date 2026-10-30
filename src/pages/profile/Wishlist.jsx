@@ -11,6 +11,7 @@ import { getWishlist, removeFromWishlist, clearWishlist } from '../../api/wishli
 import { toast } from '../../utils/toast';
 import UserSidebar from './UserSidebar';
 import { useCart } from '../../context/CartContext';
+import { getImageUrl, handleImageError, DEFAULT_PRODUCT_PLACEHOLDER } from '../../utils/imageUrl';
 
 const Wishlist = () => {
   const { addToCart: addGlobalCart } = useCart();
@@ -165,9 +166,10 @@ const Wishlist = () => {
                         {/* Image */}
                         <div className="aspect-[3/2] bg-gray-50 overflow-hidden relative">
                           <img 
-                            src={item.variant?.thumbnail?.url || item.product?.variants?.[0]?.thumbnail?.url || 'https://via.placeholder.com/300?text=No+Image'} 
+                            src={getImageUrl(item.variant?.thumbnail || item.product?.variants?.[0]?.thumbnail || item.product?.images || item.image || item) || DEFAULT_PRODUCT_PLACEHOLDER} 
                             alt={item.product?.name || 'Product'} 
                             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+                            onError={handleImageError}
                           />
                         </div>
 

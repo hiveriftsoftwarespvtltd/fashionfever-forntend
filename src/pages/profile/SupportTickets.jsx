@@ -501,7 +501,7 @@ const SupportTickets = () => {
                                 #{ticket._id ? ticket._id.substring(ticket._id.length - 8).toUpperCase() : 'N/A'}
                               </td>
                               <td className="px-4 py-3 whitespace-nowrap">
-                                <span className="inline-flex px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider bg-gray-100 text-gray-700">
+                                <span className="inline-flex px-2 py-0.5 rounded text-xs font-black uppercase tracking-wider bg-gray-100 text-gray-700">
                                   {ticket.ticketType}
                                 </span>
                               </td>
@@ -527,7 +527,7 @@ const SupportTickets = () => {
                                   <button
                                     type="button"
                                     onClick={() => setSelectedTicketForView(ticket)}
-                                    className="px-2.5 py-1.5 text-[10px] font-black uppercase rounded-lg border border-primary/20 text-primary bg-primary/5 hover:bg-primary hover:text-white transition-all cursor-pointer flex items-center gap-1"
+                                    className="px-2.5 py-1.5 text-xs font-black uppercase rounded-lg border border-primary/20 text-primary bg-primary/5 hover:bg-primary hover:text-white transition-all cursor-pointer flex items-center gap-1"
                                   >
                                     <MessageSquare size={11} /> Discussion ({ticket.replies?.length || 0})
                                   </button>
@@ -536,14 +536,14 @@ const SupportTickets = () => {
                                       <button
                                         type="button"
                                         onClick={() => handleOpenEditModal(ticket)}
-                                        className="px-2.5 py-1.5 text-[10px] font-black uppercase rounded-lg border border-blue-200 text-blue-500 hover:bg-blue-50 transition-all cursor-pointer"
+                                        className="px-2.5 py-1.5 text-xs font-black uppercase rounded-lg border border-blue-200 text-blue-500 hover:bg-blue-50 transition-all cursor-pointer"
                                       >
                                         Edit
                                       </button>
                                       <button
                                         type="button"
                                         onClick={() => handleCloseTicket(ticket._id)}
-                                        className="px-2.5 py-1.5 text-[10px] font-black uppercase rounded-lg border border-red-200 text-red-500 hover:bg-red-50 transition-all cursor-pointer"
+                                        className="px-2.5 py-1.5 text-xs font-black uppercase rounded-lg border border-red-200 text-red-500 hover:bg-red-50 transition-all cursor-pointer"
                                       >
                                         Close
                                       </button>
@@ -552,7 +552,7 @@ const SupportTickets = () => {
                                   <button
                                     type="button"
                                     onClick={() => handleDeleteTicket(ticket._id)}
-                                    className="px-2.5 py-1.5 text-[10px] font-black uppercase rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-100 transition-all cursor-pointer"
+                                    className="px-2.5 py-1.5 text-xs font-black uppercase rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-100 transition-all cursor-pointer"
                                   >
                                     Delete
                                   </button>
@@ -796,7 +796,7 @@ const SupportTickets = () => {
           <div className="bg-white rounded-2xl shadow-2xl border border-gray-100 max-w-xl w-full z-10 overflow-hidden text-left relative animate-in fade-in zoom-in-95 duration-200">
             <div className="p-5 border-b border-gray-100 flex items-center justify-between">
               <div>
-                <span className="text-[10px] font-black text-gray-400 font-mono">TICKET #{selectedTicketForView._id?.toUpperCase()}</span>
+                <span className="text-xs font-black text-gray-400 font-mono">TICKET #{selectedTicketForView._id?.toUpperCase()}</span>
                 <h2 className="text-sm font-extrabold text-gray-900 uppercase">
                   Category: {selectedTicketForView.ticketType}
                 </h2>
@@ -810,7 +810,7 @@ const SupportTickets = () => {
               {/* Vendor Info if assigned */}
               {selectedTicketForView.vendorId && (
                 <div className="p-3 bg-pink-50/50 border border-pink-100 rounded-xl">
-                  <span className="text-[9px] font-black text-primary uppercase block">Assigned Store Partner</span>
+                  <span className="text-xs font-black text-primary uppercase block">Assigned Store Partner</span>
                   <p className="text-xs font-black text-gray-900">
                     {selectedTicketForView.vendorId.businessName || selectedTicketForView.vendorId.storeName || selectedTicketForView.vendorId.name}
                   </p>
@@ -819,7 +819,7 @@ const SupportTickets = () => {
 
               {/* Original Complaint */}
               <div>
-                <span className="text-[10px] font-black text-gray-400 uppercase tracking-wider block mb-1">Your Complaint</span>
+                <span className="text-xs font-black text-gray-400 uppercase tracking-wider block mb-1">Your Complaint</span>
                 <div className="p-3 bg-gray-50 border border-gray-100 rounded-xl text-xs font-medium text-gray-700">
                   {selectedTicketForView.description}
                 </div>
@@ -827,7 +827,7 @@ const SupportTickets = () => {
 
               {/* Conversation Thread */}
               <div className="pt-2">
-                <span className="text-[10px] font-black text-gray-400 uppercase tracking-wider block mb-2">Replies & Resolution History</span>
+                <span className="text-xs font-black text-gray-400 uppercase tracking-wider block mb-2">Replies & Resolution History</span>
                 <div className="space-y-2">
                   {(!selectedTicketForView.replies || selectedTicketForView.replies.length === 0) ? (
                     <p className="text-xs text-gray-400 italic">No replies yet. Vendor/Support team will reply shortly.</p>
@@ -837,7 +837,7 @@ const SupportTickets = () => {
                         r.senderRole === 'VENDOR' ? 'bg-emerald-50 border-emerald-100 text-emerald-950 ml-3' :
                         r.senderRole === 'ADMIN' ? 'bg-blue-50 border-blue-100 text-blue-950 ml-3' : 'bg-gray-50 border-gray-100 mr-3'
                       }`}>
-                        <div className="flex justify-between items-center text-[9px] font-black uppercase mb-1 opacity-70">
+                        <div className="flex justify-between items-center text-xs font-black uppercase mb-1 opacity-70">
                           <span>{r.senderName} ({r.senderRole})</span>
                           <span>{new Date(r.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                         </div>

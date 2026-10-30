@@ -183,7 +183,7 @@ const CreateCategoryModal = ({ isOpen, onClose, onSuccess, initialData = null })
                       Choose Image File
                       <input type="file" accept="image/*" onChange={handleFileChange} className="hidden" />
                     </label>
-                    <p className="text-[9px] font-medium text-gray-400 uppercase mt-1.5">Supports PNG, JPG, JPEG. Max file size: 5MB.</p>
+                    <p className="text-xs font-medium text-gray-400 uppercase mt-1.5">Supports PNG, JPG, JPEG. Max file size: 5MB.</p>
                   </div>
                 </div>
               </div>

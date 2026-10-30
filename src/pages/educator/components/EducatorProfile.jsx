@@ -1,5 +1,6 @@
 import React from 'react';
 import { User, Upload, X } from 'lucide-react';
+import { getImageUrl } from '../../../utils/imageUrl';
 
 const EducatorProfile = ({
   isDarkMode,
@@ -132,7 +133,8 @@ const EducatorProfile = ({
                 setIsEditing(false);
                 setEditBio(profile?.bio || '');
                 handleExpertiseChange(-1, null); // custom trigger to reset
-                setEditImagePreview(profile?.profileImage?.url || profile?.profileImage);
+                const rawPhoto = profile?.profileImage?.url || profile?.profileImage || profile?.userId?.avatar?.url || profile?.userId?.avatar;
+                setEditImagePreview(rawPhoto ? getImageUrl(rawPhoto) : '');
                 setEditFile(null);
               }}
               className={`flex-1 py-3 text-xs font-bold uppercase rounded-xl transition-all cursor-pointer ${isDarkMode ? 'bg-zinc-800 hover:bg-zinc-700 text-zinc-200' : 'bg-zinc-100 hover:bg-zinc-200 text-zinc-700'}`}

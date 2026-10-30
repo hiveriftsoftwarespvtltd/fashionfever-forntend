@@ -800,7 +800,7 @@ const ServiceProviderServices = ({ isDarkMode, services = [], setServices }) => 
                         Offer Price (₹) <span className="text-red-500">*</span>
                       </label>
                       {formData.sellingPrice && formData.offeredPrice && Number(formData.sellingPrice) > Number(formData.offeredPrice) && (
-                        <span className="text-[10px] font-semibold text-emerald-600 dark:text-emerald-400">
+                        <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400">
                           {Math.round(((Number(formData.sellingPrice) - Number(formData.offeredPrice)) / Number(formData.sellingPrice)) * 100)}% off
                         </span>
                       )}

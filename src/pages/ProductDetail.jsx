@@ -37,6 +37,7 @@ import { toast } from '../utils/toast';
 import { useUser } from '../context/UserContext';
 import { getProductReviews, deleteProductReview } from '../api/productService';
 import config from '../config/config';
+import { getImageUrl, handleImageError, DEFAULT_PRODUCT_PLACEHOLDER } from '../utils/imageUrl';
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -178,10 +179,6 @@ const ProductDetail = () => {
   };
 
   const handleAddProductToBag = () => {
-    if (!isAuthenticated) {
-      toast.error("Please login for shopping");
-      return;
-    }
     if (!currentVariant || currentVariant.stock <= 0) {
       toast.error("This option is currently out of stock!");
       return;
@@ -194,7 +191,7 @@ const ProductDetail = () => {
           : ''
       }`,
       price: currentVariant.offeredPrice || currentVariant.salesPrice || 0,
-      image: currentVariant.thumbnail?.url || variantImages?.[0]?.url || '',
+      image: getImageUrl(currentVariant.thumbnail?.url || currentVariant.thumbnail || variantImages?.[0]?.url || variantImages?.[0] || ''),
     };
     addToCart(itemPayload, currentVariant._id, product._id, isExpressDelivery);
     if (quantity > 1) {
@@ -204,10 +201,6 @@ const ProductDetail = () => {
   };
 
   const handleDirectPurchase = async () => {
-    if (!isAuthenticated) {
-      toast.error("Please login for shopping");
-      return;
-    }
     if (!currentVariant || currentVariant.stock <= 0) {
       toast.error("Option out of inventory.");
       return;
@@ -216,14 +209,14 @@ const ProductDetail = () => {
       id: currentVariant._id || product._id,
       name: `${product.name}`,
       price: currentVariant.offeredPrice || currentVariant.salesPrice || 0,
-      image: currentVariant.thumbnail?.url || '',
+      image: getImageUrl(currentVariant.thumbnail?.url || currentVariant.thumbnail || ''),
     };
     await addToCart(itemPayload, currentVariant._id, product._id, isExpressDelivery);
     if (quantity > 1) {
       await updateQty(currentVariant._id, quantity - 1, product._id, isExpressDelivery);
     }
     if (isExpressDelivery) {
-      navigate("/quick-commerce?tab=cart");
+      navigate("/checkout?mode=quick");
     } else {
       navigate("/checkout");
     }
@@ -440,7 +433,12 @@ const ProductDetail = () => {
                           <Play size={16} className="text-white fill-white" />
                         </div>
                       ) : (
-                        <img src={img.url} alt="" className="w-full h-full object-cover rounded-xl" />
+                        <img 
+                          src={getImageUrl(img.url || img) || DEFAULT_PRODUCT_PLACEHOLDER} 
+                          alt="" 
+                          className="w-full h-full object-cover rounded-xl" 
+                          onError={handleImageError}
+                        />
                       )}
                     </button>
                   );
@@ -467,17 +465,18 @@ const ProductDetail = () => {
                         autoPlay
                         muted
                       />
-                      <span className="absolute top-4 left-4 z-10 bg-slate-900/90 text-white backdrop-blur-md text-[8px] font-black uppercase tracking-widest px-3 py-1.5 rounded-lg shadow-sm border border-white/10 flex items-center gap-1">
+                      <span className="absolute top-4 left-4 z-10 bg-slate-900/90 text-white backdrop-blur-md text-[11px] font-black uppercase tracking-widest px-3 py-1.5 rounded-lg shadow-sm border border-white/10 flex items-center gap-1">
                         <Play size={10} className="fill-white" /> Video Preview
                       </span>
                     </div>
                   ) : (
                     <img 
-                      src={variantImages[selectedImage].url} 
+                      src={getImageUrl(variantImages[selectedImage]?.url || variantImages[selectedImage]) || DEFAULT_PRODUCT_PLACEHOLDER} 
                       alt={product.name} 
                       className={`w-full h-full object-cover transition-transform duration-200 ease-out ${isZoomed ? 'scale-200' : 'scale-100'}`}
                       style={{ transformOrigin: zoomOrigin }}
                       loading="lazy"
+                      onError={handleImageError}
                     />
                   )
                 ) : (
@@ -487,7 +486,7 @@ const ProductDetail = () => {
                 {/* Float Category Overlay */}
                 {!isVideoFile(variantImages[selectedImage]?.url) && (
                   <div className="absolute top-4 left-4 z-10">
-                    <span className="bg-slate-900/90 text-white backdrop-blur-md text-[8px] font-black uppercase tracking-widest px-3 py-1.5 rounded-lg shadow-sm border border-white/10">
+                    <span className="bg-slate-900/90 text-white backdrop-blur-md text-[11px] font-black uppercase tracking-widest px-3 py-1.5 rounded-lg shadow-sm border border-white/10">
                       {product.brand || 'Product'}
                     </span>
                   </div>
@@ -503,7 +502,7 @@ const ProductDetail = () => {
             {/* SECTION 3: Product Information */}
             <div className="bg-white p-6 sm:p-8 rounded-2xl border border-slate-100 shadow-xs space-y-4">
               <div className="flex items-center gap-3 flex-wrap">
-                <span className="bg-primary/5 text-primary text-[9px] font-black uppercase px-2.5 py-1 rounded-md tracking-wider">
+                <span className="bg-primary/5 text-primary text-xs font-black uppercase px-2.5 py-1 rounded-md tracking-wider">
                   ACTIVE
                 </span>
                 
@@ -547,7 +546,7 @@ const ProductDetail = () => {
               {product.tags && product.tags.length > 0 && (
                 <div className="flex flex-wrap gap-2 pt-1 border-t border-slate-50">
                   {product.tags.map((tag, idx) => (
-                    <span key={idx} className="bg-slate-100 text-slate-600 text-[8px] font-black uppercase px-2.5 py-1 rounded-md tracking-wider">
+                    <span key={idx} className="bg-slate-100 text-slate-600 text-[11px] font-black uppercase px-2.5 py-1 rounded-md tracking-wider">
                       #{tag}
                     </span>
                   ))}
@@ -572,14 +571,14 @@ const ProductDetail = () => {
                 </div>
                 
                 {hasDiscount && (
-                  <div className="bg-primary/5 text-primary border border-primary/10 px-3.5 py-1.5 rounded-xl text-[9px] font-black uppercase tracking-wider">
+                  <div className="bg-primary/5 text-primary border border-primary/10 px-3.5 py-1.5 rounded-xl text-xs font-black uppercase tracking-wider">
                     {discountPercent}% OFF SAVED
                   </div>
                 )}
               </div>
 
               {/* Stock info */}
-              <div className="flex flex-wrap items-center gap-y-2 gap-x-6 text-[9px] font-black uppercase text-slate-500 tracking-wider">
+              <div className="flex flex-wrap items-center gap-y-2 gap-x-6 text-xs font-black uppercase text-slate-500 tracking-wider">
                 {currentVariant.stock > 0 ? (
                   currentVariant.stock < 10 ? (
                     <div className="flex items-center gap-1.5 text-amber-600">
@@ -653,7 +652,7 @@ const ProductDetail = () => {
                             <p className={`text-xs font-black uppercase truncate ${isSelected ? 'text-primary' : 'text-slate-800'}`}>
                               {labelName}
                             </p>
-                            <p className="text-[9px] font-bold text-slate-400 uppercase mt-0.5">
+                            <p className="text-xs font-bold text-slate-400 uppercase mt-0.5">
                               ₹{(v.offeredPrice || v.salesPrice || 0).toLocaleString()} • {v.stock > 0 ? `In Stock (${v.stock})` : 'Out of Stock'}
                             </p>
                           </div>
@@ -673,10 +672,10 @@ const ProductDetail = () => {
               {product.vendorId?.quickCommerce?.enabled && (
                 <div className="bg-gradient-to-r from-rose-500/10 via-amber-500/5 to-rose-500/5 border border-rose-500/20 p-4 rounded-2xl flex flex-col gap-3">
                   <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-black uppercase tracking-wider text-rose-600 flex items-center gap-1">
+                    <span className="text-xs font-black uppercase tracking-wider text-rose-600 flex items-center gap-1">
                       <Zap size={12} className="fill-rose-500 text-rose-500 animate-pulse" /> Express Delivery Available
                     </span>
-                    <span className="text-[10px] font-bold text-slate-500 uppercase">Within 10 Mins!</span>
+                    <span className="text-xs font-bold text-slate-500 uppercase">Within 10 Mins!</span>
                   </div>
                   
                   <div className="grid grid-cols-2 gap-3">
@@ -689,7 +688,7 @@ const ProductDetail = () => {
                       }`}
                     >
                       <span>Standard Shipping</span>
-                      <span className="text-[9px] opacity-75 font-semibold">2-3 Days Delivery</span>
+                      <span className="text-xs opacity-75 font-semibold">2-3 Days Delivery</span>
                     </button>
                     
                     <button
@@ -701,7 +700,7 @@ const ProductDetail = () => {
                       }`}
                     >
                       <span className="flex items-center gap-1">⚡ Express Delivery</span>
-                      <span className="text-[9px] opacity-75 font-semibold">10 Mins Delivery</span>
+                      <span className="text-xs opacity-75 font-semibold">10 Mins Delivery</span>
                     </button>
                   </div>
                 </div>
@@ -750,7 +749,7 @@ const ProductDetail = () => {
                 </div>
               </div>
 
-              <div className="text-[8px] font-black text-slate-400 uppercase flex items-center gap-1 pt-1 justify-center sm:justify-start">
+              <div className="text-[11px] font-black text-slate-400 uppercase flex items-center gap-1 pt-1 justify-center sm:justify-start">
                 <Info size={10} /> Price inclusive of all GST parameters
               </div>
 
@@ -764,7 +763,7 @@ const ProductDetail = () => {
                     {product.vendorId.businessName?.charAt(0) || 'V'}
                   </div>
                   <div>
-                    <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest">Sold By Vendor</p>
+                    <p className="text-[11px] font-black text-slate-400 uppercase tracking-widest">Sold By Vendor</p>
                     <p className="text-xs font-black text-slate-800 uppercase mt-0.5">
                       {product.vendorId.businessName || 'Vendor'}
                     </p>
@@ -779,13 +778,13 @@ const ProductDetail = () => {
 
                 <div className="flex flex-col sm:items-end gap-2">
                   {product.vendorId.status === 'APPROVED' && (
-                    <span className="bg-green-50 text-green-600 text-[9px] font-black uppercase px-2.5 py-1 rounded-md border border-green-100 flex items-center gap-1 self-start sm:self-auto">
+                    <span className="bg-green-50 text-green-600 text-xs font-black uppercase px-2.5 py-1 rounded-md border border-green-100 flex items-center gap-1 self-start sm:self-auto">
                       <Check size={10} className="stroke-[3]" /> Approved Vendor
                     </span>
                   )}
                   <button 
                     onClick={() => navigate(`/shop?vendor=${product.vendorId._id}`)}
-                    className="text-[9px] font-black text-primary uppercase tracking-widest hover:underline text-left sm:text-right"
+                    className="text-xs font-black text-primary uppercase tracking-widest hover:underline text-left sm:text-right"
                   >
                     View Store &rarr;
                   </button>
@@ -801,7 +800,7 @@ const ProductDetail = () => {
                 </div>
                 <div>
                   <h4 className="text-xs font-black text-slate-800 uppercase tracking-wide">Shipping Available</h4>
-                  <p className="text-[9px] font-bold text-slate-400 uppercase mt-0.5">Fast Standard Delivery & Secure Product Packaging</p>
+                  <p className="text-xs font-bold text-slate-400 uppercase mt-0.5">Fast Standard Delivery & Secure Product Packaging</p>
                 </div>
               </div>
             )}
@@ -894,7 +893,7 @@ const ProductDetail = () => {
                               <div className="flex items-center gap-2">
                                 <span className="font-extrabold text-xs text-slate-800 uppercase">{authorName}</span>
                                 {isVerified && (
-                                  <span className="bg-green-50 text-green-600 text-[8px] font-black uppercase px-1.5 py-0.5 rounded border border-green-100 tracking-wider">
+                                  <span className="bg-green-50 text-green-600 text-[11px] font-black uppercase px-1.5 py-0.5 rounded border border-green-100 tracking-wider">
                                     Verified Purchase
                                   </span>
                                 )}
@@ -912,7 +911,7 @@ const ProductDetail = () => {
                             </div>
                             
                             <div className="flex items-center gap-2">
-                              <span className="text-[8px] text-slate-400 uppercase font-bold">{reviewDate}</span>
+                              <span className="text-[11px] text-slate-400 uppercase font-bold">{reviewDate}</span>
                               {isOwner && (
                                 <button
                                   onClick={() => handleDeleteReview(rev._id)}
@@ -944,7 +943,7 @@ const ProductDetail = () => {
                                     className="w-12 h-12 rounded-lg overflow-hidden border border-slate-200 hover:border-primary transition-colors cursor-zoom-in bg-white"
                                   >
                                     <img 
-                                      src={imgUrl} 
+                                      src={getImageUrl(imgUrl) || DEFAULT_PRODUCT_PLACEHOLDER} 
                                       alt="" 
                                       className="w-full h-full object-cover" 
                                       onError={(e) => { e.target.style.display = 'none'; }}
@@ -1055,7 +1054,7 @@ const ProductDetail = () => {
                       )}
                       {hasDisc && (
                         <div className="absolute top-3 left-3 z-10">
-                          <span className="bg-primary text-white text-[8px] font-black uppercase tracking-widest px-2.5 py-1 rounded shadow-sm">
+                          <span className="bg-primary text-white text-[11px] font-black uppercase tracking-widest px-2.5 py-1 rounded shadow-sm">
                             Sale
                           </span>
                         </div>
@@ -1065,10 +1064,10 @@ const ProductDetail = () => {
                     <div className="p-4 flex-grow flex flex-col justify-between">
                       <div className="space-y-1.5">
                         <div className="flex items-center justify-between gap-2">
-                          <span className="text-[9px] font-black text-primary uppercase tracking-wider truncate">
+                          <span className="text-xs font-black text-primary uppercase tracking-wider truncate">
                             {p.brand || 'Luxe'}
                           </span>
-                          <div className="flex items-center gap-0.5 bg-yellow-400/10 text-yellow-600 px-1.5 py-0.5 rounded text-[8px] font-black">
+                          <div className="flex items-center gap-0.5 bg-yellow-400/10 text-yellow-600 px-1.5 py-0.5 rounded text-[11px] font-black">
                             <span>{p.averageRating !== undefined && p.averageRating !== null ? p.averageRating : '0.0'}</span> <Star size={8} fill="currentColor" />
                           </div>
                         </div>
@@ -1119,14 +1118,14 @@ const ProductDetail = () => {
           <button 
             onClick={handleAddProductToBag}
             disabled={currentVariant.stock <= 0}
-            className="flex-1 max-w-[100px] py-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-700 text-[9px] font-black uppercase tracking-wider flex items-center justify-center gap-1 active:scale-[0.97] truncate px-1"
+            className="flex-1 max-w-[100px] py-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-700 text-xs font-black uppercase tracking-wider flex items-center justify-center gap-1 active:scale-[0.97] truncate px-1"
           >
             <ShoppingBag size={12} className="flex-shrink-0" /> Cart
           </button>
           <button 
             onClick={handleDirectPurchase}
             disabled={currentVariant.stock <= 0}
-            className="flex-1 max-w-[120px] py-3 rounded-xl bg-primary text-white text-[9px] font-black uppercase tracking-wider flex items-center justify-center gap-1 active:scale-[0.97] shadow-md shadow-primary/15 truncate px-1"
+            className="flex-1 max-w-[120px] py-3 rounded-xl bg-primary text-white text-xs font-black uppercase tracking-wider flex items-center justify-center gap-1 active:scale-[0.97] shadow-md shadow-primary/15 truncate px-1"
           >
             Buy Now
           </button>

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Truck, Plus, X, Upload, Sliders, Eye } from 'lucide-react';
+import { getImageUrl, handleImageError } from '../../../utils/imageUrl';
 
 const VendorRidersRoster = ({
   riders = [],
@@ -53,7 +54,7 @@ const VendorRidersRoster = ({
               handleOpenAddRider();
             }
           }}
-          className="bg-primary hover:bg-primary/95 text-white px-2.5 py-1 rounded-xl shadow-md cursor-pointer inline-flex items-center gap-1 text-[10px] font-black uppercase tracking-wider transition-all hover:scale-[1.02]"
+          className="bg-primary hover:bg-primary/95 text-white px-2.5 py-1 rounded-xl shadow-md cursor-pointer inline-flex items-center gap-1 text-xs font-black uppercase tracking-wider transition-all hover:scale-[1.02]"
         >
           {showRiderForm ? (
             <>
@@ -236,11 +237,12 @@ const VendorRidersRoster = ({
             <div key={r._id} className="bg-white border border-slate-100 rounded-2xl p-3 flex flex-col gap-2 shadow-xs hover:shadow-sm transition-all">
               <div className="flex justify-between items-center">
                 <div className="flex items-center gap-3 text-left">
-                  {r.profilePhoto?.url ? (
+                  {getImageUrl(r.profilePhoto) ? (
                     <img
-                      src={r.profilePhoto.url}
+                      src={getImageUrl(r.profilePhoto)}
                       alt={r.name}
                       className="w-9 h-9 rounded-xl object-cover border border-slate-100"
+                      onError={handleImageError}
                     />
                   ) : (
                     <div className="w-9 h-9 rounded-xl bg-violet-100 text-violet-600 flex items-center justify-center font-black text-sm uppercase">

@@ -314,7 +314,7 @@ const InfluencerCommissions = ({ isDarkMode }) => {
             }`}
           >
             <div className="flex items-center justify-between mb-3">
-              <span className="text-[10px] font-bold uppercase text-zinc-400 tracking-wider">
+              <span className="text-xs font-bold uppercase text-zinc-400 tracking-wider">
                 {card.label}
               </span>
               <div className={`p-2.5 rounded-xl ${card.color.split(' ')[1]} ${card.color.split(' ')[0]}`}>
@@ -340,7 +340,7 @@ const InfluencerCommissions = ({ isDarkMode }) => {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
           {/* Month Filter */}
           <div className="space-y-1.5 text-left">
-            <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 flex items-center gap-1.5">
+            <label className="text-xs font-bold uppercase tracking-wider text-zinc-400 flex items-center gap-1.5">
               <Calendar size={11} className="text-primary" /> Select Month
             </label>
             <select
@@ -361,7 +361,7 @@ const InfluencerCommissions = ({ isDarkMode }) => {
 
           {/* Year Filter */}
           <div className="space-y-1.5 text-left">
-            <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 flex items-center gap-1.5">
+            <label className="text-xs font-bold uppercase tracking-wider text-zinc-400 flex items-center gap-1.5">
               <Calendar size={11} className="text-primary" /> Select Year
             </label>
             <select
@@ -382,7 +382,7 @@ const InfluencerCommissions = ({ isDarkMode }) => {
 
           {/* Status Filter */}
           <div className="space-y-1.5 text-left">
-            <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 flex items-center gap-1.5">
+            <label className="text-xs font-bold uppercase tracking-wider text-zinc-400 flex items-center gap-1.5">
               <Clock size={11} className="text-primary" /> Payout Status
             </label>
             <select
@@ -403,7 +403,7 @@ const InfluencerCommissions = ({ isDarkMode }) => {
 
           {/* Page Limit */}
           <div className="space-y-1.5 text-left">
-            <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 flex items-center gap-1.5">
+            <label className="text-xs font-bold uppercase tracking-wider text-zinc-400 flex items-center gap-1.5">
               <SlidersHorizontal size={11} className="text-primary" /> Slabs per page
             </label>
             <select
@@ -475,7 +475,7 @@ const InfluencerCommissions = ({ isDarkMode }) => {
                           <span className={`text-sm font-extrabold ${isDarkMode ? 'text-zinc-100' : 'text-zinc-900'}`}>
                             {item.influencerName}
                           </span>
-                          <span className="text-[10px] font-mono text-zinc-400">
+                          <span className="text-xs font-mono text-zinc-400">
                             ID: {item.influencerId?.substring(18)}
                           </span>
                         </div>
@@ -663,7 +663,7 @@ const InfluencerCommissions = ({ isDarkMode }) => {
                             <div className="flex flex-col">
                               <span className="font-extrabold text-sm text-zinc-900 dark:text-zinc-100">{creator.name || 'Creator'}</span>
                               <span className="text-xs text-zinc-400 font-medium">{creator.email || creator.phone || '—'}</span>
-                              <span className="text-[10px] text-zinc-500 font-mono mt-0.5">Ref: {creator.referralCode || '—'}</span>
+                              <span className="text-xs text-zinc-500 font-mono mt-0.5">Ref: {creator.referralCode || '—'}</span>
                             </div>
                           </td>
 
@@ -702,7 +702,7 @@ const InfluencerCommissions = ({ isDarkMode }) => {
                           </td>
 
                           <td className="py-4 px-6 text-center">
-                            <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wide border ${
+                            <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-black uppercase tracking-wide border ${
                               p.status === 'paid'
                                 ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20'
                                 : p.status === 'pending'
@@ -789,7 +789,7 @@ const InfluencerCommissions = ({ isDarkMode }) => {
             </div>
 
             <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 mb-4">
-              <span className="text-[10px] font-black uppercase tracking-wider text-emerald-500 block">Payout Amount</span>
+              <span className="text-xs font-black uppercase tracking-wider text-emerald-500 block">Payout Amount</span>
               <span className="text-2xl font-black text-emerald-500 block mt-0.5">
                 ₹{(selectedPayout.totalCommission ?? 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
               </span>

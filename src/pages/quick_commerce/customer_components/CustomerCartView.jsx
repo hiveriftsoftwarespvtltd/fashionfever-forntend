@@ -1,5 +1,7 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { ShoppingBag, Trash2, MapPin, Tag, Zap } from 'lucide-react';
+import { getImageUrl, handleImageError } from '../../../utils/imageUrl';
 
 const CustomerCartView = ({
   quickCart = [],
@@ -21,6 +23,7 @@ const CustomerCartView = ({
   checkout,
   handlePlaceOrder
 }) => {
+  const navigate = useNavigate();
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 text-left">
       {/* Cart items list (7 columns) */}
@@ -44,8 +47,13 @@ const CustomerCartView = ({
             <h3 className="text-sm font-black uppercase tracking-widest text-slate-400">Items in Bag</h3>
             {quickCart.map((item) => (
               <div key={item.id} className="bg-white p-4 rounded-3xl border border-slate-100 shadow-sm flex gap-4 relative group">
-                <div className="w-20 h-24 bg-slate-50 rounded-2xl overflow-hidden flex-shrink-0">
-                  <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+                <div className="w-20 h-24 bg-slate-50 rounded-2xl overflow-hidden flex-shrink-0 relative">
+                  <img 
+                    src={getImageUrl(item.image || item)} 
+                    alt={item.name} 
+                    className="w-full h-full object-cover" 
+                    onError={handleImageError}
+                  />
                 </div>
                 <div className="flex-grow flex flex-col justify-between py-1">
                   <div>
@@ -54,7 +62,7 @@ const CustomerCartView = ({
                     </h4>
                     <div className="flex flex-wrap gap-2 mt-2">
                       {item.attributes && Object.entries(item.attributes).map(([k, v]) => (
-                        <span key={k} className="text-[8px] font-bold text-slate-400 uppercase bg-slate-50 px-2 py-0.5 rounded-lg border border-slate-100">
+                        <span key={k} className="text-[11px] font-bold text-slate-400 uppercase bg-slate-50 px-2 py-0.5 rounded-lg border border-slate-100">
                           {k}: {v}
                         </span>
                       ))}
@@ -102,7 +110,7 @@ const CustomerCartView = ({
               <h3 className="text-sm font-black uppercase tracking-widest text-slate-700">Delivery Address</h3>
               <button
                 onClick={handleAddNewAddress}
-                className="text-[10px] font-black uppercase text-primary hover:underline cursor-pointer"
+                className="text-xs font-black uppercase text-primary hover:underline cursor-pointer"
               >
                 + Add New
               </button>
@@ -124,7 +132,7 @@ const CustomerCartView = ({
                   >
                     <MapPin size={14} className="text-primary flex-shrink-0 mt-0.5" />
                     <div className="truncate">
-                      <p className="font-extrabold uppercase text-[10px] text-slate-800">{addr.addressType || 'Address'}</p>
+                      <p className="font-extrabold uppercase text-xs text-slate-800">{addr.addressType || 'Address'}</p>
                       <p className="truncate text-slate-500">{addr.streetAddress || addr.line1}, {addr.city} ({addr.pincode})</p>
                     </div>
                   </button>
@@ -139,7 +147,7 @@ const CustomerCartView = ({
             {appliedCoupon ? (
               <div className="bg-emerald-50 border border-emerald-100 text-emerald-700 px-4 py-3 rounded-2xl flex items-center justify-between text-xs font-bold">
                 <span>Applied: <strong className="uppercase">{appliedCoupon}</strong></span>
-                <button onClick={handleRemoveCoupon} className="text-rose-500 hover:text-rose-700 font-extrabold uppercase text-[10px]">Remove</button>
+                <button onClick={handleRemoveCoupon} className="text-rose-500 hover:text-rose-700 font-extrabold uppercase text-xs">Remove</button>
               </div>
             ) : (
               <div className="relative group">
@@ -224,10 +232,10 @@ const CustomerCartView = ({
             </div>
 
             <button
-              onClick={handlePlaceOrder}
+              onClick={() => navigate('/checkout?mode=quick')}
               className="w-full bg-primary hover:bg-primary/95 text-white py-4 rounded-2xl font-black uppercase text-xs tracking-widest shadow-lg shadow-primary/20 hover:scale-[1.01] active:scale-[0.99] transition-all flex items-center justify-center gap-2 cursor-pointer mt-4"
             >
-              <Zap size={14} className="fill-white" /> Place Express Order
+              <Zap size={14} className="fill-white" /> Proceed to 10-Min Checkout
             </button>
           </div>
         </div>

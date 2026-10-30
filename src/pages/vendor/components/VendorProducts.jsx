@@ -100,14 +100,31 @@ const VendorProducts = ({
             <tbody className={`divide-y ${isDarkMode ? 'divide-white/5' : 'divide-gray-50'}`}>
               {productsLoading ? (
                 <tr><td colSpan="5" className="p-10 text-center font-bold text-gray-400">Loading products...</td></tr>
-              ) : paginatedProducts.map((product) => (
-                <tr key={product._id} className={`${isDarkMode ? 'hover:bg-white/5' : 'hover:bg-gray-50/50'} transition-colors`}>
-                  <td className="px-6 py-4">
-                    <div className="flex items-center gap-3">
-                      <img src={getImageUrl(product.variants?.[0]?.thumbnail) || `https://ui-avatars.com/api/?name=${product.name}&background=random`} alt="" className="w-10 h-10 rounded-lg object-cover" />
-                      <span className={`font-bold text-sm ${isDarkMode ? 'text-gray-250' : 'text-gray-800'}`}>{product.name}</span>
-                    </div>
-                  </td>
+              ) : paginatedProducts.map((product) => {
+                const rawImg = product.variants?.[0]?.thumbnail || product.variants?.[0]?.images?.[0] || product.images?.[0] || product.image || product.thumbnail;
+                const imgUrl = rawImg ? getImageUrl(rawImg) : null;
+                const fallbackAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(product.name || 'Product')}&background=random`;
+
+                return (
+                  <tr key={product._id} className={`${isDarkMode ? 'hover:bg-white/5' : 'hover:bg-gray-50/50'} transition-colors`}>
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-3">
+                        <div className={`w-10 h-10 rounded-lg overflow-hidden flex items-center justify-center font-bold border flex-shrink-0 ${
+                          isDarkMode ? 'bg-zinc-800 border-zinc-700' : 'bg-zinc-100 border-zinc-200'
+                        }`}>
+                          <img 
+                            src={imgUrl || fallbackAvatar} 
+                            alt={product.name || ''} 
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              e.target.onerror = null;
+                              e.target.src = fallbackAvatar;
+                            }}
+                          />
+                        </div>
+                        <span className={`font-bold text-sm ${isDarkMode ? 'text-gray-250' : 'text-gray-800'}`}>{product.name}</span>
+                      </div>
+                    </td>
                   <td className={`px-6 py-4 text-sm font-bold ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>₹{product.variants?.[0]?.salesPrice || 0}</td>
                   <td className={`px-6 py-4 text-sm font-bold ${isDarkMode ? 'text-gray-400' : 'text-gray-650'}`}>{product.variants?.[0]?.stock || 0} units</td>
                   <td className="px-6 py-4">
@@ -145,7 +162,8 @@ const VendorProducts = ({
                     </div>
                   </td>
                 </tr>
-              ))}
+              );
+            })}
               {sortedProducts.length === 0 && !productsLoading && (
                 <tr><td colSpan="5" className="p-10 text-center font-bold text-gray-400">No products found.</td></tr>
               )}

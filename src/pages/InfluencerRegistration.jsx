@@ -73,7 +73,7 @@ const InfluencerRegistration = () => {
           </div>
 
           <div className="space-y-2">
-            <span className="text-[10px] font-black uppercase tracking-widest text-rose-500 bg-rose-50 px-3 py-1 rounded-full border border-rose-100 inline-block">
+            <span className="text-xs font-black uppercase tracking-widest text-rose-500 bg-rose-50 px-3 py-1 rounded-full border border-rose-100 inline-block">
               Missing Invitation Token
             </span>
             <h1 className="text-2xl font-black uppercase tracking-tight text-gray-900">
@@ -182,7 +182,7 @@ const InfluencerRegistration = () => {
           </div>
 
           <div className="space-y-2">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-100 text-emerald-600 text-[10px] font-black uppercase tracking-widest">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-100 text-emerald-600 text-xs font-black uppercase tracking-widest">
               <BadgeCheck size={12} /> Application Received
             </span>
             <h1 className="text-2xl font-black uppercase tracking-tight text-gray-900">
@@ -194,14 +194,14 @@ const InfluencerRegistration = () => {
           </div>
 
           <div className="bg-slate-50 border border-gray-100 rounded-2xl p-5 text-left space-y-3">
-            <p className="text-[10px] font-black uppercase tracking-wider text-gray-400">What Happens Next?</p>
+            <p className="text-xs font-black uppercase tracking-wider text-gray-400">What Happens Next?</p>
             {[
               { step: '1', title: 'Admin Verification', desc: 'Team reviews invitation token & social handles.' },
               { step: '2', title: 'Activation Notice', desc: 'You will receive your direct login confirmation email.' },
               { step: '3', title: 'Commission Dashboard', desc: 'Create custom promo coupons and track live earnings.' },
             ].map((item) => (
               <div key={item.step} className="flex items-start gap-3">
-                <span className="w-5 h-5 rounded-full bg-primary/10 text-primary flex items-center justify-center text-[10px] font-black shrink-0 mt-0.5">
+                <span className="w-5 h-5 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xs font-black shrink-0 mt-0.5">
                   {item.step}
                 </span>
                 <div>
@@ -291,7 +291,7 @@ const InfluencerRegistration = () => {
                   <span className="flex items-center gap-1.5">
                     <Phone size={13} className="text-primary" /> Mobile / WhatsApp Number
                   </span>
-                  <span className="text-[10px] text-gray-400 lowercase font-medium">required for payouts</span>
+                  <span className="text-xs text-gray-400 lowercase font-medium">required for payouts</span>
                 </label>
                 <div className="relative">
                   <div className="absolute left-4 top-1/2 -translate-y-1/2 flex items-center gap-1 text-xs font-bold text-gray-500 border-r border-gray-200 pr-2.5">
@@ -343,7 +343,7 @@ const InfluencerRegistration = () => {
                       <div className={`h-1 flex-1 rounded-full transition-all ${passwordStrength >= 1 ? 'bg-amber-400' : 'bg-gray-200'}`} />
                       <div className={`h-1 flex-1 rounded-full transition-all ${passwordStrength >= 2 ? 'bg-emerald-400' : 'bg-gray-200'}`} />
                       <div className={`h-1 flex-1 rounded-full transition-all ${passwordStrength >= 3 ? 'bg-primary' : 'bg-gray-200'}`} />
-                      <span className="text-[10px] font-bold text-gray-500 uppercase ml-1">
+                      <span className="text-xs font-bold text-gray-500 uppercase ml-1">
                         {passwordStrength === 1 ? 'Weak' : passwordStrength === 2 ? 'Good' : 'Strong'}
                       </span>
                     </div>
@@ -373,7 +373,7 @@ const InfluencerRegistration = () => {
                     </button>
                   </div>
                   {form.confirmPassword && (
-                    <p className={`text-[10px] font-bold pt-1 ${form.password === form.confirmPassword ? 'text-emerald-600' : 'text-rose-500'}`}>
+                    <p className={`text-xs font-bold pt-1 ${form.password === form.confirmPassword ? 'text-emerald-600' : 'text-rose-500'}`}>
                       {form.password === form.confirmPassword ? '✓ Passwords match' : '✗ Passwords do not match'}
                     </p>
                   )}
@@ -398,7 +398,7 @@ const InfluencerRegistration = () => {
                   <label className="text-xs font-bold uppercase tracking-wider text-gray-600 flex items-center gap-1.5">
                     <FileText size={13} className="text-purple-500" /> Bio & Content Niche
                   </label>
-                  <span className="text-[10px] text-gray-400 font-mono">
+                  <span className="text-xs text-gray-400 font-mono">
                     {form.bio.length} characters
                   </span>
                 </div>
@@ -419,7 +419,7 @@ const InfluencerRegistration = () => {
                   <span className="flex items-center gap-1.5">
                     <Users size={13} className="text-purple-500" /> Combined Follower Count
                   </span>
-                  <span className="text-[10px] text-gray-400 uppercase">Across all platforms</span>
+                  <span className="text-xs text-gray-400 uppercase">Across all platforms</span>
                 </label>
 
                 {/* Quick Presets */}

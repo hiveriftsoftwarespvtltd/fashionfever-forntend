@@ -97,7 +97,7 @@ const AdminProfile = ({ isDarkMode }) => {
             <div className="flex items-center gap-3">
               <Calendar size={16} className={isDarkMode ? 'text-zinc-400' : 'text-zinc-500'} />
               <div>
-                <p className={`text-[10px] font-bold uppercase tracking-wider ${
+                <p className={`text-xs font-bold uppercase tracking-wider ${
                   isDarkMode ? 'text-zinc-400' : 'text-zinc-500'
                 }`}>Joined On</p>
                 <p className={`text-xs font-extrabold ${isDarkMode ? 'text-zinc-200' : 'text-zinc-800'}`}>
@@ -113,7 +113,7 @@ const AdminProfile = ({ isDarkMode }) => {
             <div className="flex items-center gap-3">
               <ShieldCheck size={16} className="text-emerald-500" />
               <div>
-                <p className={`text-[10px] font-bold uppercase tracking-wider ${
+                <p className={`text-xs font-bold uppercase tracking-wider ${
                   isDarkMode ? 'text-zinc-400' : 'text-zinc-500'
                 }`}>Account Status</p>
                 <span className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-500">
@@ -234,7 +234,7 @@ const AdminProfile = ({ isDarkMode }) => {
                     }`}>
                       {access.module || access}
                     </span>
-                    <span className="text-[10px] font-black uppercase text-emerald-500 bg-emerald-500/10 px-2 py-0.5 rounded-md">
+                    <span className="text-xs font-black uppercase text-emerald-500 bg-emerald-500/10 px-2 py-0.5 rounded-md">
                       Enabled
                     </span>
                   </div>

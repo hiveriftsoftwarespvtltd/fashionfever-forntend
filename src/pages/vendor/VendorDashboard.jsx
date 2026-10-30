@@ -31,6 +31,7 @@ import {
 } from 'lucide-react';
 import { toast } from '../../utils/toast';
 import Swal from 'sweetalert2';
+import { getImageUrl } from '../../utils/imageUrl';
 import VendorSidebar from './components/VendorSidebar';
 import EditProfileModal from './components/EditProfileModal';
 import ProductModal from './components/ProductModal';
@@ -120,14 +121,6 @@ const VendorDashboard = () => {
 
   const [showOrderModal, setShowOrderModal] = useState(false);
   const [currentOrder, setCurrentOrder] = useState(null);
-
-  const getImageUrl = (img) => {
-    if (!img) return '';
-    if (img instanceof File) return URL.createObjectURL(img);
-    if (typeof img === 'string') return img;
-    if (img.url) return img.url;
-    return '';
-  };
 
   const fetchVendorData = async () => {
     try {

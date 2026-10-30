@@ -298,7 +298,7 @@ const SupportTickets = ({ isDarkMode }) => {
         const vendor = ticket.vendorId;
         const product = ticket.productId;
         if (!vendor && !product) {
-          return <span className="text-[10px] font-bold text-gray-400 uppercase">Platform General</span>;
+          return <span className="text-xs font-bold text-gray-400 uppercase">Platform General</span>;
         }
         return (
           <div className="flex flex-col gap-0.5 max-w-[180px]">
@@ -308,7 +308,7 @@ const SupportTickets = ({ isDarkMode }) => {
               </span>
             )}
             {product && (
-              <span className={`text-[10px] font-bold flex items-center gap-1 truncate ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`} title={product.name}>
+              <span className={`text-xs font-bold flex items-center gap-1 truncate ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`} title={product.name}>
                 <Package size={11} className="shrink-0 text-pink-500" /> {product.name}
               </span>
             )}
@@ -563,7 +563,7 @@ const SupportTickets = ({ isDarkMode }) => {
           }`}>
             <div className={`p-5 border-b flex items-center justify-between ${isDarkMode ? 'border-white/5' : 'border-gray-100'}`}>
               <div>
-                <span className="text-[10px] font-black text-primary font-mono block">PLATFORM ADMIN TICKET AUDIT #{adminSelectedTicket._id?.toUpperCase()}</span>
+                <span className="text-xs font-black text-primary font-mono block">PLATFORM ADMIN TICKET AUDIT #{adminSelectedTicket._id?.toUpperCase()}</span>
                 <h2 className="text-sm font-extrabold uppercase">
                   Category: {adminSelectedTicket.ticketType || 'OTHER'}
                 </h2>
@@ -577,19 +577,19 @@ const SupportTickets = ({ isDarkMode }) => {
               {/* Metadata Badges: User & Vendor */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className={`p-3 rounded-xl border ${isDarkMode ? 'bg-white/5 border-white/5' : 'bg-gray-50 border-gray-100'}`}>
-                  <span className="text-[9px] font-black text-gray-400 uppercase block">User / Customer Details</span>
+                  <span className="text-xs font-black text-gray-400 uppercase block">User / Customer Details</span>
                   <p className="text-xs font-bold truncate">{adminSelectedTicket.userId?.name || 'N/A'}</p>
-                  <p className="text-[10px] text-gray-400 font-bold truncate">{adminSelectedTicket.userId?.email || 'N/A'}</p>
+                  <p className="text-xs text-gray-400 font-bold truncate">{adminSelectedTicket.userId?.email || 'N/A'}</p>
                 </div>
 
                 <div className={`p-3 rounded-xl border ${isDarkMode ? 'bg-pink-500/10 border-pink-500/20' : 'bg-pink-50 border-pink-100'}`}>
-                  <span className="text-[9px] font-black text-primary uppercase block">Assigned Store / Vendor Partner</span>
+                  <span className="text-xs font-black text-primary uppercase block">Assigned Store / Vendor Partner</span>
                   {adminSelectedTicket.vendorId ? (
                     <>
                       <p className="text-xs font-black text-primary truncate">
                         {adminSelectedTicket.vendorId.businessName || adminSelectedTicket.vendorId.storeName || adminSelectedTicket.vendorId.name}
                       </p>
-                      <p className="text-[10px] text-gray-400 font-bold truncate">
+                      <p className="text-xs text-gray-400 font-bold truncate">
                         {adminSelectedTicket.vendorId.email || 'N/A'} | {adminSelectedTicket.vendorId.phone || 'N/A'}
                       </p>
                     </>
@@ -604,7 +604,7 @@ const SupportTickets = ({ isDarkMode }) => {
                 <div className={`p-3 rounded-xl border flex items-center gap-3 ${isDarkMode ? 'bg-white/5 border-white/5' : 'bg-pink-50/30 border-pink-100'}`}>
                   <Package className="text-primary shrink-0" size={20} />
                   <div className="min-w-0 flex-1">
-                    <span className="text-[9px] font-black text-primary uppercase block">Complaint Target Product</span>
+                    <span className="text-xs font-black text-primary uppercase block">Complaint Target Product</span>
                     <p className="text-xs font-bold truncate">{adminSelectedTicket.productId.name}</p>
                   </div>
                 </div>
@@ -612,7 +612,7 @@ const SupportTickets = ({ isDarkMode }) => {
 
               {/* Customer Complaint */}
               <div>
-                <span className="text-[10px] font-black text-gray-400 uppercase tracking-wider block mb-1">Customer Query / Complaint</span>
+                <span className="text-xs font-black text-gray-400 uppercase tracking-wider block mb-1">Customer Query / Complaint</span>
                 <div className={`p-3.5 rounded-xl border text-xs font-medium ${isDarkMode ? 'bg-white/5 border-white/5 text-gray-200' : 'bg-gray-50 border-gray-100 text-gray-700'}`}>
                   {adminSelectedTicket.description}
                 </div>
@@ -620,7 +620,7 @@ const SupportTickets = ({ isDarkMode }) => {
 
               {/* Resolution Thread */}
               <div className="pt-2">
-                <span className="text-[10px] font-black text-gray-400 uppercase tracking-wider block mb-2">Vendor & Support Thread</span>
+                <span className="text-xs font-black text-gray-400 uppercase tracking-wider block mb-2">Vendor & Support Thread</span>
                 <div className="space-y-2">
                   {(!adminSelectedTicket.replies || adminSelectedTicket.replies.length === 0) ? (
                     <p className="text-xs text-gray-400 italic">No vendor or admin responses yet. Post a resolution below if vendor has not acted.</p>
@@ -630,7 +630,7 @@ const SupportTickets = ({ isDarkMode }) => {
                         r.senderRole === 'VENDOR' ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-300 ml-3' :
                         r.senderRole === 'ADMIN' ? 'bg-blue-500/10 border-blue-500/20 text-blue-300 ml-3' : 'bg-white/5 border-white/5 mr-3'
                       }`}>
-                        <div className="flex justify-between items-center text-[9px] font-black uppercase mb-1 opacity-75">
+                        <div className="flex justify-between items-center text-xs font-black uppercase mb-1 opacity-75">
                           <span>{r.senderName} ({r.senderRole})</span>
                           <span>{new Date(r.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                         </div>

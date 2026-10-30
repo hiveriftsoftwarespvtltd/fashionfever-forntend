@@ -202,7 +202,7 @@ const AdminWalletBalances = ({ isDarkMode }) => {
           isDarkMode ? 'bg-zinc-900/90 border-zinc-800' : 'bg-white border-zinc-200 shadow-sm'
         }`}>
           <div className="flex items-center justify-between mb-3">
-            <span className="text-[10px] font-bold uppercase text-zinc-400 tracking-wider">
+            <span className="text-xs font-bold uppercase text-zinc-400 tracking-wider">
               Total Managed Balance
             </span>
             <div className="p-2.5 rounded-xl bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
@@ -212,7 +212,7 @@ const AdminWalletBalances = ({ isDarkMode }) => {
           <p className={`text-xl lg:text-2xl font-black tracking-tight ${isDarkMode ? 'text-zinc-100' : 'text-zinc-900'}`}>
             ₹{calculateTotalBalance().toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
           </p>
-          <p className="text-[10px] font-bold text-zinc-400 uppercase mt-1">
+          <p className="text-xs font-bold text-zinc-400 uppercase mt-1">
             Sum of all active liquid currency assets in category
           </p>
         </div>
@@ -223,7 +223,7 @@ const AdminWalletBalances = ({ isDarkMode }) => {
             isDarkMode ? 'bg-zinc-900/90 border-zinc-800' : 'bg-white border-zinc-200 shadow-sm'
           }`}>
             <div className="flex items-center justify-between mb-3">
-              <span className="text-[10px] font-bold uppercase text-zinc-400 tracking-wider">
+              <span className="text-xs font-bold uppercase text-zinc-400 tracking-wider">
                 Total Pending Settlement
               </span>
               <div className="p-2.5 rounded-xl bg-amber-500/10 text-amber-500 border border-amber-500/20">
@@ -233,7 +233,7 @@ const AdminWalletBalances = ({ isDarkMode }) => {
             <p className={`text-xl lg:text-2xl font-black tracking-tight ${isDarkMode ? 'text-zinc-100' : 'text-zinc-900'}`}>
               ₹{calculateTotalPending().toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </p>
-            <p className="text-[10px] font-bold text-zinc-400 uppercase mt-1">
+            <p className="text-xs font-bold text-zinc-400 uppercase mt-1">
               Awaiting escrow validation or pending request settlement
             </p>
           </div>
@@ -242,7 +242,7 @@ const AdminWalletBalances = ({ isDarkMode }) => {
             isDarkMode ? 'bg-zinc-900/90 border-zinc-800' : 'bg-white border-zinc-200 shadow-sm'
           }`}>
             <div className="flex items-center justify-between mb-3">
-              <span className="text-[10px] font-bold uppercase text-zinc-400 tracking-wider">
+              <span className="text-xs font-bold uppercase text-zinc-400 tracking-wider">
                 Active Ledger Accounts
               </span>
               <div className="p-2.5 rounded-xl bg-blue-500/10 text-blue-500 border border-blue-500/20">
@@ -252,7 +252,7 @@ const AdminWalletBalances = ({ isDarkMode }) => {
             <p className={`text-xl lg:text-2xl font-black tracking-tight ${isDarkMode ? 'text-zinc-100' : 'text-zinc-900'}`}>
               {data.length}
             </p>
-            <p className="text-[10px] font-bold text-zinc-400 uppercase mt-1">
+            <p className="text-xs font-bold text-zinc-400 uppercase mt-1">
               Registered wallet accounts parsed inside this category
             </p>
           </div>
@@ -263,7 +263,7 @@ const AdminWalletBalances = ({ isDarkMode }) => {
           isDarkMode ? 'bg-zinc-900/90 border-zinc-800' : 'bg-white border-zinc-200 shadow-sm'
         }`}>
           <div className="flex items-center justify-between mb-3">
-            <span className="text-[10px] font-bold uppercase text-zinc-400 tracking-wider">
+            <span className="text-xs font-bold uppercase text-zinc-400 tracking-wider">
               Operational Status
             </span>
             <div className="p-2.5 rounded-xl bg-primary/10 text-primary border border-primary/20">
@@ -273,7 +273,7 @@ const AdminWalletBalances = ({ isDarkMode }) => {
           <p className="text-xl lg:text-2xl font-black text-primary uppercase">
             Active
           </p>
-          <p className="text-[10px] font-bold text-zinc-400 uppercase mt-1">
+          <p className="text-xs font-bold text-zinc-400 uppercase mt-1">
             Wallet hooks and ledger interfaces synced with backend
           </p>
         </div>
@@ -423,7 +423,7 @@ const AdminWalletBalances = ({ isDarkMode }) => {
                           ₹{(item.totalPayouts || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                         </td>
                         <td className="py-4 px-6 text-center">
-                          <span className="inline-flex items-center gap-1 bg-green-50 text-green-600 border border-green-100 px-2.5 py-0.5 rounded-full text-[9px] font-bold uppercase mx-auto">
+                          <span className="inline-flex items-center gap-1 bg-green-50 text-green-600 border border-green-100 px-2.5 py-0.5 rounded-full text-xs font-bold uppercase mx-auto">
                             <CheckCircle2 size={10} /> Active
                           </span>
                         </td>
@@ -464,7 +464,7 @@ const AdminWalletBalances = ({ isDarkMode }) => {
                           {item.createdAt ? new Date(item.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : 'N/A'}
                         </td>
                         <td className="py-4 px-6 text-center">
-                          <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[9px] font-bold uppercase mx-auto ${
+                          <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold uppercase mx-auto ${
                             item.isActive 
                               ? 'bg-green-50 text-green-600 border border-green-100' 
                               : 'bg-red-50 text-red-600 border border-red-100'
@@ -511,7 +511,7 @@ const AdminWalletBalances = ({ isDarkMode }) => {
                           ₹{(item.totalWithdrawn || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                         </td>
                         <td className="py-4 px-6 text-center">
-                          <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[9px] font-bold uppercase mx-auto ${
+                          <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold uppercase mx-auto ${
                             item.isActive 
                               ? 'bg-green-50 text-green-600 border border-green-100' 
                               : 'bg-red-50 text-red-600 border border-red-100'
@@ -531,7 +531,7 @@ const AdminWalletBalances = ({ isDarkMode }) => {
                               <span className={`text-sm font-bold ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>
                                 {item.influencerId.name || 'Unnamed Influencer'}
                               </span>
-                              <span className="text-[9px] text-gray-400 font-mono uppercase">
+                              <span className="text-xs text-gray-400 font-mono uppercase">
                                 ID: {item.influencerId.id || item.influencerId._id}
                               </span>
                             </div>
@@ -556,7 +556,7 @@ const AdminWalletBalances = ({ isDarkMode }) => {
                           ₹{(item.totalWithdrawn || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                         </td>
                         <td className="py-4 px-6 text-center">
-                          <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[9px] font-bold uppercase mx-auto ${
+                          <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold uppercase mx-auto ${
                             item.isActive 
                               ? 'bg-green-50 text-green-600 border border-green-100' 
                               : 'bg-red-50 text-red-600 border border-red-100'
@@ -601,7 +601,7 @@ const AdminWalletBalances = ({ isDarkMode }) => {
                           ₹{(item.totalWithdrawn || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                         </td>
                         <td className="py-4 px-6 text-center">
-                          <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[9px] font-bold uppercase mx-auto ${
+                          <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold uppercase mx-auto ${
                             item.isActive 
                               ? 'bg-green-50 text-green-600 border border-green-100' 
                               : 'bg-red-50 text-red-600 border border-red-100'
@@ -637,7 +637,7 @@ const AdminWalletBalances = ({ isDarkMode }) => {
                           ₹{(item.totalWithdrawn || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                         </td>
                         <td className="py-4 px-6 text-center">
-                          <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[9px] font-bold uppercase mx-auto ${
+                          <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold uppercase mx-auto ${
                             item.isActive 
                               ? 'bg-green-50 text-green-600 border border-green-100' 
                               : 'bg-red-50 text-red-600 border border-red-100'

@@ -126,7 +126,7 @@ const ServiceProviderDetailsModal = ({ provider, onClose }) => {
           {loadingWallet ? (
             <div className="mt-6 h-20 flex flex-col items-center justify-center border border-dashed rounded-2xl border-gray-200 dark:border-white/10">
               <Loader2 className="animate-spin text-primary mb-2 animate-duration-1000" size={20} />
-              <span className="text-[9px] font-bold text-gray-400 uppercase tracking-wider">Loading Wallet Balance...</span>
+              <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">Loading Wallet Balance...</span>
             </div>
           ) : wallet ? (
             <div className={`mt-6 p-5 rounded-2xl border text-left transition-colors duration-300 ${

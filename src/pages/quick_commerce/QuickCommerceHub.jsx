@@ -78,7 +78,7 @@ const QuickCommerceHub = () => {
         </div>
       </div>
 
-      <div className="container mx-auto px-2 sm:px-4 max-w-[1600px] mt-4 sm:mt-8 md:mt-12">
+      <div className="container mx-auto px-2 sm:px-4 max-w-[1600px] mt-3 sm:mt-5">
         {/* Customer Quick-Commerce Storefront */}
         <div className="transition-all duration-300">
           <CustomerFlow />

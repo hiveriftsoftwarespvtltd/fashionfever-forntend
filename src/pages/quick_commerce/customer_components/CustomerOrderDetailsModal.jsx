@@ -1,5 +1,6 @@
 import React from 'react';
 import { X, MapPin, Truck, Package, Calendar, Phone, Zap, ShoppingBag } from 'lucide-react';
+import { handleImageError } from '../../../utils/imageUrl';
 
 const CustomerOrderDetailsModal = ({
   selectedUserOrderModal,
@@ -16,16 +17,16 @@ const CustomerOrderDetailsModal = ({
         {/* Modal Header */}
         <div className="bg-gradient-to-r from-primary to-rose-600 text-white p-3.5 sm:p-5 flex items-start sm:items-center justify-between gap-3">
           <div className="min-w-0 flex-1">
-            <span className="text-[9px] sm:text-[10px] font-black uppercase text-rose-100 tracking-wider block">Express Quick Order Details</span>
+            <span className="text-xs font-black uppercase text-rose-100 tracking-wider block">Express Quick Order Details</span>
             <h3 className="text-xs sm:text-base font-black font-mono truncate text-white max-w-[180px] sm:max-w-none">
               #{selectedUserOrderModal._id}
             </h3>
-            <span className="text-[9px] sm:text-[10px] text-rose-100 font-semibold block mt-0.5 flex items-center gap-1">
+            <span className="text-xs text-rose-100 font-semibold block mt-0.5 flex items-center gap-1">
               <Calendar size={11} /> Placed: {formatOrderDate(selectedUserOrderModal.createdAt)}
             </span>
           </div>
           <div className="flex items-center gap-2 flex-shrink-0">
-            <span className="bg-white/20 text-white border border-white/30 text-[8px] sm:text-[9px] font-black uppercase px-2.5 py-1 rounded-full whitespace-nowrap">
+            <span className="bg-white/20 text-white border border-white/30 text-[11px] sm:text-xs font-black uppercase px-2.5 py-1 rounded-full whitespace-nowrap">
               {selectedUserOrderModal.status}
             </span>
             <button
@@ -85,7 +86,7 @@ const CustomerOrderDetailsModal = ({
                         <Phone size={12} /> Phone: {rider.phone}
                       </p>
                     )}
-                    {rider.vehicleType && <p className="text-[10px] text-slate-400 capitalize">Vehicle: {rider.vehicleType}</p>}
+                    {rider.vehicleType && <p className="text-xs text-slate-400 capitalize">Vehicle: {rider.vehicleType}</p>}
                   </div>
                 );
               })()}
@@ -95,19 +96,19 @@ const CustomerOrderDetailsModal = ({
           {/* Section 2: Payment & Order Info */}
           <div className="bg-slate-50 border border-slate-100 p-4 rounded-2xl flex flex-wrap justify-between items-center gap-3">
             <div>
-              <span className="text-[10px] font-black uppercase text-slate-400 block tracking-wider">Payment Method</span>
+              <span className="text-xs font-black uppercase text-slate-400 block tracking-wider">Payment Method</span>
               <span className="font-extrabold text-slate-800 text-xs uppercase">{selectedUserOrderModal.paymentMethod?.replace(/_/g, ' ') || 'CASH ON DELIVERY'}</span>
             </div>
             <div>
-              <span className="text-[10px] font-black uppercase text-slate-400 block tracking-wider">Payment Status</span>
-              <span className={`text-[10px] font-black uppercase ${
+              <span className="text-xs font-black uppercase text-slate-400 block tracking-wider">Payment Status</span>
+              <span className={`text-xs font-black uppercase ${
                 selectedUserOrderModal.paymentStatus === 'PAID' ? 'text-emerald-600' : 'text-amber-600'
               }`}>
                 {selectedUserOrderModal.paymentStatus || 'PENDING'}
               </span>
             </div>
             <div>
-              <span className="text-[10px] font-black uppercase text-slate-400 block tracking-wider">Est. Delivery</span>
+              <span className="text-xs font-black uppercase text-slate-400 block tracking-wider">Est. Delivery</span>
               <span className="font-bold text-primary text-xs flex items-center gap-1">
                 <Zap size={12} className="fill-primary" /> Within 10 Minutes
               </span>
@@ -121,7 +122,7 @@ const CustomerOrderDetailsModal = ({
             </h4>
             <div className="overflow-x-auto rounded-xl border border-slate-200">
               <table className="w-full text-left text-xs">
-                <thead className="bg-slate-100 text-[9px] font-black text-slate-500 uppercase">
+                <thead className="bg-slate-100 text-xs font-black text-slate-500 uppercase">
                   <tr>
                     <th className="p-2.5">Product</th>
                     <th className="p-2.5 text-center">Qty</th>
@@ -139,6 +140,7 @@ const CustomerOrderDetailsModal = ({
                               src={getItemImage(item)}
                               alt={item.productName}
                               className="w-10 h-10 object-cover rounded-xl border border-slate-200 flex-shrink-0"
+                              onError={handleImageError}
                             />
                           ) : (
                             <div className="w-10 h-10 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-400 font-bold text-xs flex-shrink-0">
@@ -147,7 +149,7 @@ const CustomerOrderDetailsModal = ({
                           )}
                           <div>
                             <p className="font-bold text-slate-800 uppercase text-xs">{item.productName}</p>
-                            {item.sku && <p className="text-[9px] font-mono text-slate-400 uppercase">SKU: {item.sku}</p>}
+                            {item.sku && <p className="text-xs font-mono text-slate-400 uppercase">SKU: {item.sku}</p>}
                           </div>
                         </div>
                       </td>
@@ -164,7 +166,7 @@ const CustomerOrderDetailsModal = ({
           {/* Section 4: Bill Summary */}
           <div className="bg-gradient-to-r from-primary to-rose-600 text-white p-4 rounded-2xl flex justify-between items-center shadow-sm">
             <div>
-              <span className="text-[10px] font-bold text-rose-100 uppercase tracking-widest block">Total Amount Paid</span>
+              <span className="text-xs font-bold text-rose-100 uppercase tracking-widest block">Total Amount Paid</span>
               <span className="text-xl font-black font-mono">₹{(selectedUserOrderModal.grandTotal || selectedUserOrderModal.total || 0).toFixed(2)}</span>
             </div>
             <span className="text-xs font-extrabold text-white bg-white/20 border border-white/30 px-3 py-1 rounded-xl uppercase">

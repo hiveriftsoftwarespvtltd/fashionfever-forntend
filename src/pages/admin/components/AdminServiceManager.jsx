@@ -185,7 +185,7 @@ const AdminServiceManager = ({ isDarkMode }) => {
     </div>
 
     {/* Category Tag */}
-    <span className="bg-primary/10 text-primary text-[8px] font-bold uppercase  px-2 py-0.5 rounded-md inline-block">
+    <span className="bg-primary/10 text-primary text-[11px] font-bold uppercase  px-2 py-0.5 rounded-md inline-block">
       {srv.category || 'Makeup'}
     </span>
     
@@ -223,7 +223,7 @@ const AdminServiceManager = ({ isDarkMode }) => {
     <div className={`mt-4 pt-3 border-t flex justify-between items-baseline ${
       isDarkMode ? 'border-white/5' : 'border-gray-50'
     }`}>
-      <span className="text-[9px] font-bold text-gray-400 uppercase ">Booking Cost</span>
+      <span className="text-xs font-bold text-gray-400 uppercase ">Booking Cost</span>
       <div className="flex items-baseline gap-1.5">
         <span className={`text-base font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
           ₹{srv.salesPrice}
@@ -257,11 +257,11 @@ const AdminServiceManager = ({ isDarkMode }) => {
             <form onSubmit={handleStaticSubmit} className="p-6 space-y-4 max-h-[75vh] overflow-y-auto text-left no-scrollbar">
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1">
-                  <label className="text-[9px] font-bold text-gray-400 uppercase ">Service Name</label>
+                  <label className="text-xs font-bold text-gray-400 uppercase ">Service Name</label>
                   <input type="text" required value={form.name} onChange={(e) => handleInputChange(e, 'name')} placeholder="e.g. Bridal Glow Facials" className={`w-full px-4 py-3 border rounded-xl text-xs font-bold outline-none transition-all ${isDarkMode ? 'bg-gray-900 border-white/5 text-white focus:border-primary' : 'bg-gray-50 border-gray-100 text-gray-700 focus:bg-white focus:border-primary'}`} />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-[9px] font-bold text-gray-400 uppercase ">Category Tag</label>
+                  <label className="text-xs font-bold text-gray-400 uppercase ">Category Tag</label>
                   <div className="relative">
                     <select value={form.category} onChange={(e) => handleInputChange(e, 'category')} className={`w-full px-4 py-3 border rounded-xl text-xs font-bold outline-none appearance-none transition-all ${isDarkMode ? 'bg-gray-900 border-white/5 text-white focus:border-primary' : 'bg-gray-50 border-gray-100 text-gray-700 focus:bg-white focus:border-primary'}`}>
                       <option value="Makeup">Makeup</option>
@@ -276,28 +276,28 @@ const AdminServiceManager = ({ isDarkMode }) => {
               
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1">
-                  <label className="text-[9px] font-bold text-gray-400 uppercase ">Duration Block</label>
+                  <label className="text-xs font-bold text-gray-400 uppercase ">Duration Block</label>
                   <input type="text" required value={form.duration} onChange={(e) => handleInputChange(e, 'duration')} placeholder="e.g. 90 mins" className={`w-full px-4 py-3 border rounded-xl text-xs font-bold outline-none transition-all ${isDarkMode ? 'bg-gray-900 border-white/5 text-white focus:border-primary' : 'bg-gray-50 border-gray-100 text-gray-700 focus:bg-white focus:border-primary'}`} />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-[9px] font-bold text-gray-400 uppercase ">Assigned Expert Stylist</label>
+                  <label className="text-xs font-bold text-gray-400 uppercase ">Assigned Expert Stylist</label>
                   <input type="text" required value={form.expertName} onChange={(e) => handleInputChange(e, 'expertName')} placeholder="e.g. Kriti Verma" className={`w-full px-4 py-3 border rounded-xl text-xs font-bold outline-none transition-all ${isDarkMode ? 'bg-gray-900 border-white/5 text-white focus:border-primary' : 'bg-gray-50 border-gray-100 text-gray-700 focus:bg-white focus:border-primary'}`} />
                 </div>
               </div>
               
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1">
-                  <label className="text-[9px] font-bold text-gray-400 uppercase ">Original Price (MRP ₹)</label>
+                  <label className="text-xs font-bold text-gray-400 uppercase ">Original Price (MRP ₹)</label>
                   <input type="number" required value={form.price} onChange={(e) => handleInputChange(e, 'price')} className={`w-full px-4 py-3 border rounded-xl text-xs font-bold outline-none transition-all ${isDarkMode ? 'bg-gray-900 border-white/5 text-white focus:border-primary' : 'bg-gray-50 border-gray-100 text-gray-700 focus:bg-white focus:border-primary'}`} />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-[9px] font-bold text-gray-400 uppercase ">Offer Booking Price (₹)</label>
+                  <label className="text-xs font-bold text-gray-400 uppercase ">Offer Booking Price (₹)</label>
                   <input type="number" required value={form.salesPrice} onChange={(e) => handleInputChange(e, 'salesPrice')} className={`w-full px-4 py-3 border rounded-xl text-xs font-bold outline-none transition-all ${isDarkMode ? 'bg-gray-900 border-white/5 text-white focus:border-primary' : 'bg-gray-50 border-gray-100 text-gray-700 focus:bg-white focus:border-primary'}`} />
                 </div>
               </div>
               
               <div className="space-y-1">
-                <label className="text-[9px] font-bold text-gray-400 uppercase ">Service Overview Description</label>
+                <label className="text-xs font-bold text-gray-400 uppercase ">Service Overview Description</label>
                 <textarea rows="3" required value={form.description} onChange={(e) => handleInputChange(e, 'description')} placeholder="Details of includes, skin products brand details..." className={`w-full px-4 py-3 border rounded-xl text-xs font-bold outline-none transition-all resize-none ${isDarkMode ? 'bg-gray-900 border-white/5 text-white focus:border-primary' : 'bg-gray-50 border-gray-100 text-gray-700 focus:bg-white focus:border-primary'}`}></textarea>
               </div>
               
